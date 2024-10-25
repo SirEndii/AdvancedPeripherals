@@ -6,7 +6,6 @@ import dan200.computercraft.api.lua.LuaFunction;
 import de.srendi.advancedperipherals.AdvancedPeripherals;
 import de.srendi.advancedperipherals.client.smartglasses.objects.IObjectRenderer;
 import de.srendi.advancedperipherals.client.smartglasses.objects.threedim.BlockRenderer;
-import de.srendi.advancedperipherals.client.smartglasses.objects.twodim.ITwoDObjectRenderer;
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.OverlayModule;
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.propertytypes.StringProperty;
 import net.minecraft.network.FriendlyByteBuf;
@@ -14,7 +13,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import java.util.UUID;
 
 public class BlockObject extends ThreeDimensionalObject {
-    public static final int TYPE_ID = 4;
+    public static final int TYPE_ID = 5;
 
     private final IObjectRenderer renderer = new BlockRenderer();
 
@@ -31,7 +30,7 @@ public class BlockObject extends ThreeDimensionalObject {
     }
 
     @LuaFunction
-    public void setBlock(String block) {
+    public final void setBlock(String block) {
         this.block = block;
         getModule().update(this);
     }
@@ -40,6 +39,7 @@ public class BlockObject extends ThreeDimensionalObject {
     public final String getBlock() {
         return block;
     }
+
 
     @Override
     public void encode(FriendlyByteBuf buffer) {
@@ -64,6 +64,11 @@ public class BlockObject extends ThreeDimensionalObject {
         int z = buffer.readInt();
         int maxX = buffer.readInt();
         int maxY = buffer.readInt();
+        int maxZ = buffer.readInt();
+
+        boolean disableDepthTest = buffer.readBoolean();
+        boolean disableCulling = buffer.readBoolean();
+
         String block = buffer.readUtf();
 
         BlockObject clientObject = new BlockObject(player);
@@ -75,6 +80,9 @@ public class BlockObject extends ThreeDimensionalObject {
         clientObject.z = z;
         clientObject.maxX = maxX;
         clientObject.maxY = maxY;
+        clientObject.maxZ = maxZ;
+        clientObject.disableDepthTest = disableDepthTest;
+        clientObject.disableCulling = disableCulling;
         clientObject.block = block;
 
         return clientObject;

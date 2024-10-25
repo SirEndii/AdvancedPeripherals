@@ -2,6 +2,7 @@ package de.srendi.advancedperipherals.client.smartglasses;
 
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.ObjectDecodeRegistry;
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects.three_dim.BlockObject;
+import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects.three_dim.BoxObject;
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects.two_dim.CircleObject;
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects.two_dim.ItemObject;
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects.two_dim.RectangleObject;
@@ -47,6 +48,7 @@ public class OverlayObjectHolder {
         ObjectDecodeRegistry.register(TextObject.TYPE_ID, TextObject::decode);
         ObjectDecodeRegistry.register(ItemObject.TYPE_ID, ItemObject::decode);
 
+        ObjectDecodeRegistry.register(BoxObject.TYPE_ID, BoxObject::decode);
         ObjectDecodeRegistry.register(BlockObject.TYPE_ID, BlockObject::decode);
     }
 }

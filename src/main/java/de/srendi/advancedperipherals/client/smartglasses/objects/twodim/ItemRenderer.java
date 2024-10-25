@@ -3,7 +3,7 @@ package de.srendi.advancedperipherals.client.smartglasses.objects.twodim;
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects.two_dim.ItemObject;
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects.two_dim.RenderableObject;
-import de.srendi.advancedperipherals.common.util.inventory.ItemUtil;
+import de.srendi.advancedperipherals.common.util.RegistryUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -19,7 +19,7 @@ public class ItemRenderer implements ITwoDObjectRenderer {
         Minecraft minecraft = Minecraft.getInstance();
 
         for (RenderableObject object : objects) {
-            Item renderItem = ItemUtil.getRegistryEntry(((ItemObject) object).item, ForgeRegistries.ITEMS);
+            Item renderItem = RegistryUtil.getRegistryEntry(((ItemObject) object).item, ForgeRegistries.ITEMS);
             if (renderItem == null)
                 continue;
             minecraft.getItemRenderer().renderGuiItem(new ItemStack(renderItem), object.x, object.y);

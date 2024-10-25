@@ -7,6 +7,7 @@ import dan200.computercraft.core.apis.TableHelper;
 import de.srendi.advancedperipherals.AdvancedPeripherals;
 import de.srendi.advancedperipherals.common.util.NBTUtil;
 import de.srendi.advancedperipherals.common.util.Pair;
+import de.srendi.advancedperipherals.common.util.RegistryUtil;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -40,7 +41,7 @@ public class FluidFilter extends GenericFilter<FluidStack> {
                 String name = TableHelper.getStringField(item, "name");
                 if (name.startsWith("#")) {
                     fluidFilter.tag = TagKey.create(Registry.FLUID_REGISTRY, new ResourceLocation(name.substring(1)));
-                } else if ((fluidFilter.fluid = ItemUtil.getRegistryEntry(name, ForgeRegistries.FLUIDS)) == null) {
+                } else if ((fluidFilter.fluid = RegistryUtil.getRegistryEntry(name, ForgeRegistries.FLUIDS)) == null) {
                     return Pair.of(null, "FLUID_NOT_FOUND");
                 }
             } catch (LuaException luaException) {

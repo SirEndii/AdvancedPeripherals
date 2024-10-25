@@ -7,6 +7,7 @@ import dan200.computercraft.api.lua.MethodResult;
 import de.srendi.advancedperipherals.common.smartglasses.SmartGlassesAccess;
 import de.srendi.advancedperipherals.common.smartglasses.modules.IModuleFunctions;
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects.three_dim.BlockObject;
+import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects.three_dim.BoxObject;
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects.two_dim.CircleObject;
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects.two_dim.ItemObject;
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects.two_dim.RectangleObject;
@@ -65,6 +66,14 @@ public class OverlayGlassesFunctions implements IModuleFunctions {
     }
 
     @LuaFunction
+    public final MethodResult createBox(IArguments arguments) throws LuaException {
+        BoxObject block = new BoxObject(overlayModule, arguments);
+        RenderableObject object = overlayModule.addObject(block);
+
+        return MethodResult.of(object, "SUCCESS");
+    }
+
+    @LuaFunction
     public final MethodResult getObject(IArguments arguments) throws LuaException {
         int id = arguments.getInt(0);
         return MethodResult.of(overlayModule.getObjects().get(id));
@@ -89,6 +98,11 @@ public class OverlayGlassesFunctions implements IModuleFunctions {
     @LuaFunction
     public final MethodResult getSize() {
         return MethodResult.of(Minecraft.getInstance().getWindow().getWidth(), Minecraft.getInstance().getWindow().getHeight());
+    }
+
+    @LuaFunction
+    public final MethodResult getCoords() {
+        return MethodResult.of(access.getEntity().position().x, access.getEntity().position().y, access.getEntity().position().z);
     }
 
     @LuaFunction

@@ -129,7 +129,7 @@ public class RenderUtil {
     }
 
     public static void drawShape(PoseStack pPoseStack, VertexConsumer pConsumer, VoxelShape pShape, double pX, double pY, double pZ, float r, float g, float b, float a) {
-        PoseStack.Pose posestack$pose = pPoseStack.last();
+        PoseStack.Pose pose = pPoseStack.last();
         pShape.forAllEdges((minX, minY, minZ, maxX, maxY, maxZ) -> {
             float f = (float) (maxX - minX);
             float f1 = (float) (maxY - minY);
@@ -138,8 +138,8 @@ public class RenderUtil {
             f /= f3;
             f1 /= f3;
             f2 /= f3;
-            pConsumer.vertex(posestack$pose.pose(), (float) (minX + pX), (float) (minY + pY), (float) (minZ + pZ)).color(r, g, b, a).normal(posestack$pose.normal(), f, f1, f2).endVertex();
-            pConsumer.vertex(posestack$pose.pose(), (float) (maxX + pX), (float) (maxY + pY), (float) (maxZ + pZ)).color(r, g, b, a).normal(posestack$pose.normal(), f, f1, f2).endVertex();
+            pConsumer.vertex(pose.pose(), (float) (minX + pX), (float) (minY + pY), (float) (minZ + pZ)).color(r, g, b, a).normal(pose.normal(), f, f1, f2).endVertex();
+            pConsumer.vertex(pose.pose(), (float) (maxX + pX), (float) (maxY + pY), (float) (maxZ + pZ)).color(r, g, b, a).normal(pose.normal(), f, f1, f2).endVertex();
         });
     }
 

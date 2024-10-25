@@ -1,33 +1,26 @@
-package de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects.two_dim;
+package de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects.three_dim;
 
 import dan200.computercraft.api.lua.IArguments;
 import dan200.computercraft.api.lua.LuaException;
 import de.srendi.advancedperipherals.AdvancedPeripherals;
 import de.srendi.advancedperipherals.client.smartglasses.objects.IObjectRenderer;
-import de.srendi.advancedperipherals.client.smartglasses.objects.twodim.RectangleRenderer;
+import de.srendi.advancedperipherals.client.smartglasses.objects.threedim.BoxRenderer;
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.OverlayModule;
 import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.UUID;
 
-/**
- * Just a rectangle
- */
-public class RectangleObject extends RenderableObject {
-    public static final int TYPE_ID = 0;
+public class BoxObject extends ThreeDimensionalObject {
+    public static final int TYPE_ID = 4;
 
-    private final IObjectRenderer renderer = new RectangleRenderer();
+    private final IObjectRenderer renderer = new BoxRenderer();
 
-    public RectangleObject(OverlayModule module, IArguments arguments) throws LuaException {
+    public BoxObject(OverlayModule module, IArguments arguments) throws LuaException {
         super(module, arguments);
+        reflectivelyMapProperties(arguments);
     }
 
-    /**
-     * constructor for the client side initialization
-     *
-     * @param player the target player
-     */
-    public RectangleObject(UUID player) {
+    public BoxObject(UUID player) {
         super(player);
     }
 
@@ -37,7 +30,7 @@ public class RectangleObject extends RenderableObject {
         super.encode(buffer);
     }
 
-    public static RectangleObject decode(FriendlyByteBuf buffer) {
+    public static BoxObject decode(FriendlyByteBuf buffer) {
         int objectId = buffer.readInt();
         boolean hasValidUUID = buffer.readBoolean();
         if (!hasValidUUID) {
@@ -51,18 +44,25 @@ public class RectangleObject extends RenderableObject {
         int x = buffer.readInt();
         int y = buffer.readInt();
         int z = buffer.readInt();
-        int sizeX = buffer.readInt();
-        int sizeY = buffer.readInt();
+        int maxX = buffer.readInt();
+        int maxY = buffer.readInt();
+        int maxZ = buffer.readInt();
 
-        RectangleObject clientObject = new RectangleObject(player);
+        boolean disableDepthTest = buffer.readBoolean();
+        boolean disableCulling = buffer.readBoolean();
+
+        BoxObject clientObject = new BoxObject(player);
         clientObject.setId(objectId);
         clientObject.color = color;
         clientObject.opacity = opacity;
         clientObject.x = x;
         clientObject.y = y;
         clientObject.z = z;
-        clientObject.maxX = sizeX;
-        clientObject.maxY = sizeY;
+        clientObject.maxX = maxX;
+        clientObject.maxY = maxY;
+        clientObject.maxZ = maxZ;
+        clientObject.disableDepthTest = disableDepthTest;
+        clientObject.disableCulling = disableCulling;
 
         return clientObject;
     }

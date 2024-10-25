@@ -4,7 +4,6 @@ import dan200.computercraft.api.lua.IArguments;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.LuaFunction;
 import de.srendi.advancedperipherals.client.smartglasses.objects.IObjectRenderer;
-import de.srendi.advancedperipherals.client.smartglasses.objects.twodim.ITwoDObjectRenderer;
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.OverlayModule;
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.OverlayObject;
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.propertytypes.FixedPointNumberProperty;
@@ -36,6 +35,9 @@ public class RenderableObject extends OverlayObject {
 
     @FixedPointNumberProperty(min = -32767, max = 32767)
     public int maxY = 0;
+
+    @FixedPointNumberProperty(min = -32767, max = 32767)
+    public int maxZ = 0;
 
     public RenderableObject(OverlayModule module, IArguments arguments) throws LuaException {
         super(module, arguments);
@@ -91,6 +93,17 @@ public class RenderableObject extends OverlayObject {
     }
 
     @LuaFunction
+    public final void setMaxZ(int maxZ) {
+        this.maxZ = maxZ;
+        getModule().update(this);
+    }
+
+    @LuaFunction
+    public final int getMaxZ() {
+        return maxZ;
+    }
+
+    @LuaFunction
     public final void setX(int x) {
         this.x = x;
         getModule().update(this);
@@ -134,6 +147,7 @@ public class RenderableObject extends OverlayObject {
         buffer.writeInt(z);
         buffer.writeInt(maxX);
         buffer.writeInt(maxY);
+        buffer.writeInt(maxZ);
     }
 
     public IObjectRenderer getRenderObject() {
@@ -150,6 +164,7 @@ public class RenderableObject extends OverlayObject {
                 ", z=" + z +
                 ", sizeX=" + maxX +
                 ", sizeY=" + maxY +
+                ", sizeZ=" + maxZ +
                 '}';
     }
 }

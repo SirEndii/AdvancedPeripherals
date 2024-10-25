@@ -3,13 +3,11 @@ package de.srendi.advancedperipherals.common.util.inventory;
 import dan200.computercraft.shared.Registry;
 import de.srendi.advancedperipherals.AdvancedPeripherals;
 import de.srendi.advancedperipherals.common.util.StringUtil;
-import net.minecraft.ResourceLocationException;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.logging.log4j.Level;
 
 import java.nio.charset.StandardCharsets;
@@ -25,22 +23,6 @@ public class ItemUtil {
 
     public static final Item POCKET_NORMAL = Registry.ModItems.POCKET_COMPUTER_NORMAL.get();
     public static final Item POCKET_ADVANCED = Registry.ModItems.POCKET_COMPUTER_ADVANCED.get();
-
-    public static <T> T getRegistryEntry(String name, IForgeRegistry<T> forgeRegistry) {
-        ResourceLocation location;
-        try {
-            location = new ResourceLocation(name);
-        } catch (ResourceLocationException ex) {
-            location = null;
-        }
-
-        T value;
-        if (location != null && forgeRegistry.containsKey(location) && (value = forgeRegistry.getValue(location)) != null) {
-            return value;
-        } else {
-            return null;
-        }
-    }
 
     /**
      * Fingerprints are MD5 hashes generated out of the nbt tag, the registry name and the display name from item stacks
