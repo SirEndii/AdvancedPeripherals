@@ -65,7 +65,9 @@ public class OverlayModuleLevelRenderer {
                 ((IThreeDObjectRenderer) batch.get(0).getRenderObject()).renderBatch(batch, event, posestack, view, bufferbuilder);
             }
 
-            BlockPos blockPos = new BlockPos(2, 190, 0);
+            //TODO Everything below here is just for debugging and testing. Will be removed before we push to production
+
+            BlockPos blockPos = new BlockPos(2, 10, 0);
 
             float[] colors = EnumColor.DARK_PURPLE.getRgb();
 
@@ -85,7 +87,7 @@ public class OverlayModuleLevelRenderer {
             bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_NORMAL);
             colors = EnumColor.LIGHT_PURPLE.getRgb();
 
-            blockPos = new BlockPos(0, 190, 2);
+            blockPos = new BlockPos(0, 10, 2);
             posestack.translate(-view.x + blockPos.getX(), -view.y + blockPos.getY(), -view.z + blockPos.getZ());
 
             VoxelShape shape = Block.box(0.0, 0.0, 0.0, 16.0, 18.0, 16.0);
@@ -93,6 +95,17 @@ public class OverlayModuleLevelRenderer {
 
             RenderUtil.drawVoxelShape(posestack, bufferbuilder, shape, 0f, 0f, 0f, colors[0], colors[1], colors[2], 0.6f);
             RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+
+            BufferUploader.drawWithShader(bufferbuilder.end());
+            posestack.popPose();
+
+            bufferbuilder.begin(VertexFormat.Mode.TRIANGLES, DefaultVertexFormat.POSITION_COLOR_NORMAL);
+            posestack.pushPose();
+
+            blockPos = new BlockPos(0, 10, 0);
+            posestack.translate(-view.x + blockPos.getX(), -view.y + blockPos.getY(), -view.z + blockPos.getZ());
+
+            RenderUtil.drawSphere(posestack, bufferbuilder, 0.5f, 0f, 0f, 0f, colors[0], colors[1], colors[2], 0.6f, 128, 48);
 
             BufferUploader.drawWithShader(bufferbuilder.end());
             posestack.popPose();

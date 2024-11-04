@@ -7,6 +7,7 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import de.srendi.advancedperipherals.client.RenderUtil;
+import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects.three_dim.SphereObject;
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects.three_dim.ThreeDimensionalObject;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.world.phys.Vec3;
@@ -14,7 +15,7 @@ import net.minecraftforge.client.event.RenderLevelStageEvent;
 
 import java.util.List;
 
-public class BoxRenderer implements IThreeDObjectRenderer {
+public class SphereRenderer implements IThreeDObjectRenderer {
 
     @Override
     public void renderBatch(List<ThreeDimensionalObject> batch, RenderLevelStageEvent event, PoseStack poseStack, Vec3 view, BufferBuilder bufferBuilder) {
@@ -23,7 +24,9 @@ public class BoxRenderer implements IThreeDObjectRenderer {
         for (ThreeDimensionalObject renderableObject : batch) {
             poseStack.pushPose();
             onPreRender(renderableObject);
-            bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_NORMAL);
+            bufferBuilder.begin(VertexFormat.Mode.TRIANGLES, DefaultVertexFormat.POSITION_COLOR_NORMAL);
+
+            SphereObject sphere = (SphereObject) renderableObject;
 
             RenderSystem.setShader(GameRenderer::getPositionColorShader);
             float alpha = renderableObject.opacity;
@@ -32,13 +35,15 @@ public class BoxRenderer implements IThreeDObjectRenderer {
             float blue = (float) (renderableObject.color & 255) / 255.0F;
 
             poseStack.translate(-view.x + renderableObject.getX(), -view.y + renderableObject.getY(), -view.z + renderableObject.getZ());
-            RenderUtil.drawBox(poseStack, bufferBuilder, red, green, blue, alpha, renderableObject.getMaxX(), renderableObject.getMaxY(), renderableObject.getMaxX());
+            RenderUtil.drawSphere(poseStack, bufferBuilder, 1f, 0f, 0f, 0f, red, green, blue, alpha, sphere.sectors, sphere.stacks);
             BufferUploader.drawWithShader(bufferBuilder.end());
             onPostRender(renderableObject);
 
             poseStack.popPose();
         }
 
+
         poseStack.popPose();
+
     }
 }

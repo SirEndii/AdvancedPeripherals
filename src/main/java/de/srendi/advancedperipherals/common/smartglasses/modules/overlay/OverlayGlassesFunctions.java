@@ -8,6 +8,7 @@ import de.srendi.advancedperipherals.common.smartglasses.SmartGlassesAccess;
 import de.srendi.advancedperipherals.common.smartglasses.modules.IModuleFunctions;
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects.three_dim.BlockObject;
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects.three_dim.BoxObject;
+import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects.three_dim.SphereObject;
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects.two_dim.CircleObject;
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects.two_dim.ItemObject;
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects.two_dim.RectangleObject;
@@ -68,6 +69,14 @@ public class OverlayGlassesFunctions implements IModuleFunctions {
     @LuaFunction
     public final MethodResult createBox(IArguments arguments) throws LuaException {
         BoxObject block = new BoxObject(overlayModule, arguments);
+        RenderableObject object = overlayModule.addObject(block);
+
+        return MethodResult.of(object, "SUCCESS");
+    }
+
+    @LuaFunction
+    public final MethodResult createSphere(IArguments arguments) throws LuaException {
+        SphereObject block = new SphereObject(overlayModule, arguments);
         RenderableObject object = overlayModule.addObject(block);
 
         return MethodResult.of(object, "SUCCESS");
