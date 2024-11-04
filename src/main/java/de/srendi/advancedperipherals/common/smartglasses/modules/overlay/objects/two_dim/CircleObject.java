@@ -63,6 +63,7 @@ public class CircleObject extends RenderableObject {
         int z = buffer.readInt();
         int maxX = buffer.readInt();
         int maxY = buffer.readInt();
+        int maxZ = buffer.readInt();
         int radius = buffer.readInt();
 
         CircleObject clientObject = new CircleObject(player);
@@ -74,6 +75,7 @@ public class CircleObject extends RenderableObject {
         clientObject.z = z;
         clientObject.maxX = maxX;
         clientObject.maxY = maxY;
+        clientObject.maxZ = maxZ;
         clientObject.radius = radius;
 
         return clientObject;

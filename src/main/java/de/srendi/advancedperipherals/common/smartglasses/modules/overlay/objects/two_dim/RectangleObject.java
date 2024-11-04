@@ -51,8 +51,9 @@ public class RectangleObject extends RenderableObject {
         int x = buffer.readInt();
         int y = buffer.readInt();
         int z = buffer.readInt();
-        int sizeX = buffer.readInt();
-        int sizeY = buffer.readInt();
+        int maxX = buffer.readInt();
+        int maxY = buffer.readInt();
+        int maxZ = buffer.readInt();
 
         RectangleObject clientObject = new RectangleObject(player);
         clientObject.setId(objectId);
@@ -61,8 +62,9 @@ public class RectangleObject extends RenderableObject {
         clientObject.x = x;
         clientObject.y = y;
         clientObject.z = z;
-        clientObject.maxX = sizeX;
-        clientObject.maxY = sizeY;
+        clientObject.maxX = maxX;
+        clientObject.maxY = maxY;
+        clientObject.maxZ = maxZ;
 
         return clientObject;
     }

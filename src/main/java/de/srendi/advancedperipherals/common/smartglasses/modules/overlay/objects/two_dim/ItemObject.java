@@ -59,6 +59,7 @@ public class ItemObject extends RenderableObject {
         int z = buffer.readInt();
         int maxX = buffer.readInt();
         int maxY = buffer.readInt();
+        int maxZ = buffer.readInt();
         String item = buffer.readUtf();
 
         ItemObject clientObject = new ItemObject(player);
@@ -70,6 +71,7 @@ public class ItemObject extends RenderableObject {
         clientObject.z = z;
         clientObject.maxX = maxX;
         clientObject.maxY = maxY;
+        clientObject.maxZ = maxZ;
         clientObject.item = item;
 
         return clientObject;
