@@ -48,13 +48,12 @@ public class RectangleObject extends RenderableObject {
         int color = buffer.readInt();
         float opacity = buffer.readFloat();
 
-        int x = buffer.readInt();
-        int y = buffer.readInt();
-        int z = buffer.readInt();
-        int maxX = buffer.readInt();
-        int maxY = buffer.readInt();
-        int maxZ = buffer.readInt();
-
+        float x = buffer.readFloat();
+        float y = buffer.readFloat();
+        float z = buffer.readFloat();
+        float maxX = buffer.readFloat();
+        float maxY = buffer.readFloat();
+        float maxZ = buffer.readFloat();
         RectangleObject clientObject = new RectangleObject(player);
         clientObject.setId(objectId);
         clientObject.color = color;

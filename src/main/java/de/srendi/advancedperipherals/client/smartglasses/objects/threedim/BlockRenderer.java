@@ -5,6 +5,8 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Quaternion;
+import de.srendi.advancedperipherals.client.RenderUtil;
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects.three_dim.BlockObject;
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects.three_dim.ThreeDimensionalObject;
 import de.srendi.advancedperipherals.common.util.RegistryUtil;
@@ -25,33 +27,34 @@ public class BlockRenderer implements IThreeDObjectRenderer {
     public void renderBatch(List<ThreeDimensionalObject> batch, RenderLevelStageEvent event, PoseStack poseStack, Vec3 view, BufferBuilder bufferBuilder) {
         poseStack.pushPose();
 
-        for (ThreeDimensionalObject renderableObject : batch) {
+        for (ThreeDimensionalObject obj : batch) {
             poseStack.pushPose();
-            onPreRender(renderableObject);
+            onPreRender(obj);
 
             bufferBuilder.begin(RenderType.solid().mode(), DefaultVertexFormat.BLOCK);
 
-            BlockObject block = (BlockObject) renderableObject;
+            BlockObject block = (BlockObject) obj;
 
-            BlockPos blockPos = new BlockPos(renderableObject.getX(), renderableObject.getY(), renderableObject.getZ());
-
-            poseStack.translate(-view.x + blockPos.getX(), -view.y + blockPos.getY(), -view.z + blockPos.getZ());
-            float alpha = renderableObject.opacity;
-            float red = (float) (renderableObject.color >> 16 & 255) / 255.0F;
-            float green = (float) (renderableObject.color >> 8 & 255) / 255.0F;
-            float blue = (float) (renderableObject.color & 255) / 255.0F;
+            poseStack.translate(-view.x + block.getX(), -view.y + block.getY(), -view.z + block.getZ());
+            poseStack.mulPose(new Quaternion(block.xRot, block.yRot, block.zRot, true));
+            poseStack.translate(-0.5f, -0.5f, -0.5f);
+            float alpha = block.opacity;
+            float red = RenderUtil.getRed(block.color);
+            float green = RenderUtil.getGreen(block.color);
+            float blue = RenderUtil.getBlue(block.color);
 
             RenderSystem.setShader(GameRenderer::getBlockShader);
             RenderSystem.setShaderColor(red, green, blue, alpha);
 
             Block blockToRender = RegistryUtil.getRegistryEntry(block.block, ForgeRegistries.BLOCKS);
+            BlockPos blockPos = new BlockPos(obj.getX(), obj.getY(), obj.getZ());
 
             if (blockToRender != null)
                 Minecraft.getInstance().getBlockRenderer().renderBatched(blockToRender.defaultBlockState(), blockPos, event.getCamera().getEntity().level, poseStack, bufferBuilder, false, event.getCamera().getEntity().level.random);
 
             poseStack.popPose();
             BufferUploader.drawWithShader(bufferBuilder.end());
-            onPostRender(renderableObject);
+            onPostRender(obj);
             RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         }
 

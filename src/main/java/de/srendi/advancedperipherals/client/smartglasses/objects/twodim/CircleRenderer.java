@@ -8,6 +8,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Matrix4f;
+import de.srendi.advancedperipherals.client.RenderUtil;
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects.two_dim.CircleObject;
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects.two_dim.RenderableObject;
 import net.minecraft.client.renderer.GameRenderer;
@@ -19,14 +20,14 @@ public class CircleRenderer implements ITwoDObjectRenderer {
 
     @Override
     public void renderBatch(List<RenderableObject> objects, ForgeGui gui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight) {
-        for (RenderableObject object : objects) {
+        for (RenderableObject obj : objects) {
 
-            CircleObject circle = (CircleObject) object;
+            CircleObject circle = (CircleObject) obj;
 
-            float alpha = object.opacity;
-            float red = (float) (object.color >> 16 & 255) / 255.0F;
-            float green = (float) (object.color >> 8 & 255) / 255.0F;
-            float blue = (float) (object.color & 255) / 255.0F;
+            float alpha = circle.opacity;
+            float red = RenderUtil.getRed(circle.color);
+            float green = RenderUtil.getGreen(circle.color);
+            float blue = RenderUtil.getBlue(circle.color);
 
             drawCircle(poseStack, circle.x, circle.y, circle.radius, 120, red, green, blue, alpha);
         }

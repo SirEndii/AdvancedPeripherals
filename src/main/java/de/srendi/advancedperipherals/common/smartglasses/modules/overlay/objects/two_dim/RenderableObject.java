@@ -21,23 +21,23 @@ public class RenderableObject extends OverlayObject {
     @FixedPointNumberProperty(min = 0, max = 0xFFFFFF)
     public int color = 0xFFFFFF;
 
-    @FixedPointNumberProperty(min = -32767, max = 32767)
-    public int x = 0;
+    @FloatingNumberProperty(min = -32767, max = 32767)
+    public float x = 0;
 
-    @FixedPointNumberProperty(min = -32767, max = 32767)
-    public int y = 0;
+    @FloatingNumberProperty(min = -32767, max = 32767)
+    public float y = 0;
 
-    @FixedPointNumberProperty(min = -32767, max = 32767)
-    public int z = 0;
+    @FloatingNumberProperty(min = -32767, max = 32767)
+    public float z = 0;
 
-    @FixedPointNumberProperty(min = -32767, max = 32767)
-    public int maxX = 0;
+    @FloatingNumberProperty(min = -32767, max = 32767)
+    public float maxX = 0;
 
-    @FixedPointNumberProperty(min = -32767, max = 32767)
-    public int maxY = 0;
+    @FloatingNumberProperty(min = -32767, max = 32767)
+    public float maxY = 0;
 
-    @FixedPointNumberProperty(min = -32767, max = 32767)
-    public int maxZ = 0;
+    @FloatingNumberProperty(min = -32767, max = 32767)
+    public float maxZ = 0;
 
     public RenderableObject(OverlayModule module, IArguments arguments) throws LuaException {
         super(module, arguments);
@@ -71,46 +71,46 @@ public class RenderableObject extends OverlayObject {
     }
 
     @LuaFunction
-    public final void setMaxX(int maxX) {
+    public final void setMaxX(float maxX) {
         this.maxX = maxX;
         getModule().update(this);
     }
 
     @LuaFunction
-    public final int getMaxX() {
+    public final float getMaxX() {
         return maxX;
     }
 
     @LuaFunction
-    public final void setMaxY(int maxY) {
+    public final void setMaxY(float maxY) {
         this.maxY = maxY;
         getModule().update(this);
     }
 
     @LuaFunction
-    public final int getMaxY() {
+    public final float getMaxY() {
         return maxY;
     }
 
     @LuaFunction
-    public final void setMaxZ(int maxZ) {
+    public final void setMaxZ(float maxZ) {
         this.maxZ = maxZ;
         getModule().update(this);
     }
 
     @LuaFunction
-    public final int getMaxZ() {
+    public final float getMaxZ() {
         return maxZ;
     }
 
     @LuaFunction
-    public final void setX(int x) {
+    public final void setX(float x) {
         this.x = x;
         getModule().update(this);
     }
 
     @LuaFunction
-    public final int getX() {
+    public final float getX() {
         return x;
     }
 
@@ -121,18 +121,18 @@ public class RenderableObject extends OverlayObject {
     }
 
     @LuaFunction
-    public final int getY() {
+    public final float getY() {
         return y;
     }
 
     @LuaFunction
-    public final void setZ(int z) {
+    public final void setZ(float z) {
         this.z = z;
         getModule().update(this);
     }
 
     @LuaFunction
-    public final int getZ() {
+    public final float getZ() {
         return z;
     }
 
@@ -142,12 +142,12 @@ public class RenderableObject extends OverlayObject {
         buffer.writeInt(color);
         buffer.writeFloat(opacity);
 
-        buffer.writeInt(x);
-        buffer.writeInt(y);
-        buffer.writeInt(z);
-        buffer.writeInt(maxX);
-        buffer.writeInt(maxY);
-        buffer.writeInt(maxZ);
+        buffer.writeFloat(x);
+        buffer.writeFloat(y);
+        buffer.writeFloat(z);
+        buffer.writeFloat(maxX);
+        buffer.writeFloat(maxY);
+        buffer.writeFloat(maxZ);
     }
 
     public IObjectRenderer getRenderObject() {

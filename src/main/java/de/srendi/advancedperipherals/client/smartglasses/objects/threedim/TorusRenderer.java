@@ -7,15 +7,15 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import de.srendi.advancedperipherals.client.RenderUtil;
-import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects.three_dim.BoxObject;
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects.three_dim.ThreeDimensionalObject;
+import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects.three_dim.TorusObject;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 
 import java.util.List;
 
-public class BoxRenderer implements IThreeDObjectRenderer {
+public class TorusRenderer implements IThreeDObjectRenderer {
 
     @Override
     public void renderBatch(List<ThreeDimensionalObject> batch, RenderLevelStageEvent event, PoseStack poseStack, Vec3 view, BufferBuilder bufferBuilder) {
@@ -26,16 +26,16 @@ public class BoxRenderer implements IThreeDObjectRenderer {
             onPreRender(obj);
             bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_NORMAL);
 
-            BoxObject box = (BoxObject) obj;
+            TorusObject torus = (TorusObject) obj;
 
             RenderSystem.setShader(GameRenderer::getPositionColorShader);
-            float alpha = box.opacity;
-            float red = RenderUtil.getRed(box.color);
-            float green = RenderUtil.getGreen(box.color);
-            float blue = RenderUtil.getBlue(box.color);
+            float alpha = torus.opacity;
+            float red = RenderUtil.getRed(torus.color);
+            float green = RenderUtil.getGreen(torus.color);
+            float blue = RenderUtil.getBlue(torus.color);
 
-            poseStack.translate(-view.x + box.getX(), -view.y + box.getY(), -view.z + box.getZ());
-            RenderUtil.drawBox(poseStack, bufferBuilder, red, green, blue, alpha, box.x, box.y, box.z, obj.xRot, obj.yRot, obj.zRot, obj.getMaxX(), obj.getMaxY(), obj.getMaxX());
+            poseStack.translate(-view.x + torus.x, -view.y + torus.y, -view.z + torus.z);
+            RenderUtil.drawTorus(poseStack, bufferBuilder, torus.majorRadius, torus.minorRadius, 0, 0, 0, torus.xRot, torus.yRot, torus.zRot, red, green, blue, alpha, torus.rings, torus.sides);
             BufferUploader.drawWithShader(bufferBuilder.end());
             onPostRender(obj);
 

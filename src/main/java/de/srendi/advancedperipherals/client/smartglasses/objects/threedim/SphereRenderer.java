@@ -21,23 +21,23 @@ public class SphereRenderer implements IThreeDObjectRenderer {
     public void renderBatch(List<ThreeDimensionalObject> batch, RenderLevelStageEvent event, PoseStack poseStack, Vec3 view, BufferBuilder bufferBuilder) {
         poseStack.pushPose();
 
-        for (ThreeDimensionalObject renderableObject : batch) {
+        for (ThreeDimensionalObject obj : batch) {
             poseStack.pushPose();
-            onPreRender(renderableObject);
+            onPreRender(obj);
             bufferBuilder.begin(VertexFormat.Mode.TRIANGLES, DefaultVertexFormat.POSITION_COLOR_NORMAL);
 
-            SphereObject sphere = (SphereObject) renderableObject;
+            SphereObject sphere = (SphereObject) obj;
 
             RenderSystem.setShader(GameRenderer::getPositionColorShader);
-            float alpha = renderableObject.opacity;
-            float red = (float) (renderableObject.color >> 16 & 255) / 255.0F;
-            float green = (float) (renderableObject.color >> 8 & 255) / 255.0F;
-            float blue = (float) (renderableObject.color & 255) / 255.0F;
+            float alpha = sphere.opacity;
+            float red = RenderUtil.getRed(sphere.color);
+            float green = RenderUtil.getRed(sphere.color);
+            float blue = RenderUtil.getRed(sphere.color);
 
-            poseStack.translate(-view.x + renderableObject.getX(), -view.y + renderableObject.getY(), -view.z + renderableObject.getZ());
-            RenderUtil.drawSphere(poseStack, bufferBuilder, 1f, 0f, 0f, 0f, red, green, blue, alpha, sphere.sectors, sphere.stacks);
+            poseStack.translate(-view.x, -view.y, -view.z);
+            RenderUtil.drawSphere(poseStack, bufferBuilder, sphere.radius, sphere.x, sphere.y, sphere.z, sphere.xRot, sphere.yRot, sphere.zRot, red, green, blue, alpha, sphere.sectors, sphere.stacks);
             BufferUploader.drawWithShader(bufferBuilder.end());
-            onPostRender(renderableObject);
+            onPostRender(obj);
 
             poseStack.popPose();
         }

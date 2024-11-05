@@ -5,7 +5,7 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.LuaFunction;
 import de.srendi.advancedperipherals.AdvancedPeripherals;
 import de.srendi.advancedperipherals.client.smartglasses.objects.IObjectRenderer;
-import de.srendi.advancedperipherals.client.smartglasses.objects.threedim.SphereRenderer;
+import de.srendi.advancedperipherals.client.smartglasses.objects.threedim.TorusRenderer;
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.OverlayModule;
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.propertytypes.FixedPointNumberProperty;
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.propertytypes.FloatingNumberProperty;
@@ -13,72 +13,87 @@ import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.UUID;
 
-public class SphereObject extends ThreeDimensionalObject {
-    public static final int TYPE_ID = 6;
+public class TorusObject extends ThreeDimensionalObject {
+    public static final int TYPE_ID = 7;
 
-    private final IObjectRenderer renderer = new SphereRenderer();
-
-    @FixedPointNumberProperty(min = 1, max = 1024)
-    public int sectors = 16;
+    private final IObjectRenderer renderer = new TorusRenderer();
 
     @FixedPointNumberProperty(min = 1, max = 1024)
-    public int stacks = 16;
+    public int sides = 32;
+
+    @FixedPointNumberProperty(min = 1, max = 1024)
+    public int rings = 16;
 
     @FloatingNumberProperty(min = 0.001f, max = 128)
-    public float radius = 1;
+    public float minorRadius = 0.1f;
 
-    public SphereObject(OverlayModule module, IArguments arguments) throws LuaException {
+    @FloatingNumberProperty(min = 0.001f, max = 128)
+    public float majorRadius = 0.5f;
+
+    public TorusObject(OverlayModule module, IArguments arguments) throws LuaException {
         super(module, arguments);
         reflectivelyMapProperties(arguments);
     }
 
-    public SphereObject(UUID player) {
+    public TorusObject(UUID player) {
         super(player);
     }
 
     @LuaFunction
-    public final void setRadius(float radius) {
-        this.radius = radius;
+    public final void setMinorRadius(float radius) {
+        this.minorRadius = radius;
         getModule().update(this);
     }
 
     @LuaFunction
-    public final float getRadius() {
-        return radius;
+    public final float getMinorRadius() {
+        return minorRadius;
     }
 
     @LuaFunction
-    public final void setSectors(int sectors) {
-        this.sectors = sectors;
+    public final void setMajorRadius(float radius) {
+        this.majorRadius = radius;
         getModule().update(this);
     }
 
     @LuaFunction
-    public final int getSectors() {
-        return sectors;
+    public final float getMajorRadius() {
+        return majorRadius;
     }
 
     @LuaFunction
-    public final void setStacks(int stacks) {
-        this.stacks = stacks;
+    public final void setSides(int sides) {
+        this.sides = sides;
         getModule().update(this);
     }
 
     @LuaFunction
-    public final int getStacks() {
-        return stacks;
+    public final int getSides() {
+        return sides;
+    }
+
+    @LuaFunction
+    public final void setRings(int rings) {
+        this.rings = rings;
+        getModule().update(this);
+    }
+
+    @LuaFunction
+    public final int getRings() {
+        return rings;
     }
 
     @Override
     public void encode(FriendlyByteBuf buffer) {
         buffer.writeInt(TYPE_ID);
         super.encode(buffer);
-        buffer.writeInt(sectors);
-        buffer.writeInt(stacks);
-        buffer.writeFloat(radius);
+        buffer.writeInt(sides);
+        buffer.writeInt(rings);
+        buffer.writeFloat(minorRadius);
+        buffer.writeFloat(majorRadius);
     }
 
-    public static SphereObject decode(FriendlyByteBuf buffer) {
+    public static TorusObject decode(FriendlyByteBuf buffer) {
         int objectId = buffer.readInt();
         boolean hasValidUUID = buffer.readBoolean();
         if (!hasValidUUID) {
@@ -95,6 +110,7 @@ public class SphereObject extends ThreeDimensionalObject {
         float maxX = buffer.readFloat();
         float maxY = buffer.readFloat();
         float maxZ = buffer.readFloat();
+
         boolean disableDepthTest = buffer.readBoolean();
         boolean disableCulling = buffer.readBoolean();
         float xRot = buffer.readFloat();
@@ -103,9 +119,10 @@ public class SphereObject extends ThreeDimensionalObject {
 
         int sectors = buffer.readInt();
         int stacks = buffer.readInt();
-        float radius = buffer.readFloat();
+        float minorRadius = buffer.readFloat();
+        float majorRadius = buffer.readFloat();
 
-        SphereObject clientObject = new SphereObject(player);
+        TorusObject clientObject = new TorusObject(player);
         clientObject.setId(objectId);
         clientObject.color = color;
         clientObject.opacity = opacity;
@@ -120,9 +137,10 @@ public class SphereObject extends ThreeDimensionalObject {
         clientObject.xRot = xRot;
         clientObject.yRot = yRot;
         clientObject.zRot = zRot;
-        clientObject.sectors = sectors;
-        clientObject.stacks = stacks;
-        clientObject.radius = radius;
+        clientObject.sides = sectors;
+        clientObject.rings = stacks;
+        clientObject.minorRadius = minorRadius;
+        clientObject.majorRadius = majorRadius;
 
         return clientObject;
     }

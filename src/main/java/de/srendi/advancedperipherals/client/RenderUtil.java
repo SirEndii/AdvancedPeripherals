@@ -4,33 +4,18 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
+import com.mojang.math.Quaternion;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.phys.shapes.VoxelShape;
-
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class RenderUtil {
 
-    public static void drawBox(PoseStack stack, VertexConsumer buffer, float r, float g, float b, float a, float sX, float sY, float sZ) {
-        drawBox(stack, buffer, r, g, b, a, 0, 0, 0, sX, sY, sZ);
-    }
-
-    public static void drawVoxelShape(PoseStack stack, VertexConsumer buffer, float r, float g, float b, float a, VoxelShape shape) {
-        drawVoxelShape(stack, buffer, shape, 0f, 0f, 0f, r, g, b, a);
-    }
-
-    public static void drawBox(PoseStack stack, VertexConsumer buffer, float r, float g, float b, float a, float pX, float pY, float pZ, float sX, float sY, float sZ) {
-        stack.pushPose();
+    public static void drawBox(PoseStack poseStack, VertexConsumer buffer, float r, float g, float b, float a, float pX, float pY, float pZ, float xRot, float yRot, float zRot, float sX, float sY, float sZ) {
+        poseStack.pushPose();
         sX = sX / 16; //Sizes in pixels please
         sY = sY / 16;
         sZ = sZ / 16;
@@ -38,25 +23,27 @@ public class RenderUtil {
         pY = pY / 16;
         pZ = pZ / 16;
 
-        drawPlane(stack, buffer, r, g, b, a, Direction.UP, pX, pY, pZ, sX, sY, sZ);
-        drawPlane(stack, buffer, r, g, b, a, Direction.DOWN, pX, pY, pZ, sX, sY, sZ);
-        drawPlane(stack, buffer, r, g, b, a, Direction.EAST, pX, pY, pZ, sX, sY, sZ);
-        drawPlane(stack, buffer, r, g, b, a, Direction.WEST, pX, pY, pZ, sX, sY, sZ);
-        drawPlane(stack, buffer, r, g, b, a, Direction.NORTH, pX, pY, pZ, sX, sY, sZ);
-        drawPlane(stack, buffer, r, g, b, a, Direction.SOUTH, pX, pY, pZ, sX, sY, sZ);
-        stack.popPose();
+        poseStack.mulPose(new Quaternion(xRot, yRot, zRot, true));
+
+        drawPlane(poseStack, buffer, r, g, b, a, Direction.UP, pX, pY, pZ, sX, sY, sZ);
+        drawPlane(poseStack, buffer, r, g, b, a, Direction.DOWN, pX, pY, pZ, sX, sY, sZ);
+        drawPlane(poseStack, buffer, r, g, b, a, Direction.EAST, pX, pY, pZ, sX, sY, sZ);
+        drawPlane(poseStack, buffer, r, g, b, a, Direction.WEST, pX, pY, pZ, sX, sY, sZ);
+        drawPlane(poseStack, buffer, r, g, b, a, Direction.NORTH, pX, pY, pZ, sX, sY, sZ);
+        drawPlane(poseStack, buffer, r, g, b, a, Direction.SOUTH, pX, pY, pZ, sX, sY, sZ);
+        poseStack.popPose();
     }
 
-    public static void drawPlane(PoseStack stack, VertexConsumer buffer, float r, float g, float b, float a, Direction perspective, float pX, float pY, float pZ, float sX, float sY, float sZ) {
-        stack.pushPose();
+    public static void drawPlane(PoseStack posestack, VertexConsumer buffer, float r, float g, float b, float a, Direction perspective, float pX, float pY, float pZ, float sX, float sY, float sZ) {
+        posestack.pushPose();
 
         pX = pX + 0.5f;
         pY = pY + 0.5f;
         pZ = pZ + 0.5f;
 
-        stack.translate(pX, pY, pZ);
-        
-        Matrix4f matrix4f = stack.last().pose();
+        posestack.translate(pX, pY, pZ);
+
+        Matrix4f matrix4f = posestack.last().pose();
 
         sX = sX / 2;
         sY = sY / 2;
@@ -99,14 +86,96 @@ public class RenderUtil {
             buffer.vertex(matrix4f, sX, sY, sZ).color(r, g, b, a).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xF000F0).normal(0f, 1f, 0f).endVertex();
             buffer.vertex(matrix4f, -sX, sY, sZ).color(r, g, b, a).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xF000F0).normal(0f, 1f, 0f).endVertex();
         }
-        stack.popPose();
+        posestack.popPose();
     }
 
-    public static void drawSphere(PoseStack poseStack, BufferBuilder consumer, float radius, double pX, double pY, double pZ, float r, float g, float b, float a, int sectors, int stacks) {
+    public static void drawTorus(PoseStack poseStack, BufferBuilder consumer, float majorRadius, float minorRadius, double pX, double pY, double pZ, float xRot, float yRot, float zRot, float r, float g, float b, float a, int sides, int rings) {
         poseStack.pushPose();
-
         poseStack.translate(pX, pY, pZ);
-        
+        poseStack.mulPose(new Quaternion(xRot, yRot, zRot, true));
+
+        Matrix4f matrix4f = poseStack.last().pose();
+
+        float x, y, z;
+        float nx, ny, nz; // vertex normal
+
+        float ringStep = (float) (2 * Math.PI / rings);
+        float sideStep = (float) (2 * Math.PI / sides);
+        float ringAngle, sideAngle;
+
+        // Start drawing quads
+        for (int i = 0; i < rings; ++i) {
+            ringAngle = i * ringStep;
+            float cosRingAngle = (float) Math.cos(ringAngle);
+            float sinRingAngle = (float) Math.sin(ringAngle);
+
+            float nextRingAngle = (i + 1) * ringStep;
+            float nextCosRingAngle = (float) Math.cos(nextRingAngle);
+            float nextSinRingAngle = (float) Math.sin(nextRingAngle);
+
+            // Calculate the center point of the minor circles
+            float centerX = majorRadius * cosRingAngle;
+            float centerY = majorRadius * sinRingAngle;
+            float nextCenterX = majorRadius * nextCosRingAngle;
+            float nextCenterY = majorRadius * nextSinRingAngle;
+
+            for (int j = 0; j < sides; ++j) {
+                sideAngle = j * sideStep;
+                float cosSideAngle = (float) Math.cos(sideAngle);
+                float sinSideAngle = (float) Math.sin(sideAngle);
+
+                float nextSideAngle = (j + 1) * sideStep;
+                float nextCosSideAngle = (float) Math.cos(nextSideAngle);
+                float nextSinSideAngle = (float) Math.sin(nextSideAngle);
+
+                // Calculate vertex positions
+                x = centerX + minorRadius * cosSideAngle * cosRingAngle;
+                y = centerY + minorRadius * cosSideAngle * sinRingAngle;
+                z = minorRadius * sinSideAngle;
+
+                // Calculate normal (simplified - for smooth shading, average normals of adjacent faces)
+                nx = x - centerX;
+                ny = y - centerY;
+                nz = z;
+                consumer.vertex(matrix4f, x, y, z).color(r, g, b, a).overlayCoords(OverlayTexture.WHITE_OVERLAY_V).uv(0, 0).uv2(0xFFFFFF).normal(nx, ny, nz).endVertex();
+
+                x = centerX + minorRadius * nextCosSideAngle * cosRingAngle;
+                y = centerY + minorRadius * nextCosSideAngle * sinRingAngle;
+                z = minorRadius * nextSinSideAngle;
+
+                nx = x - centerX;
+                ny = y - centerY;
+                nz = z;
+                consumer.vertex(matrix4f, x, y, z).color(r, g, b, a).overlayCoords(OverlayTexture.WHITE_OVERLAY_V).uv(1, 0).uv2(0xFFF0F0).normal(nx, ny, nz).endVertex();
+
+                x = nextCenterX + minorRadius * nextCosSideAngle * nextCosRingAngle;
+                y = nextCenterY + minorRadius * nextCosSideAngle * nextSinRingAngle;
+                z = minorRadius * nextSinSideAngle;
+
+                nx = x - nextCenterX;
+                ny = y - nextCenterY;
+                nz = z;
+                consumer.vertex(matrix4f, x, y, z).color(r, g, b, a).overlayCoords(OverlayTexture.WHITE_OVERLAY_V).uv(0, 1).uv2(0xFFFFFF).normal(nx, ny, nz).endVertex();
+
+                x = nextCenterX + minorRadius * cosSideAngle * nextCosRingAngle;
+                y = nextCenterY + minorRadius * cosSideAngle * nextSinRingAngle;
+                z = minorRadius * sinSideAngle;
+
+                nx = x - nextCenterX;
+                ny = y - nextCenterY;
+                nz = z;
+                consumer.vertex(matrix4f, x, y, z).color(r, g, b, a).overlayCoords(OverlayTexture.RED_OVERLAY_V).uv(1, 1).uv2(0xF000F0).normal(nx, ny, nz).endVertex();
+            }
+        }
+
+        poseStack.popPose();
+    }
+
+    public static void drawSphere(PoseStack poseStack, BufferBuilder consumer, float radius, double pX, double pY, double pZ, float xRot, float yRot, float zRot, float r, float g, float b, float a, int sectors, int stacks) {
+        poseStack.pushPose();
+        poseStack.translate(pX, pY, pZ);
+        poseStack.mulPose(new Quaternion(xRot, yRot, zRot, true));
+
         Matrix4f matrix4f = poseStack.last().pose();
 
         float z, xy;
@@ -172,61 +241,8 @@ public class RenderUtil {
 
     }
 
-    public static void drawVoxelShape(PoseStack pPoseStack, VertexConsumer pConsumer, VoxelShape pShape, double pX, double pY, double pZ, float r, float g, float b, float a) {
-        for (Direction direction : Direction.values()) {
-            pShape.calculateFace(direction).forAllBoxes((minX, minY, minZ, maxX, maxY, maxZ) -> {
-                // Get the vertices for the face
-                float x1 = (float) (minX);
-                float y1 = (float) (minY);
-                float z1 = (float) (minZ);
-                float x2 = (float) (maxX);
-                float y2 = (float) (maxY);
-                float z2 = (float) (maxZ);
-
-                // Calculate the normal for the face
-                Vec3i normalVec = direction.getNormal();
-                float nx = normalVec.getX();
-                float ny = normalVec.getY();
-                float nz = normalVec.getZ();
-
-                PoseStack.Pose pose = pPoseStack.last();
-
-                //drawPlane(pPoseStack, pConsumer, r,g,b,a, direction, x1, y1, z1, x2, y2, z2);
-                // Draw the quad (two triangles)
-                pConsumer.vertex(pose.pose(), x1, y1, z1).color(r, g, b, a).normal(pose.normal(), nx, ny, nz).endVertex();
-                pConsumer.vertex(pose.pose(), x2, y1, z1).color(r, g, b, a).normal(pose.normal(), nx, ny, nz).endVertex();
-                pConsumer.vertex(pose.pose(), x2, y2, z2).color(r, g, b, a).normal(pose.normal(), nx, ny, nz).endVertex();
-                pConsumer.vertex(pose.pose(), x1, y2, z2).color(r, g, b, a).normal(pose.normal(), nx, ny, nz).endVertex();
-            });
-        }
-
-    }
-
-    public static void drawShape(PoseStack pPoseStack, VertexConsumer pConsumer, VoxelShape pShape, double pX, double pY, double pZ, float r, float g, float b, float a) {
-        PoseStack.Pose pose = pPoseStack.last();
-        pShape.forAllEdges((minX, minY, minZ, maxX, maxY, maxZ) -> {
-            float f = (float) (maxX - minX);
-            float f1 = (float) (maxY - minY);
-            float f2 = (float) (maxZ - minZ);
-            float f3 = Mth.sqrt(f * f + f1 * f1 + f2 * f2);
-            f /= f3;
-            f1 /= f3;
-            f2 /= f3;
-            pConsumer.vertex(pose.pose(), (float) (minX), (float) (minY), (float) (minZ)).color(r, g, b, a).normal(pose.normal(), f, f1, f2).endVertex();
-            pConsumer.vertex(pose.pose(), (float) (maxX), (float) (maxY), (float) (maxZ)).color(r, g, b, a).normal(pose.normal(), f, f1, f2).endVertex();
-        });
-    }
-
-    public static void drawBox(PoseStack stack, VertexConsumer buffer, ResourceLocation texture, float sX, float sY, float sZ, float pUOffset, float pVOffset, float pWidth, float pHeight) {
-        drawBox(stack, buffer, texture, 0, 0, 0, sX, sY, sZ, pUOffset, pVOffset, pWidth, pHeight);
-    }
-
-    public static void drawVoxelShape(PoseStack stack, VertexConsumer buffer, ResourceLocation texture, VoxelShape shape, float pUOffset, float pVOffset, float pWidth, float pHeight) {
-        renderVoxelShape(stack, buffer, texture, shape, pUOffset, pVOffset, pWidth, pHeight);
-    }
-
-    public static void drawBox(PoseStack stack, VertexConsumer buffer, ResourceLocation texture, float pX, float pY, float pZ, float sX, float sY, float sZ, float pUOffset, float pVOffset, float pWidth, float pHeight) {
-        stack.pushPose();
+    public static void drawBox(PoseStack poseStack, VertexConsumer buffer, ResourceLocation texture, float pX, float pY, float pZ, float xRot, float yRot, float zRot, float sX, float sY, float sZ, float pUOffset, float pVOffset, float pWidth, float pHeight) {
+        poseStack.pushPose();
         sX = sX / 16; //Sizes in pixels please
         sY = sY / 16;
         sZ = sZ / 16;
@@ -234,25 +250,27 @@ public class RenderUtil {
         pY = pY / 16;
         pZ = pZ / 16;
 
-        drawPlane(stack, buffer, texture, Direction.UP, pX, pY, pZ, sX, sY, sZ, pUOffset, pVOffset, pWidth, pHeight);
-        drawPlane(stack, buffer, texture, Direction.DOWN, pX, pY, pZ, sX, sY, sZ, pUOffset, pVOffset, pWidth, pHeight);
-        drawPlane(stack, buffer, texture, Direction.EAST, pX, pY, pZ, sX, sY, sZ, pUOffset, pVOffset, pWidth, pHeight);
-        drawPlane(stack, buffer, texture, Direction.WEST, pX, pY, pZ, sX, sY, sZ, pUOffset, pVOffset, pWidth, pHeight);
-        drawPlane(stack, buffer, texture, Direction.NORTH, pX, pY, pZ, sX, sY, sZ, pUOffset, pVOffset, pWidth, pHeight);
-        drawPlane(stack, buffer, texture, Direction.SOUTH, pX, pY, pZ, sX, sY, sZ, pUOffset, pVOffset, pWidth, pHeight);
-        stack.popPose();
+        poseStack.mulPose(new Quaternion(xRot, yRot, zRot, true));
+
+        drawPlane(poseStack, buffer, texture, Direction.UP, pX, pY, pZ, sX, sY, sZ, pUOffset, pVOffset, pWidth, pHeight);
+        drawPlane(poseStack, buffer, texture, Direction.DOWN, pX, pY, pZ, sX, sY, sZ, pUOffset, pVOffset, pWidth, pHeight);
+        drawPlane(poseStack, buffer, texture, Direction.EAST, pX, pY, pZ, sX, sY, sZ, pUOffset, pVOffset, pWidth, pHeight);
+        drawPlane(poseStack, buffer, texture, Direction.WEST, pX, pY, pZ, sX, sY, sZ, pUOffset, pVOffset, pWidth, pHeight);
+        drawPlane(poseStack, buffer, texture, Direction.NORTH, pX, pY, pZ, sX, sY, sZ, pUOffset, pVOffset, pWidth, pHeight);
+        drawPlane(poseStack, buffer, texture, Direction.SOUTH, pX, pY, pZ, sX, sY, sZ, pUOffset, pVOffset, pWidth, pHeight);
+        poseStack.popPose();
     }
 
-    public static void drawPlane(PoseStack stack, VertexConsumer buffer, ResourceLocation texture, Direction perspective, float pX, float pY, float pZ, float sX, float sY, float sZ, float pUOffset, float pVOffset, float pWidth, float pHeight) {
-        stack.pushPose();
+    public static void drawPlane(PoseStack poseStack, VertexConsumer buffer, ResourceLocation texture, Direction perspective, float pX, float pY, float pZ, float sX, float sY, float sZ, float pUOffset, float pVOffset, float pWidth, float pHeight) {
+        poseStack.pushPose();
 
         pX = pX + 0.5f;
         pY = pY + 0.5f;
         pZ = pZ + 0.5f;
 
-        stack.translate(pX, pY, pZ);
+        poseStack.translate(pX, pY, pZ);
 
-        Matrix4f matrix4f = stack.last().pose();
+        Matrix4f matrix4f = poseStack.last().pose();
 
         TextureAtlasSprite stillTexture = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(texture);
 
@@ -301,33 +319,7 @@ public class RenderUtil {
             buffer.vertex(matrix4f, sX, sY, sZ).color(1, 1, 1, 1f).uv(u2, v1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xF000F0).normal(0f, 1f, 0f).endVertex();
             buffer.vertex(matrix4f, -sX, sY, sZ).color(1, 1, 1, 1f).uv(u2, v2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xF000F0).normal(0f, 1f, 0f).endVertex();
         }
-        stack.popPose();
-    }
-
-    public static void renderVoxelShape(PoseStack poseStack, VertexConsumer consumer, ResourceLocation texture, VoxelShape shape, float pUOffset, float pVOffset, float pWidth, float pHeight) {
-        List<AABB> list = shape.toAabbs();
-
-        for (AABB aabb : list) {
-            drawShape(poseStack, consumer, texture, Shapes.create(aabb), pUOffset, pVOffset, pWidth, pHeight);
-        }
-    }
-
-    private static void drawShape(PoseStack poseStack, VertexConsumer consumer, ResourceLocation texture, VoxelShape shape, float pUOffset, float pVOffset, float pWidth, float pHeight) {
-        AtomicInteger perspective = new AtomicInteger();
-        shape.forAllEdges((minX, minY, minZ, maxX, maxY, maxZ) -> {
-
-            minX = minX / 16;
-            minY = minY / 16;
-            minZ = minZ / 16;
-            maxX = maxX / 16;
-            maxY = maxY / 16;
-            maxZ = maxZ / 16;
-
-            if (perspective.get() > 5)
-                perspective.set(0);
-            drawPlane(poseStack, consumer, texture, Direction.values()[perspective.getAndIncrement()], (float) minX, (float) minY, (float) minZ, (float) maxX, (float) maxY, (float) maxZ, pUOffset, pVOffset, pWidth, pHeight);
-        });
-        perspective.set(0);
+        poseStack.popPose();
     }
 
     public static float getBlue(int hex) {
@@ -340,10 +332,6 @@ public class RenderUtil {
 
     public static float getRed(int hex) {
         return (hex >> 16 & 0xFF) / 255.0F;
-    }
-
-    public static float getAlpha(int hex) {
-        return (hex >> 24 & 0xFF) / 255.0F;
     }
 
 }

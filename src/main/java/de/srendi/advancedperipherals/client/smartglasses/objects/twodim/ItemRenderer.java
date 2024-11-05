@@ -18,11 +18,11 @@ public class ItemRenderer implements ITwoDObjectRenderer {
     public void renderBatch(List<RenderableObject> objects, ForgeGui gui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight) {
         Minecraft minecraft = Minecraft.getInstance();
 
-        for (RenderableObject object : objects) {
-            Item renderItem = RegistryUtil.getRegistryEntry(((ItemObject) object).item, ForgeRegistries.ITEMS);
+        for (RenderableObject obj : objects) {
+            Item renderItem = RegistryUtil.getRegistryEntry(((ItemObject) obj).item, ForgeRegistries.ITEMS);
             if (renderItem == null)
                 continue;
-            minecraft.getItemRenderer().renderGuiItem(new ItemStack(renderItem), object.x, object.y);
+            minecraft.getItemRenderer().renderGuiItem(new ItemStack(renderItem), (int) obj.x, (int) obj.y);
         }
 
     }

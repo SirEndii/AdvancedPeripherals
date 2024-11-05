@@ -4,6 +4,7 @@ import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.ObjectD
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects.three_dim.BlockObject;
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects.three_dim.BoxObject;
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects.three_dim.SphereObject;
+import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects.three_dim.TorusObject;
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects.two_dim.CircleObject;
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects.two_dim.ItemObject;
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects.two_dim.RectangleObject;
@@ -52,5 +53,6 @@ public class OverlayObjectHolder {
         ObjectDecodeRegistry.register(BoxObject.TYPE_ID, BoxObject::decode);
         ObjectDecodeRegistry.register(BlockObject.TYPE_ID, BlockObject::decode);
         ObjectDecodeRegistry.register(SphereObject.TYPE_ID, SphereObject::decode);
+        ObjectDecodeRegistry.register(TorusObject.TYPE_ID, TorusObject::decode);
     }
 }

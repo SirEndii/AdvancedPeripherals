@@ -41,15 +41,17 @@ public class BoxObject extends ThreeDimensionalObject {
         int color = buffer.readInt();
         float opacity = buffer.readFloat();
 
-        int x = buffer.readInt();
-        int y = buffer.readInt();
-        int z = buffer.readInt();
-        int maxX = buffer.readInt();
-        int maxY = buffer.readInt();
-        int maxZ = buffer.readInt();
-
+        float x = buffer.readFloat();
+        float y = buffer.readFloat();
+        float z = buffer.readFloat();
+        float maxX = buffer.readFloat();
+        float maxY = buffer.readFloat();
+        float maxZ = buffer.readFloat();
         boolean disableDepthTest = buffer.readBoolean();
         boolean disableCulling = buffer.readBoolean();
+        float xRot = buffer.readFloat();
+        float yRot = buffer.readFloat();
+        float zRot = buffer.readFloat();
 
         BoxObject clientObject = new BoxObject(player);
         clientObject.setId(objectId);
@@ -63,6 +65,9 @@ public class BoxObject extends ThreeDimensionalObject {
         clientObject.maxZ = maxZ;
         clientObject.disableDepthTest = disableDepthTest;
         clientObject.disableCulling = disableCulling;
+        clientObject.xRot = xRot;
+        clientObject.yRot = yRot;
+        clientObject.zRot = zRot;
 
         return clientObject;
     }

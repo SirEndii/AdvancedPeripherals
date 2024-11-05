@@ -40,7 +40,6 @@ public class BlockObject extends ThreeDimensionalObject {
         return block;
     }
 
-
     @Override
     public void encode(FriendlyByteBuf buffer) {
         buffer.writeInt(TYPE_ID);
@@ -59,15 +58,17 @@ public class BlockObject extends ThreeDimensionalObject {
         int color = buffer.readInt();
         float opacity = buffer.readFloat();
 
-        int x = buffer.readInt();
-        int y = buffer.readInt();
-        int z = buffer.readInt();
-        int maxX = buffer.readInt();
-        int maxY = buffer.readInt();
-        int maxZ = buffer.readInt();
-
+        float x = buffer.readFloat();
+        float y = buffer.readFloat();
+        float z = buffer.readFloat();
+        float maxX = buffer.readFloat();
+        float maxY = buffer.readFloat();
+        float maxZ = buffer.readFloat();
         boolean disableDepthTest = buffer.readBoolean();
         boolean disableCulling = buffer.readBoolean();
+        float xRot = buffer.readFloat();
+        float yRot = buffer.readFloat();
+        float zRot = buffer.readFloat();
 
         String block = buffer.readUtf();
 
@@ -83,6 +84,9 @@ public class BlockObject extends ThreeDimensionalObject {
         clientObject.maxZ = maxZ;
         clientObject.disableDepthTest = disableDepthTest;
         clientObject.disableCulling = disableCulling;
+        clientObject.xRot = xRot;
+        clientObject.yRot = yRot;
+        clientObject.zRot = zRot;
         clientObject.block = block;
 
         return clientObject;
