@@ -71,63 +71,63 @@ public class RenderableObject extends OverlayObject {
     }
 
     @LuaFunction
-    public final void setMaxX(float maxX) {
-        this.maxX = maxX;
+    public final void setMaxX(double maxX) {
+        this.maxX = (float) maxX;
         getModule().update(this);
     }
 
     @LuaFunction
-    public final float getMaxX() {
+    public final double getMaxX() {
         return maxX;
     }
 
     @LuaFunction
-    public final void setMaxY(float maxY) {
-        this.maxY = maxY;
+    public final void setMaxY(double maxY) {
+        this.maxY = (float) maxY;
         getModule().update(this);
     }
 
     @LuaFunction
-    public final float getMaxY() {
+    public final double getMaxY() {
         return maxY;
     }
 
     @LuaFunction
-    public final void setMaxZ(float maxZ) {
-        this.maxZ = maxZ;
+    public final void setMaxZ(double maxZ) {
+        this.maxZ = (float) maxZ;
         getModule().update(this);
     }
 
     @LuaFunction
-    public final float getMaxZ() {
+    public final double getMaxZ() {
         return maxZ;
     }
 
     @LuaFunction
-    public final void setX(float x) {
-        this.x = x;
+    public final void setX(double x) {
+        this.x = (float) x;
         getModule().update(this);
     }
 
     @LuaFunction
-    public final float getX() {
+    public final double getX() {
         return x;
     }
 
     @LuaFunction
-    public final void setY(int y) {
-        this.y = y;
+    public final void setY(double y) {
+        this.y = (float) y;
         getModule().update(this);
     }
 
     @LuaFunction
-    public final float getY() {
+    public final double getY() {
         return y;
     }
 
     @LuaFunction
-    public final void setZ(float z) {
-        this.z = z;
+    public final void setZ(double z) {
+        this.z = (float) z;
         getModule().update(this);
     }
 

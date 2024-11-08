@@ -6,7 +6,7 @@ import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import de.srendi.advancedperipherals.AdvancedPeripherals;
 import de.srendi.advancedperipherals.client.RenderUtil;
 import de.srendi.advancedperipherals.client.smartglasses.objects.threedim.IThreeDObjectRenderer;
@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
@@ -64,7 +65,6 @@ public class OverlayModuleLevelRenderer {
             }
 
             //TODO Everything below here is just for debugging and testing. Will be removed before we push to production
-
             BlockPos blockPos = new BlockPos(2, 10, 0);
 
             float[] colors = EnumColor.DARK_PURPLE.getRgb();
@@ -80,27 +80,33 @@ public class OverlayModuleLevelRenderer {
             BufferUploader.drawWithShader(bufferbuilder.end());
             posestack.popPose();
 
-            bufferbuilder.begin(VertexFormat.Mode.TRIANGLES, DefaultVertexFormat.POSITION_COLOR_NORMAL);
+            VertexConsumer boxVertexConsumer = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.entityCutout(InventoryMenu.BLOCK_ATLAS));
+            //RenderSystem.setShader(GameRenderer::getPositionColorLightmapShader);
+
+            //bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_LIGHTMAP);
             posestack.pushPose();
+            colors = EnumColor.WHITE.getRgb();
 
             blockPos = new BlockPos(0, 10, 0);
             posestack.translate(-view.x + blockPos.getX(), -view.y + blockPos.getY(), -view.z + blockPos.getZ());
 
-            RenderUtil.drawSphere(posestack, bufferbuilder, 0.5f, 0f, 0f, 0f, 90f, 0f, 0f, colors[0], colors[1], colors[2], 0.6f, 128, 48);
+            RenderUtil.drawSphere(posestack, boxVertexConsumer, 2f, 0f, 0f, 0f, 270f, 0f, 0f, colors[0], colors[1], colors[2], 0.4f, 16, 128);
 
-            BufferUploader.drawWithShader(bufferbuilder.end());
+            //BufferUploader.drawWithShader(bufferbuilder.end());
             posestack.popPose();
 
-            bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_NORMAL);
+            boxVertexConsumer = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.entityCutout(InventoryMenu.BLOCK_ATLAS));
+
+            //bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_NORMAL);
             posestack.pushPose();
 
-            colors = EnumColor.DARK_BLUE.getRgb();
+            colors = EnumColor.WHITE.getRgb();
             blockPos = new BlockPos(6, 10, 0);
             posestack.translate(-view.x + blockPos.getX(), -view.y + blockPos.getY(), -view.z + blockPos.getZ());
 
-            RenderUtil.drawTorus(posestack, bufferbuilder, 0.5f, 0.09f, 0f, 0f, 0f, 0f, 0f, 0f, colors[0], colors[1], colors[2], 0.6f, 300, 32);
+            RenderUtil.drawTorus(posestack, boxVertexConsumer, 1f, 0.4f, 0f, 0f, 0f, 0f, 0f, 0f, colors[0], colors[1], colors[2], 1f, 48, 48);
 
-            BufferUploader.drawWithShader(bufferbuilder.end());
+            //BufferUploader.drawWithShader(bufferbuilder.end());
             posestack.popPose();
 
         }

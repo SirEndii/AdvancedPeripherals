@@ -1,6 +1,5 @@
 package de.srendi.advancedperipherals.client;
 
-import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
@@ -11,6 +10,7 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.InventoryMenu;
 
 public class RenderUtil {
 
@@ -89,21 +89,21 @@ public class RenderUtil {
         posestack.popPose();
     }
 
-    public static void drawTorus(PoseStack poseStack, BufferBuilder consumer, float majorRadius, float minorRadius, double pX, double pY, double pZ, float xRot, float yRot, float zRot, float r, float g, float b, float a, int sides, int rings) {
+    public static void drawTorus(PoseStack poseStack, VertexConsumer consumer, float majorRadius, float minorRadius, double pX, double pY, double pZ, float xRot, float yRot, float zRot, float r, float g, float b, float a, int sides, int rings) {
         poseStack.pushPose();
         poseStack.translate(pX, pY, pZ);
         poseStack.mulPose(new Quaternion(xRot, yRot, zRot, true));
 
         Matrix4f matrix4f = poseStack.last().pose();
+        TextureAtlasSprite texture = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(new ResourceLocation("block/crimson_stem"));
 
         float x, y, z;
-        float nx, ny, nz; // vertex normal
+        float nx, ny, nz;
 
         float ringStep = (float) (2 * Math.PI / rings);
         float sideStep = (float) (2 * Math.PI / sides);
         float ringAngle, sideAngle;
 
-        // Start drawing quads
         for (int i = 0; i < rings; ++i) {
             ringAngle = i * ringStep;
             float cosRingAngle = (float) Math.cos(ringAngle);
@@ -128,16 +128,13 @@ public class RenderUtil {
                 float nextCosSideAngle = (float) Math.cos(nextSideAngle);
                 float nextSinSideAngle = (float) Math.sin(nextSideAngle);
 
-                // Calculate vertex positions
-                x = centerX + minorRadius * cosSideAngle * cosRingAngle;
-                y = centerY + minorRadius * cosSideAngle * sinRingAngle;
-                z = minorRadius * sinSideAngle;
+                float s = j / sides;
+                float t = i / rings;
 
-                // Calculate normal (simplified - for smooth shading, average normals of adjacent faces)
-                nx = x - centerX;
-                ny = y - centerY;
-                nz = z;
-                consumer.vertex(matrix4f, x, y, z).color(r, g, b, a).overlayCoords(OverlayTexture.WHITE_OVERLAY_V).uv(0, 0).uv2(0xFFFFFF).normal(nx, ny, nz).endVertex();
+                float u1 = getU(s * sides, texture.getU1(), texture.getU0(), sides);
+                float u2 = getU((s + 1.0f / sides) * sides, texture.getU1(), texture.getU0(), sides);
+                float v1 = getV(t * rings, texture.getV1(), texture.getV0(), rings);
+                float v2 = getV((t + 1.0f / rings) * rings, texture.getV1(), texture.getV0(), rings);
 
                 x = centerX + minorRadius * nextCosSideAngle * cosRingAngle;
                 y = centerY + minorRadius * nextCosSideAngle * sinRingAngle;
@@ -146,16 +143,19 @@ public class RenderUtil {
                 nx = x - centerX;
                 ny = y - centerY;
                 nz = z;
-                consumer.vertex(matrix4f, x, y, z).color(r, g, b, a).overlayCoords(OverlayTexture.WHITE_OVERLAY_V).uv(1, 0).uv2(0xFFF0F0).normal(nx, ny, nz).endVertex();
+                consumer.vertex(matrix4f, x, y, z).color(r, g, b, a).uv(u1, v1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xF000F0).normal(nx, ny, nz).endVertex();
 
-                x = nextCenterX + minorRadius * nextCosSideAngle * nextCosRingAngle;
-                y = nextCenterY + minorRadius * nextCosSideAngle * nextSinRingAngle;
-                z = minorRadius * nextSinSideAngle;
+                // Calculate vertex positions
+                x = centerX + minorRadius * cosSideAngle * cosRingAngle;
+                y = centerY + minorRadius * cosSideAngle * sinRingAngle;
+                z = minorRadius * sinSideAngle;
 
-                nx = x - nextCenterX;
-                ny = y - nextCenterY;
+                // Calculate normal
+                nx = x - centerX;
+                ny = y - centerY;
                 nz = z;
-                consumer.vertex(matrix4f, x, y, z).color(r, g, b, a).overlayCoords(OverlayTexture.WHITE_OVERLAY_V).uv(0, 1).uv2(0xFFFFFF).normal(nx, ny, nz).endVertex();
+
+                consumer.vertex(matrix4f, x, y, z).color(r, g, b, a).uv(u1, v2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xF000F0).normal(nx, ny, nz).endVertex();
 
                 x = nextCenterX + minorRadius * cosSideAngle * nextCosRingAngle;
                 y = nextCenterY + minorRadius * cosSideAngle * nextSinRingAngle;
@@ -164,23 +164,34 @@ public class RenderUtil {
                 nx = x - nextCenterX;
                 ny = y - nextCenterY;
                 nz = z;
-                consumer.vertex(matrix4f, x, y, z).color(r, g, b, a).overlayCoords(OverlayTexture.RED_OVERLAY_V).uv(1, 1).uv2(0xF000F0).normal(nx, ny, nz).endVertex();
+                consumer.vertex(matrix4f, x, y, z).color(r, g, b, a).uv(u2, v2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xF000F0).normal(nx, ny, nz).endVertex();
+
+
+                x = nextCenterX + minorRadius * nextCosSideAngle * nextCosRingAngle;
+                y = nextCenterY + minorRadius * nextCosSideAngle * nextSinRingAngle;
+                z = minorRadius * nextSinSideAngle;
+
+                nx = x - nextCenterX;
+                ny = y - nextCenterY;
+                nz = z;
+                consumer.vertex(matrix4f, x, y, z).color(r, g, b, a).uv(u2, v1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xF000F0).normal(nx, ny, nz).endVertex();
             }
         }
 
         poseStack.popPose();
     }
 
-    public static void drawSphere(PoseStack poseStack, BufferBuilder consumer, float radius, double pX, double pY, double pZ, float xRot, float yRot, float zRot, float r, float g, float b, float a, int sectors, int stacks) {
+    public static void drawSphere(PoseStack poseStack, VertexConsumer consumer, float radius, double pX, double pY, double pZ, float xRot, float yRot, float zRot, float r, float g, float b, float a, int sectors, int stacks) {
         poseStack.pushPose();
         poseStack.translate(pX, pY, pZ);
         poseStack.mulPose(new Quaternion(xRot, yRot, zRot, true));
 
         Matrix4f matrix4f = poseStack.last().pose();
+        TextureAtlasSprite texture = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(new ResourceLocation("block/dirt"));
 
         float z, xy;
         float nx1, ny1, nz1, nx2, ny2, nz2, nx3, ny3, nz3, nx4, ny4, nz4, lengthInv = (1.0f / radius); // vertex normal
-        float s, t; //TODO vertex texCoord
+        float s, t;
 
         float sectorStep = (float) (2 * Math.PI / sectors);
         float stackStep = (float) (Math.PI / stacks);
@@ -226,19 +237,38 @@ public class RenderUtil {
                 ny4 = y4 * lengthInv;
                 nz4 = z4 * lengthInv;
 
-                // Triangle 1
-                consumer.vertex(matrix4f, x1, y1, z).color(r, g, b, a).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xF000F0).normal(nx1, ny1, nz1).endVertex();
-                consumer.vertex(matrix4f, x3, y3, z3).color(r, g, b, a).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xF000F0).normal(nx3, ny3, nz3).endVertex();
-                consumer.vertex(matrix4f, x4, y4, z4).color(r, g, b, a).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xF000F0).normal(nx4, ny4, nz4).endVertex();
+                s = j / sectors;
+                t = i / stacks;
 
-                // Triangle 2
-                consumer.vertex(matrix4f, x1, y1, z).color(r, g, b, a).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xF000F0).normal(nx1, ny1, nz1).endVertex();
-                consumer.vertex(matrix4f, x2, y2, z).color(r, g, b, a).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xF000F0).normal(nx2, ny2, nz2).endVertex();
-                consumer.vertex(matrix4f, x3, y3, z3).color(r, g, b, a).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xF000F0).normal(nx3, ny3, nz3).endVertex();
+                float u1 = getU(s * sectors, texture.getU1(), texture.getU0(), sectors);
+                float u2 = getU((s + 1.0d / sectors) * sectors, texture.getU1(), texture.getU0(), sectors);
+                float v1 = getV(t * stacks, texture.getV1(), texture.getV0(), stacks);
+                float v2 = getV((t + 1.0d / stacks) * stacks, texture.getV1(), texture.getV0(), stacks);
+
+                // For a reason which I am too dumb to understand, the uv coords have a one pixel offset
+                // So... I just reverse it and it works
+                v1 -= (texture.getV1() - texture.getV0()) / stacks;
+                v2 -= (texture.getV1() - texture.getV0()) / stacks;
+
+                consumer.vertex(matrix4f, x1, y1, z).color(r, g, b, a).uv(u1, v1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xF000F0).normal(nx1, ny1, nz1).endVertex();
+                consumer.vertex(matrix4f, x2, y2, z).color(r, g, b, a).uv(u2, v1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xF000F0).normal(nx2, ny2, nz2).endVertex();
+                consumer.vertex(matrix4f, x3, y3, z3).color(r, g, b, a).uv(u2, v2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xF000F0).normal(nx3, ny3, nz3).endVertex();
+                consumer.vertex(matrix4f, x4, y4, z4).color(r, g, b, a).uv(u1, v2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xF000F0).normal(nx4, ny4, nz4).endVertex();
+
             }
         }
         poseStack.popPose();
 
+    }
+
+    private static float getU(double pU, float u1, float u0, float resolution) {
+        float f = u1 - u0;
+        return u0 + f * (float) pU / resolution;
+    }
+
+    private static float getV(double pV, float v1, float v0, float resolution) {
+        float f = v1 - v0;
+        return v0 + f * (float) pV / resolution;
     }
 
     public static void drawBox(PoseStack poseStack, VertexConsumer buffer, ResourceLocation texture, float pX, float pY, float pZ, float xRot, float yRot, float zRot, float sX, float sY, float sZ, float pUOffset, float pVOffset, float pWidth, float pHeight) {
