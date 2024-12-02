@@ -52,11 +52,16 @@ public class InventoryManagerEntity extends PeripheralBlockEntity<InventoryManag
 
     @Override
     public void setItem(int index, @NotNull ItemStack stack) {
-        if (stack.getItem() instanceof MemoryCardItem && stack.hasTag() && stack.getTag().contains("ownerId")) {
-            UUID owner = stack.getTag().getUUID("ownerId");
-            this.owner = owner;
-            stack.getTag().remove("ownerId");
-            stack.getTag().remove("owner");
+        if (stack.getItem() instanceof MemoryCardItem) {
+            if (stack.hasTag() && stack.getTag().contains("ownerId")) {
+                UUID owner = stack.getTag().getUUID("ownerId");
+                this.owner = owner;
+                stack.getTag().remove("ownerId");
+                stack.getTag().remove("owner");
+            } else if (stack != this.getItem(index)) {
+                // Only clear owner when the new card item is not the current item
+                this.owner = null;
+            }
         } else {
             this.owner = null;
         }
