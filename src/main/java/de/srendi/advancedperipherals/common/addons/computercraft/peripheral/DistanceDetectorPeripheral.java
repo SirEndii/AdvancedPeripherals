@@ -41,8 +41,7 @@ public class DistanceDetectorPeripheral extends BasePeripheral<BlockEntityPeriph
 
     @LuaFunction
     public final void setDetectionMode(int mode) {
-        if (mode > 2) mode = 2;
-        if (mode < 0) mode = 0;
+        mode = Math.min(Math.max(mode, 0), 2);
         getPeripheralOwner().tileEntity.setDetectionType(DetectionType.values()[mode]);
     }
 
@@ -71,7 +70,7 @@ public class DistanceDetectorPeripheral extends BasePeripheral<BlockEntityPeriph
 
     @LuaFunction
     public final double calculateDistance() {
-        return getPeripheralOwner().tileEntity.calculateDistance() - 1;
+        return getPeripheralOwner().tileEntity.calculateAndUpdateDistance() - 1;
     }
 
     @LuaFunction
