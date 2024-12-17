@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class DistanceDetectorEntity extends PeripheralBlockEntity<DistanceDetectorPeripheral> {
 
-    private volatile float maxRange = (float) APConfig.PERIPHERALS_CONFIG.distanceDetectorRange.get();
+    private volatile float maxRange = APConfig.PERIPHERALS_CONFIG.distanceDetectorRange.get().floatValue();
     private final AtomicInteger currentDistance = new AtomicInteger(Float.floatToRawIntBits(0));
     private final AtomicBoolean showLaser = new AtomicBoolean(true);
     private volatile boolean periodicallyCalculate = false;
@@ -63,7 +63,7 @@ public class DistanceDetectorEntity extends PeripheralBlockEntity<DistanceDetect
     }
 
     public void setMaxRange(float maxRange) {
-        this.maxRange = Math.min(Math.max(maxRange, 0), (float) APConfig.PERIPHERALS_CONFIG.distanceDetectorRange.get());
+        this.maxRange = Math.min(Math.max(maxRange, 0), APConfig.PERIPHERALS_CONFIG.distanceDetectorRange.get().floatValue());
     }
 
     public float getCurrentDistance() {

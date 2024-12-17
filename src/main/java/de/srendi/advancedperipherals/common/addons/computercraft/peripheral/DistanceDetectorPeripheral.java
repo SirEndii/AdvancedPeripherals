@@ -85,7 +85,7 @@ public class DistanceDetectorPeripheral extends BasePeripheral<BlockEntityPeriph
 
     @LuaFunction
     public final void setMaxRange(double maxDistance) {
-        getPeripheralOwner().tileEntity.setMaxRange(Math.max(0, Math.min(APConfig.PERIPHERALS_CONFIG.distanceDetectorRange.get(), maxDistance)));
+        getPeripheralOwner().tileEntity.setMaxRange((float) maxDistance);
     }
 
     @LuaFunction
