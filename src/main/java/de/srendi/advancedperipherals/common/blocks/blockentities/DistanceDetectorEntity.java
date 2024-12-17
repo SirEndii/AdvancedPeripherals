@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class DistanceDetectorEntity extends PeripheralBlockEntity<DistanceDetectorPeripheral> {
 
-    private volatile double maxRange = APConfig.PERIPHERALS_CONFIG.distanceDetectorRange.get();
+    private volatile float maxRange = (float) APConfig.PERIPHERALS_CONFIG.distanceDetectorRange.get();
     private final AtomicInteger currentDistance = new AtomicInteger(Float.floatToRawIntBits(0));
     private final AtomicBoolean showLaser = new AtomicBoolean(true);
     private volatile boolean periodicallyCalculate = false;
@@ -58,12 +58,12 @@ public class DistanceDetectorEntity extends PeripheralBlockEntity<DistanceDetect
         this.periodicallyCalculate = periodicallyCalculate;
     }
 
-    public double getMaxDistance() {
+    public float getMaxDistance() {
         return this.maxRange;
     }
 
-    public void setMaxRange(double maxRange) {
-        this.maxRange = Math.min(Math.max(maxRange, 0), APConfig.PERIPHERALS_CONFIG.distanceDetectorRange.get());
+    public void setMaxRange(float maxRange) {
+        this.maxRange = Math.min(Math.max(maxRange, 0), (float) APConfig.PERIPHERALS_CONFIG.distanceDetectorRange.get());
     }
 
     public float getCurrentDistance() {
@@ -117,11 +117,14 @@ public class DistanceDetectorEntity extends PeripheralBlockEntity<DistanceDetect
         final double maxRange = this.maxRange;
         Direction direction = getBlockState().getValue(BaseBlock.ORIENTATION).front();
         Vec3 center = Vec3.atCenterOf(getBlockPos());
-        Vec3 from = center.add(direction.getStepX() * 0.501, direction.getStepY() * 0.501, direction.getStepZ() * 0.501);
+        Vec3 from = center;
         Vec3 to = from.add(direction.getStepX() * maxRange, direction.getStepY() * maxRange, direction.getStepZ() * maxRange);
-        HitResult result = getResult(to, from);
 
-        return calculateDistance(result, level, center, direction);
+        HitResult result = this.getHitResult(to, from);
+        if (result.getType() == HitResult.Type.MISS) {
+            return -1;
+        }
+        return getDistanceOnDirection(direction, result.getLocation(), center) - 0.5f;
     }
 
     public double calculateAndUpdateDistance() {
@@ -130,42 +133,17 @@ public class DistanceDetectorEntity extends PeripheralBlockEntity<DistanceDetect
         return distance;
     }
 
-    private HitResult getResult(Vec3 to, Vec3 from) {
+    private HitResult getHitResult(Vec3 to, Vec3 from) {
+        Level level = this.getLevel();
         return switch (this.detectionType) {
-            case ENTITIES -> HitResultUtil.getEntityHitResult(to, from, getLevel());
-            case BLOCK -> HitResultUtil.getBlockHitResult(to, from, getLevel(), this.ignoreTransparent);
-            default -> HitResultUtil.getHitResult(to, from, getLevel(), this.ignoreTransparent);
+            case ENTITIES -> HitResultUtil.getEntityHitResult(to, from, level);
+            case BLOCK -> HitResultUtil.getBlockHitResult(to, from, level, this.ignoreTransparent);
+            default -> HitResultUtil.getHitResult(to, from, level, this.ignoreTransparent);
         };
     }
 
-    private static float calculateDistance(HitResult result, Level level, Vec3 center, Direction direction) {
-        float distance = 0;
-        if (result.getType() != HitResult.Type.MISS) {
-            if (result instanceof BlockHitResult blockHitResult) {
-                BlockState resultBlock = level.getBlockState(blockHitResult.getBlockPos());
-                distance = distManhattan(Vec3.atCenterOf(blockHitResult.getBlockPos()), center);
-
-                distance = amendDistance(resultBlock, direction, distance);
-            }
-            if (result instanceof EntityHitResult entityHitResult) {
-                distance = distManhattan(entityHitResult.getLocation(), center);
-            }
-        }
-        return distance;
-    }
-
-    private static float amendDistance(BlockState resultBlock, Direction direction, float distance) {
-        if (resultBlock.getBlock() instanceof SlabBlock && direction.getAxis() == Direction.Axis.Y) {
-            SlabType type = resultBlock.getValue(SlabBlock.TYPE);
-            if (type == SlabType.TOP && direction == Direction.UP)
-                return distance + 0.5f;
-            if (type == SlabType.BOTTOM && direction == Direction.DOWN)
-                return distance - 0.5f;
-        }
-        return distance;
-    }
-
-    private static float distManhattan(Vec3 from, Vec3 to) {
-        return Math.abs((float)(from.x - to.x)) + Math.abs((float)(from.y - to.y)) + Math.abs((float)(from.z - to.z));
+    private static float getDistanceOnDirection(Direction direction, Vec3 from, Vec3 to) {
+        Direction.Axis axis = direction.getAxis();
+        return Math.abs((float)(axis.choose(from.x, from.y, from.z) - axis.choose(to.x, to.y, to.z)));
     }
 }
