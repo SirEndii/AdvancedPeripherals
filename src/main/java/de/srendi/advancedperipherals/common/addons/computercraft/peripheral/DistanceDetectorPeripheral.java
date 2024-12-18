@@ -41,8 +41,7 @@ public class DistanceDetectorPeripheral extends BasePeripheral<BlockEntityPeriph
 
     @LuaFunction
     public final void setDetectionMode(int mode) {
-        if (mode > 2) mode = 2;
-        if (mode < 0) mode = 0;
+        mode = Math.min(Math.max(mode, 0), 2);
         getPeripheralOwner().tileEntity.setDetectionType(DetectionType.values()[mode]);
     }
 
@@ -66,12 +65,12 @@ public class DistanceDetectorPeripheral extends BasePeripheral<BlockEntityPeriph
 
     @LuaFunction
     public final double getDistance() {
-        return getPeripheralOwner().tileEntity.getCurrentDistance() - 1;
+        return getPeripheralOwner().tileEntity.getCurrentDistance();
     }
 
     @LuaFunction
     public final double calculateDistance() {
-        return getPeripheralOwner().tileEntity.calculateDistance() - 1;
+        return getPeripheralOwner().tileEntity.calculateAndUpdateDistance();
     }
 
     @LuaFunction
@@ -86,12 +85,12 @@ public class DistanceDetectorPeripheral extends BasePeripheral<BlockEntityPeriph
 
     @LuaFunction
     public final void setMaxRange(double maxDistance) {
-        getPeripheralOwner().tileEntity.setMaxRange(Math.max(0, Math.min(APConfig.PERIPHERALS_CONFIG.distanceDetectorRange.get(), maxDistance)));
+        getPeripheralOwner().tileEntity.setMaxRange((float) maxDistance);
     }
 
     @LuaFunction
     public final double getMaxRange() {
-        return getPeripheralOwner().tileEntity.getMaxDistance();
+        return getPeripheralOwner().tileEntity.getMaxRange();
     }
 
     public enum DetectionType {

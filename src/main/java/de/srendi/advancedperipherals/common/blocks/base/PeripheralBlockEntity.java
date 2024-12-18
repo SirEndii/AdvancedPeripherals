@@ -230,7 +230,12 @@ public abstract class PeripheralBlockEntity<T extends BasePeripheral<?>> extends
 
     @Override
     public void markSettingsChanged() {
-        setChanged();
+        this.setChanged();
+    }
+
+    protected void sendUpdate() {
+        this.setChanged();
+        this.getLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 11);
     }
 
     public ComputerSide getComputerSide(Direction direction) {

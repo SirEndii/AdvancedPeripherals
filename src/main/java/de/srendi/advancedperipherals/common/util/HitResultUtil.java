@@ -34,22 +34,19 @@ public class HitResultUtil {
         EntityHitResult entityResult = getEntityHitResult(to, from, level);
         BlockHitResult blockResult = getBlockHitResult(to, from, level, ignoreTransparent);
 
-        if (entityResult.getType() != HitResult.Type.MISS && blockResult.getType() == HitResult.Type.MISS)
+        if (entityResult.getType() == HitResult.Type.MISS) {
+            if (blockResult.getType() == HitResult.Type.MISS) {
+                return BlockHitResult.miss(from, blockResult.getDirection(), new BlockPos(to));
+            }
+            return blockResult;
+        } else if (blockResult.getType() == HitResult.Type.MISS) {
             return entityResult;
+        }            
 
-        if (entityResult.getType() == HitResult.Type.MISS && blockResult.getType() != HitResult.Type.MISS)
-            return blockResult;
+        double blockDistance = from.distanceToSqr(blockResult.getLocation());
+        double entityDistance = from.distanceToSqr(entityResult.getLocation());
 
-        if (entityResult.getType() == HitResult.Type.MISS && blockResult.getType() == HitResult.Type.MISS)
-            return BlockHitResult.miss(from, blockResult.getDirection(), new BlockPos(to));
-
-        double blockDistance = new BlockPos(from).distManhattan(blockResult.getBlockPos());
-        double entityDistance = new BlockPos(from).distManhattan(new Vec3i(entityResult.getLocation().x, entityResult.getLocation().y, entityResult.getLocation().z));
-
-        if (blockDistance < entityDistance)
-            return blockResult;
-
-        return entityResult;
+        return blockDistance < entityDistance ? blockResult : entityResult;
     }
 
     /**
@@ -69,27 +66,24 @@ public class HitResultUtil {
 
         List<Entity> entities = level.getEntities((Entity) null, checkingBox, (entity) -> true);
 
-        if (entities.isEmpty())
-            return new EmptyEntityHitResult();
-
         Entity nearestEntity = null;
+        Vec3 hitPos = null;
+        double nearestDist = 0;
 
         // Find the nearest entity
         for (Entity entity : entities) {
-            if (nearestEntity == null) {
-                nearestEntity = entity;
-                continue;
+            Vec3 pos = entity.getBoundingBox().clip(from, to).orElse(null);
+            if (pos != null) {
+                double distance = from.distanceToSqr(pos);
+                if (nearestEntity == null || distance < nearestDist) {
+                    nearestEntity = entity;
+                    hitPos = pos;
+                    nearestDist = distance;
+                }
             }
-
-            double distance = new BlockPos(from).distManhattan(new Vec3i(entity.getX(), entity.getY(), entity.getZ()));
-            double nearestDistance = new BlockPos(from).distManhattan(new Vec3i(nearestEntity.getX(), nearestEntity.getY(), nearestEntity.getZ()));
-
-            // If it's closer, set it as the nearest entity
-            if (distance < nearestDistance)
-                nearestEntity = entity;
         }
 
-        return new EntityHitResult(nearestEntity);
+        return nearestEntity == null ? EmptyEntityHitResult.INSTANCE : new EntityHitResult(nearestEntity, hitPos);
     }
 
     /**
@@ -103,15 +97,16 @@ public class HitResultUtil {
      */
     @NotNull
     public static BlockHitResult getBlockHitResult(Vec3 to, Vec3 from, Level level, boolean ignoreNoOccluded) {
-        return level.clip(new AdvancecClipContext(from, to, ignoreNoOccluded ? IgnoreNoOccludedContext.INSTANCE : ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null));
+        return level.clip(new AdvancedClipContext(from, to, ignoreNoOccluded ? IgnoreNoOccludedContext.INSTANCE : ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null, true));
     }
 
     public static class EmptyEntityHitResult extends EntityHitResult {
+        public static final EmptyEntityHitResult INSTANCE = new EmptyEntityHitResult();
 
         /**
          * The super constructor is a NotNull argument but since this result is empty, we'll just return null
          */
-        public EmptyEntityHitResult() {
+        private EmptyEntityHitResult() {
             super(null, null);
         }
 
@@ -125,9 +120,10 @@ public class HitResultUtil {
     /**
      * A shape getter which ignores blocks which are not occluding like glass
      */
-    private enum IgnoreNoOccludedContext implements ClipContext.ShapeGetter {
+    private static class IgnoreNoOccludedContext implements ClipContext.ShapeGetter {
+        public static final IgnoreNoOccludedContext INSTANCE = new IgnoreNoOccludedContext();
 
-        INSTANCE;
+        private IgnoreNoOccludedContext() {}
 
         @NotNull
         @Override
@@ -139,18 +135,23 @@ public class HitResultUtil {
     /**
      * A clip context but with a custom shape getter. Used to define another shape getter for the block like {@link IgnoreNoOccludedContext}
      */
-    private static class AdvancecClipContext extends ClipContext {
+    private static class AdvancedClipContext extends ClipContext {
 
         private final ShapeGetter blockShapeGetter;
+        private final boolean ignoreSourceBlock;
 
-        protected AdvancecClipContext(Vec3 from, Vec3 to, ShapeGetter blockShapeGetter, Fluid fluidShapeGetter, @Nullable Entity entity) {
+        protected AdvancedClipContext(Vec3 from, Vec3 to, ShapeGetter blockShapeGetter, Fluid fluidShapeGetter, @Nullable Entity entity, boolean ignoreSourceBlock) {
             super(from, to, Block.COLLIDER, fluidShapeGetter, entity);
             this.blockShapeGetter = blockShapeGetter;
+            this.ignoreSourceBlock = ignoreSourceBlock;
         }
 
         @NotNull
         @Override
         public VoxelShape getBlockShape(@NotNull BlockState pBlockState, @NotNull BlockGetter pLevel, @NotNull BlockPos pPos) {
+            if (this.ignoreSourceBlock && pPos.equals(new BlockPos(this.getFrom()))) {
+                return Shapes.empty();
+            }
             return blockShapeGetter.get(pBlockState, pLevel, pPos, this.collisionContext);
         }
     }
