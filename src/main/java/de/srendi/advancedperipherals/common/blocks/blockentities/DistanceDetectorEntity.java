@@ -5,11 +5,13 @@ import de.srendi.advancedperipherals.common.blocks.base.BaseBlock;
 import de.srendi.advancedperipherals.common.blocks.base.PeripheralBlockEntity;
 import de.srendi.advancedperipherals.common.configuration.APConfig;
 import de.srendi.advancedperipherals.common.network.APNetworking;
-import de.srendi.advancedperipherals.common.network.toclient.DistanceDetectorSyncPacket;
 import de.srendi.advancedperipherals.common.setup.APBlockEntityTypes;
 import de.srendi.advancedperipherals.common.util.HitResultUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -17,6 +19,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.phys.*;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -24,8 +27,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class DistanceDetectorEntity extends PeripheralBlockEntity<DistanceDetectorPeripheral> {
 
-    private volatile float maxRange = APConfig.PERIPHERALS_CONFIG.distanceDetectorRange.get().floatValue();
-    private final AtomicInteger currentDistance = new AtomicInteger(Float.floatToRawIntBits(0));
+    private final AtomicInteger maxRange = new AtomicInteger(Float.floatToRawIntBits(APConfig.PERIPHERALS_CONFIG.distanceDetectorRange.get().floatValue()));
+    private final AtomicInteger currentDistance = new AtomicInteger(Float.floatToRawIntBits(-1));
     private final AtomicBoolean showLaser = new AtomicBoolean(true);
     private volatile boolean periodicallyCalculate = false;
     private volatile boolean ignoreTransparent = true;
@@ -41,41 +44,61 @@ public class DistanceDetectorEntity extends PeripheralBlockEntity<DistanceDetect
         return new DistanceDetectorPeripheral(this);
     }
 
-    public void setShowLaser(boolean showLaser) {
-        if (this.showLaser.getAndSet(showLaser) != showLaser) {
-            APNetworking.sendToAll(new DistanceDetectorSyncPacket(getBlockPos(), getLevel().dimension(), this.getCurrentDistance(), showLaser));
-        }
+    public float getMaxRange() {
+        return Float.intBitsToFloat(this.maxRange.get());
     }
 
-    public void setCurrentDistance(float currentDistance) {
-        int currentDistanceBits = Float.floatToRawIntBits(currentDistance);
-        if (this.currentDistance.getAndSet(currentDistanceBits) != currentDistanceBits) {
-            APNetworking.sendToAll(new DistanceDetectorSyncPacket(getBlockPos(), getLevel().dimension(), currentDistance, this.getLaserVisibility()));
-        }
-    }
-
-    public void setShouldCalculatePeriodically(boolean periodicallyCalculate) {
-        this.periodicallyCalculate = periodicallyCalculate;
-    }
-
-    public float getMaxDistance() {
-        return this.maxRange;
+    protected void setMaxRangeNoUpdate(float maxRange) {
+        maxRange = Math.min(Math.max(maxRange, 0), APConfig.PERIPHERALS_CONFIG.distanceDetectorRange.get().floatValue());
+        int maxRangeBits = Float.floatToRawIntBits(maxRange);
+        this.maxRange.set(maxRangeBits);
     }
 
     public void setMaxRange(float maxRange) {
-        this.maxRange = Math.min(Math.max(maxRange, 0), APConfig.PERIPHERALS_CONFIG.distanceDetectorRange.get().floatValue());
+        maxRange = Math.min(Math.max(maxRange, 0), APConfig.PERIPHERALS_CONFIG.distanceDetectorRange.get().floatValue());
+        int maxRangeBits = Float.floatToRawIntBits(maxRange);
+        if (this.maxRange.getAndSet(maxRangeBits) != maxRange) {
+            this.sendUpdate();
+        }
     }
 
     public float getCurrentDistance() {
         return Float.intBitsToFloat(this.currentDistance.get());
     }
 
+    protected void setCurrentDistanceNoUpdate(float currentDistance) {
+        int currentDistanceBits = Float.floatToRawIntBits(currentDistance);
+        this.currentDistance.set(currentDistanceBits);
+    }
+
+    public void setCurrentDistance(float currentDistance) {
+        int currentDistanceBits = Float.floatToRawIntBits(currentDistance);
+        if (this.currentDistance.getAndSet(currentDistanceBits) != currentDistanceBits) {
+            this.sendUpdate();
+        }
+    }
+
     public boolean getLaserVisibility() {
         return this.showLaser.get();
     }
 
+    protected void setShowLaserNoUpdate(boolean showLaser) {
+        this.showLaser.set(showLaser);
+    }
+
+    public void setShowLaser(boolean showLaser) {
+        if (this.showLaser.getAndSet(showLaser) != showLaser) {
+            this.sendUpdate();
+        }
+    }
+
     public boolean shouldCalculatePeriodically() {
         return this.periodicallyCalculate;
+    }
+
+    public void setShouldCalculatePeriodically(boolean periodicallyCalculate) {
+        this.periodicallyCalculate = periodicallyCalculate;
+        this.setChanged();
     }
 
     public boolean ignoreTransparent() {
@@ -84,6 +107,7 @@ public class DistanceDetectorEntity extends PeripheralBlockEntity<DistanceDetect
 
     public void setIgnoreTransparent(boolean ignoreTransparent) {
         this.ignoreTransparent = ignoreTransparent;
+        this.setChanged();
     }
 
     public DistanceDetectorPeripheral.DetectionType getDetectionType() {
@@ -92,6 +116,7 @@ public class DistanceDetectorEntity extends PeripheralBlockEntity<DistanceDetect
 
     public void setDetectionType(DistanceDetectorPeripheral.DetectionType detectionType) {
         this.detectionType = detectionType;
+        this.setChanged();
     }
 
     @Override
@@ -107,14 +132,53 @@ public class DistanceDetectorEntity extends PeripheralBlockEntity<DistanceDetect
 
     @Override
     public AABB getRenderBoundingBox() {
-        final float currentDistance = this.getCurrentDistance();
+        float currentDistance = this.getCurrentDistance();
+        if (currentDistance == -1) {
+            currentDistance = this.getMaxRange();
+        }
         Direction direction = getBlockState().getValue(BaseBlock.ORIENTATION).front();
         return AABB.ofSize(Vec3.atCenterOf(getBlockPos()), direction.getStepX() * currentDistance + 1, direction.getStepY() * currentDistance + 1, direction.getStepZ() * currentDistance + 1)
-                .move(direction.getStepX() * currentDistance / 2, direction.getStepY() * currentDistance / 2, direction.getStepZ() * currentDistance / 2);
+            .move(direction.getStepX() * currentDistance / 2, direction.getStepY() * currentDistance / 2, direction.getStepZ() * currentDistance / 2);
+    }
+
+    @Override
+    public void load(@NotNull CompoundTag compound) {
+        this.setMaxRangeNoUpdate(compound.getFloat("maxRange"));
+        this.setCurrentDistanceNoUpdate(compound.getFloat("currentDistance"));
+        this.setShowLaserNoUpdate(compound.getBoolean("showLaser"));
+        this.setShouldCalculatePeriodically(compound.getBoolean("calculatePeriodically"));
+        this.setIgnoreTransparent(compound.getBoolean("ignoreTransparent"));
+        this.setDetectionType(DistanceDetectorPeripheral.DetectionType.values()[compound.getByte("detectionType")]);
+        super.load(compound);
+    }
+
+    @Override
+    public void saveAdditional(@NotNull CompoundTag compound) {
+        super.saveAdditional(compound);
+        compound.putFloat("maxRange", this.getMaxRange());
+        compound.putFloat("currentDistance", this.getCurrentDistance());
+        compound.putBoolean("showLaser", this.getLaserVisibility());
+        compound.putBoolean("calculatePeriodically", this.shouldCalculatePeriodically());
+        compound.putBoolean("ignoreTransparent", this.ignoreTransparent());
+        compound.putByte("detectionType", (byte) this.getDetectionType().ordinal());
+    }
+
+    @Override
+    public CompoundTag getUpdateTag() {
+        CompoundTag compound = super.getUpdateTag();
+        compound.putFloat("maxRange", this.getMaxRange());
+        compound.putFloat("currentDistance", this.getCurrentDistance());
+        compound.putBoolean("showLaser", this.getLaserVisibility());
+        return compound;
+    }
+
+    @Override
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     public double calculateDistance() {
-        final double maxRange = this.maxRange;
+        final double maxRange = this.getMaxRange();
         Direction direction = getBlockState().getValue(BaseBlock.ORIENTATION).front();
         Vec3 center = Vec3.atCenterOf(getBlockPos());
         Vec3 from = center;

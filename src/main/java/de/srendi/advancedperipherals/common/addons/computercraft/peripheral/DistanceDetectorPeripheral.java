@@ -90,7 +90,7 @@ public class DistanceDetectorPeripheral extends BasePeripheral<BlockEntityPeriph
 
     @LuaFunction
     public final double getMaxRange() {
-        return getPeripheralOwner().tileEntity.getMaxDistance();
+        return getPeripheralOwner().tileEntity.getMaxRange();
     }
 
     public enum DetectionType {

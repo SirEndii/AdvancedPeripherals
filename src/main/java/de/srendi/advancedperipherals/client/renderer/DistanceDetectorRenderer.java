@@ -31,7 +31,7 @@ public class DistanceDetectorRenderer implements BlockEntityRenderer<DistanceDet
         if (pBlockEntity.getLaserVisibility()) {
             float distance = pBlockEntity.getCurrentDistance();
             if (distance == -1) {
-                distance = pBlockEntity.getMaxDistance();
+                distance = pBlockEntity.getMaxRange();
             }
             renderBeaconBeam(pBlockEntity, pPoseStack, pBufferSource, BeaconRenderer.BEAM_LOCATION, pPartialTick, 1, 0, distance + 0.5f, EnumColor.RED.getRgb(), 0.05f, 0.09f);
         }
