@@ -40,9 +40,26 @@ public class DistanceDetectorPeripheral extends BasePeripheral<BlockEntityPeriph
     }
 
     @LuaFunction
-    public final void setDetectionMode(int mode) {
-        mode = Math.min(Math.max(mode, 0), 2);
-        getPeripheralOwner().tileEntity.setDetectionType(DetectionType.values()[mode]);
+    public final void setDetectionMode(IArguments args) throws LuaException {
+        Object mode = args.get(0);
+        if (mode == null) {
+            throw new LuaException("arg #1 must provide a mode name or an index between [0, 2]");
+        }
+        DetectionType detectionType;
+        if (mode instanceof Number modeInd) {
+            int index = Math.min(Math.max(modeInd.intValue(), 0), 2);
+            detectionType = DetectionType.values()[index]
+        } else if (mode instanceof String modeStr) {
+            detectionType = switch (modeStr.toUpperCase()) {
+                case "BLOCK" -> DetectionType.BLOCK;
+                case "ENTITIES" -> DetectionType.ENTITIES;
+                case "BOTH" -> DetectionType.BOTH;
+                default -> throw new LuaException("Unknown detection mode '" + mode + "'");
+            }
+        } else {
+            throw new LuaException("arg #1 must be a string or a number");
+        }
+        getPeripheralOwner().tileEntity.setDetectionType(detectionType);
     }
 
     @LuaFunction
