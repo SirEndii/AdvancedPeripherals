@@ -54,7 +54,7 @@ public class DistanceDetectorPeripheral extends BasePeripheral<BlockEntityPeriph
         } else if (mode instanceof String modeStr) {
             detectionType = switch (modeStr.toUpperCase()) {
                 case "BLOCK" -> DetectionType.BLOCK;
-                case "ENTITIES" -> DetectionType.ENTITIES;
+                case "ENTITY" -> DetectionType.ENTITY;
                 case "BOTH" -> DetectionType.BOTH;
                 default -> throw new LuaException("Unknown detection mode '" + mode + "'");
             };
@@ -67,13 +67,13 @@ public class DistanceDetectorPeripheral extends BasePeripheral<BlockEntityPeriph
     @LuaFunction
     public final boolean detectsEntities() {
         DetectionType detectionType = getPeripheralOwner().tileEntity.getDetectionType();
-        return detectionType == DetectionType.ENTITIES || detectionType == DetectionType.BOTH;
+        return detectionType.detectEntity();
     }
 
     @LuaFunction
     public final boolean detectsBlocks() {
         DetectionType detectionType = getPeripheralOwner().tileEntity.getDetectionType();
-        return detectionType == DetectionType.BLOCK || detectionType == DetectionType.BOTH;
+        return detectionType.detectBlock();
     }
 
     @LuaFunction
@@ -113,9 +113,24 @@ public class DistanceDetectorPeripheral extends BasePeripheral<BlockEntityPeriph
     }
 
     public enum DetectionType {
-        BLOCK,
-        ENTITIES,
-        BOTH
+        BLOCK(true, false),
+        ENTITY(false, true),
+        BOTH(true, true);
+
+        private final boolean block, entity;
+
+        private DetectionType(boolean block, boolean entity) {
+            this.block = block;
+            this.entity = entity;
+        }
+
+        public boolean detectBlock() {
+            return this.block;
+        }
+
+        public boolean detectEntity() {
+            return this.entity;
+        }
     }
 
 }

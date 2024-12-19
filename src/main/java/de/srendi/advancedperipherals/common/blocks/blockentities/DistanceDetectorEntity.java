@@ -196,7 +196,7 @@ public class DistanceDetectorEntity extends PeripheralBlockEntity<DistanceDetect
     private HitResult getHitResult(Vec3 to, Vec3 from) {
         Level level = this.getLevel();
         return switch (this.detectionType) {
-            case ENTITIES -> HitResultUtil.getEntityHitResult(to, from, level);
+            case ENTITY -> HitResultUtil.getEntityHitResult(to, from, level);
             case BLOCK -> HitResultUtil.getBlockHitResult(to, from, level, this.ignoreTransparent);
             default -> HitResultUtil.getHitResult(to, from, level, this.ignoreTransparent);
         };
