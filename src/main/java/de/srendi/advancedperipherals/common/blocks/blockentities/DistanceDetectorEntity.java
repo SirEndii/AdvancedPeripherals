@@ -132,9 +132,10 @@ public class DistanceDetectorEntity extends PeripheralBlockEntity<DistanceDetect
         if (currentDistance == -1) {
             currentDistance = this.getMaxRange();
         }
+        currentDistance += 1.5f;
         Direction direction = getBlockState().getValue(BaseBlock.ORIENTATION).front();
-        return AABB.ofSize(Vec3.atCenterOf(getBlockPos()), direction.getStepX() * currentDistance + 1, direction.getStepY() * currentDistance + 1, direction.getStepZ() * currentDistance + 1)
-            .move(direction.getStepX() * currentDistance / 2, direction.getStepY() * currentDistance / 2, direction.getStepZ() * currentDistance / 2);
+        Vec3 blockPos = Vec3.atCenterOf(getBlockPos());
+        return new AABB(blockPos, blockPos.add(direction.getStepX() * currentDistance, direction.getStepY() * currentDistance, direction.getStepZ() * currentDistance));
     }
 
     @Override
