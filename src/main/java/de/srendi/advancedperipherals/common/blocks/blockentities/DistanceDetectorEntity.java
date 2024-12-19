@@ -199,7 +199,7 @@ public class DistanceDetectorEntity extends PeripheralBlockEntity<DistanceDetect
         return switch (this.detectionType) {
             case ENTITY -> HitResultUtil.getEntityHitResult(to, from, level);
             case BLOCK -> HitResultUtil.getBlockHitResult(to, from, level, this.ignoreTransparent);
-            default -> HitResultUtil.getHitResult(to, from, level, this.ignoreTransparent);
+            case BOTH -> HitResultUtil.getHitResult(to, from, level, this.ignoreTransparent);
         };
     }
 
