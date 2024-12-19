@@ -4,20 +4,16 @@ import de.srendi.advancedperipherals.common.addons.computercraft.peripheral.Dist
 import de.srendi.advancedperipherals.common.blocks.base.BaseBlock;
 import de.srendi.advancedperipherals.common.blocks.base.PeripheralBlockEntity;
 import de.srendi.advancedperipherals.common.configuration.APConfig;
-import de.srendi.advancedperipherals.common.network.APNetworking;
 import de.srendi.advancedperipherals.common.setup.APBlockEntityTypes;
 import de.srendi.advancedperipherals.common.util.HitResultUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.phys.*;
 
 import org.jetbrains.annotations.NotNull;
@@ -136,9 +132,10 @@ public class DistanceDetectorEntity extends PeripheralBlockEntity<DistanceDetect
         if (currentDistance == -1) {
             currentDistance = this.getMaxRange();
         }
+        currentDistance += 1.5f;
         Direction direction = getBlockState().getValue(BaseBlock.ORIENTATION).front();
-        return AABB.ofSize(Vec3.atCenterOf(getBlockPos()), direction.getStepX() * currentDistance + 1, direction.getStepY() * currentDistance + 1, direction.getStepZ() * currentDistance + 1)
-            .move(direction.getStepX() * currentDistance / 2, direction.getStepY() * currentDistance / 2, direction.getStepZ() * currentDistance / 2);
+        Vec3 blockPos = Vec3.atCenterOf(getBlockPos());
+        return new AABB(blockPos, blockPos.add(direction.getStepX() * currentDistance, direction.getStepY() * currentDistance, direction.getStepZ() * currentDistance));
     }
 
     @Override
@@ -200,9 +197,9 @@ public class DistanceDetectorEntity extends PeripheralBlockEntity<DistanceDetect
     private HitResult getHitResult(Vec3 to, Vec3 from) {
         Level level = this.getLevel();
         return switch (this.detectionType) {
-            case ENTITIES -> HitResultUtil.getEntityHitResult(to, from, level);
+            case ENTITY -> HitResultUtil.getEntityHitResult(to, from, level);
             case BLOCK -> HitResultUtil.getBlockHitResult(to, from, level, this.ignoreTransparent);
-            default -> HitResultUtil.getHitResult(to, from, level, this.ignoreTransparent);
+            case BOTH -> HitResultUtil.getHitResult(to, from, level, this.ignoreTransparent);
         };
     }
 
