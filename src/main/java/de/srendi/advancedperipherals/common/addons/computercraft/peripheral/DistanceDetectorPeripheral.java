@@ -48,14 +48,14 @@ public class DistanceDetectorPeripheral extends BasePeripheral<BlockEntityPeriph
         DetectionType detectionType;
         if (mode instanceof Number modeInd) {
             int index = Math.min(Math.max(modeInd.intValue(), 0), 2);
-            detectionType = DetectionType.values()[index]
+            detectionType = DetectionType.values()[index];
         } else if (mode instanceof String modeStr) {
             detectionType = switch (modeStr.toUpperCase()) {
                 case "BLOCK" -> DetectionType.BLOCK;
                 case "ENTITIES" -> DetectionType.ENTITIES;
                 case "BOTH" -> DetectionType.BOTH;
                 default -> throw new LuaException("Unknown detection mode '" + mode + "'");
-            }
+            };
         } else {
             throw new LuaException("arg #1 must be a string or a number");
         }
