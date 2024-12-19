@@ -3,7 +3,6 @@ package de.srendi.advancedperipherals.common.util;
 import de.srendi.advancedperipherals.common.addons.computercraft.peripheral.DistanceDetectorPeripheral;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Vec3i;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ClipContext;
@@ -41,7 +40,7 @@ public class HitResultUtil {
             return blockResult;
         } else if (blockResult.getType() == HitResult.Type.MISS) {
             return entityResult;
-        }            
+        }
 
         double blockDistance = from.distanceToSqr(blockResult.getLocation());
         double entityDistance = from.distanceToSqr(entityResult.getLocation());
