@@ -240,7 +240,7 @@ public class ChatBoxPeripheral extends BasePeripheral<IPeripheralOwner> {
                 if (!APConfig.PERIPHERALS_CONFIG.chatBoxMultiDimensional.get() && player.getLevel().dimension() != dimension) {
                     continue;
                 }
-                if (CoordUtil.isInRange(getPos(), getLevel(), player, range, maxRange)) {
+                if (CoordUtil.isInRange(getWorldPos(), getLevel(), player, range, maxRange)) {
                     player.sendSystemMessage(preparedMessage);
                 }
             }
@@ -272,7 +272,7 @@ public class ChatBoxPeripheral extends BasePeripheral<IPeripheralOwner> {
                 if (!APConfig.PERIPHERALS_CONFIG.chatBoxMultiDimensional.get() && player.getLevel().dimension() != dimension) {
                     continue;
                 }
-                if (CoordUtil.isInRange(getPos(), getLevel(), player, range, maxRange)) {
+                if (CoordUtil.isInRange(getWorldPos(), getLevel(), player, range, maxRange)) {
                     player.sendSystemMessage(preparedMessage);
                 }
             }
@@ -319,7 +319,7 @@ public class ChatBoxPeripheral extends BasePeripheral<IPeripheralOwner> {
                 return MethodResult.of(false, "NOT_SAME_DIMENSION");
             }
 
-            if (CoordUtil.isInRange(getPos(), getLevel(), player, range, maxRange)) {
+            if (CoordUtil.isInRange(getWorldPos(), getLevel(), player, range, maxRange)) {
                 player.sendSystemMessage(preparedMessage);
             }
             return MethodResult.of(true);
@@ -377,7 +377,7 @@ public class ChatBoxPeripheral extends BasePeripheral<IPeripheralOwner> {
                 return MethodResult.of(false, "NOT_SAME_DIMENSION");
             }
 
-            if (CoordUtil.isInRange(getPos(), getLevel(), player, range, maxRange)) {
+            if (CoordUtil.isInRange(getWorldPos(), getLevel(), player, range, maxRange)) {
                 ToastToClientPacket packet = new ToastToClientPacket(titleComponent, preparedMessage);
                 APNetworking.sendTo(packet, player);
             }
@@ -416,7 +416,7 @@ public class ChatBoxPeripheral extends BasePeripheral<IPeripheralOwner> {
                 return MethodResult.of(false, "NOT_SAME_DIMENSION");
             }
 
-            if (CoordUtil.isInRange(getPos(), getLevel(), player, range, maxRange)) {
+            if (CoordUtil.isInRange(getWorldPos(), getLevel(), player, range, maxRange)) {
                 player.sendSystemMessage(preparedMessage, false);
             }
             return MethodResult.of(true);
@@ -455,7 +455,7 @@ public class ChatBoxPeripheral extends BasePeripheral<IPeripheralOwner> {
                 return MethodResult.of(false, "NOT_SAME_DIMENSION");
             }
 
-            if (CoordUtil.isInRange(getPos(), getLevel(), player, range, maxRange)) {
+            if (CoordUtil.isInRange(getWorldPos(), getLevel(), player, range, maxRange)) {
                 ToastToClientPacket packet = new ToastToClientPacket(Component.literal(title), preparedMessage);
                 APNetworking.sendTo(packet, player);
             }

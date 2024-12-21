@@ -149,7 +149,7 @@ public abstract class BasePeripheral<O extends IPeripheralOwner> implements IBas
         if (!APAddons.vs2Loaded) {
             return pos;
         }
-        Ship ship = APAddons.getVS2Ship(this.getLevel(), this.getPos());
+        Ship ship = APAddons.getVS2Ship(owner.getLevel(), owner.getPos());
         if (ship == null) {
             return pos;
         }
