@@ -20,6 +20,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.IForgeShearable;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
@@ -121,15 +122,27 @@ public class LuaConverter {
         return completeEntityWithPositionToLua(entity, pos, false);
     }
 
+    public static Map<String, Object> completeEntityWithPositionToLua(Entity entity, Vec3 pos) {
+        return completeEntityWithPositionToLua(entity, pos, false);
+    }
+
     public static Map<String, Object> completeEntityWithPositionToLua(Entity entity, BlockPos pos, boolean detailed) {
         return completeEntityWithPositionToLua(entity, ItemStack.EMPTY, pos, detailed);
     }
 
+    public static Map<String, Object> completeEntityWithPositionToLua(Entity entity, Vec3 pos, boolean detailed) {
+        return completeEntityWithPositionToLua(entity, ItemStack.EMPTY, pos, detailed);
+    }
+
     public static Map<String, Object> completeEntityWithPositionToLua(Entity entity, ItemStack itemInHand, BlockPos pos, boolean detailed) {
+        return completeEntityWithPositionToLua(entity, itemInHand, Vec3.atCenterOf(pos), detailed);
+    }
+
+    public static Map<String, Object> completeEntityWithPositionToLua(Entity entity, ItemStack itemInHand, Vec3 pos, boolean detailed) {
         Map<String, Object> data = completeEntityToLua(entity, itemInHand, detailed);
-        data.put("x", entity.getX() - pos.getX());
-        data.put("y", entity.getY() - pos.getY());
-        data.put("z", entity.getZ() - pos.getZ());
+        data.put("x", entity.getX() - pos.x);
+        data.put("y", entity.getY() - pos.y);
+        data.put("z", entity.getZ() - pos.z);
         return data;
     }
 

@@ -31,6 +31,7 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.SleepingTimeCheckEvent;
 import net.minecraftforge.eventbus.api.Event;
@@ -87,24 +88,24 @@ public class EnvironmentDetectorPeripheral extends BasePeripheral<IPeripheralOwn
 
     @LuaFunction(mainThread = true)
     public final String getBiome() {
-        Optional<ResourceKey<Biome>> biome = getLevel().getBiome(getPos()).unwrapKey();
+        Optional<ResourceKey<Biome>> biome = getLevel().getBiome(this.getWorldBlockPos()).unwrapKey();
         return biome.map(biomeResourceKey -> biomeResourceKey.location().toString()).orElse("unknown");
     }
 
     @LuaFunction(mainThread = true)
     public final int getSkyLightLevel() {
-        return getLevel().getBrightness(LightLayer.SKY, getPos().offset(0, 1, 0));
+        return getLevel().getBrightness(LightLayer.SKY, this.getWorldBlockPos().offset(0, 1, 0));
     }
 
     @LuaFunction(mainThread = true)
     public final int getBlockLightLevel() {
-        return getLevel().getBrightness(LightLayer.BLOCK, getPos().offset(0, 1, 0));
+        return getLevel().getBrightness(LightLayer.BLOCK, this.getWorldBlockPos().offset(0, 1, 0));
     }
 
     @LuaFunction(mainThread = true)
     public final int getDayLightLevel() {
         Level level = getLevel();
-        int i = level.getBrightness(LightLayer.SKY, getPos().offset(0, 1, 0)) - level.getSkyDarken();
+        int i = level.getBrightness(LightLayer.SKY, this.getWorldBlockPos().offset(0, 1, 0)) - level.getSkyDarken();
         float f = level.getSunAngle(1.0F);
         if (i > 0) {
             float f1 = f < (float) Math.PI ? 0.0F : ((float) Math.PI * 2F);
@@ -122,7 +123,7 @@ public class EnvironmentDetectorPeripheral extends BasePeripheral<IPeripheralOwn
 
     @LuaFunction(mainThread = true)
     public final boolean isSlimeChunk() {
-        ChunkPos chunkPos = new ChunkPos(getPos());
+        ChunkPos chunkPos = new ChunkPos(this.getWorldBlockPos());
         return WorldgenRandom.seedSlimeChunk(chunkPos.x, chunkPos.z, ((WorldGenLevel) getLevel()).getSeed(), 987234911L).nextInt(10) == 0;
     }
 
@@ -204,9 +205,9 @@ public class EnvironmentDetectorPeripheral extends BasePeripheral<IPeripheralOwn
                 return MethodResult.of(null, "Radius exceeds max value");
             return null;
         }, context -> {
-            BlockPos pos = owner.getPos();
-            AABB box = new AABB(pos);
-            List<Map<String, Object>> entities = getLevel().getEntities((Entity) null, box.inflate(radius), entity -> entity instanceof LivingEntity && entity.isAlive()).stream().map(entity -> LuaConverter.completeEntityWithPositionToLua(entity, pos, detailed)).toList();
+            Vec3 pos = this.getWorldPos();
+            AABB box = new AABB(pos, pos);
+            List<Map<String, Object>> entities = getLevel().getEntities((Entity) null, box.inflate(radius + 0.5), entity -> entity instanceof LivingEntity && entity.isAlive()).stream().map(entity -> LuaConverter.completeEntityWithPositionToLua(entity, pos, detailed)).toList();
             return MethodResult.of(entities);
         }, null);
     }

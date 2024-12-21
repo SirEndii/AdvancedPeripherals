@@ -119,7 +119,7 @@ public class DistanceDetectorPeripheral extends BasePeripheral<BlockEntityPeriph
 
         private final boolean block, entity;
 
-        private DetectionType(boolean block, boolean entity) {
+        DetectionType(boolean block, boolean entity) {
             this.block = block;
             this.entity = entity;
         }
