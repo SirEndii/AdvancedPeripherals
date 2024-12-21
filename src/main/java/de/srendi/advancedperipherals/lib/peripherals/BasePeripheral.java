@@ -144,6 +144,10 @@ public abstract class BasePeripheral<O extends IPeripheralOwner> implements IBas
         return owner.getLevel();
     }
 
+    protected boolean isOnShip() {
+        return APAddons.vs2Loaded && APAddons.isBlockOnShip(owner.getLevel(), owner.getPos());
+    }
+
     protected Vec3 getWorldPos() {
         Vec3 pos = this.getCenterPos();
         if (!APAddons.vs2Loaded) {
