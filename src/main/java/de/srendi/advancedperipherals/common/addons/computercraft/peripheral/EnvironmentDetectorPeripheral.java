@@ -4,7 +4,6 @@ import dan200.computercraft.api.lua.IArguments;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.lua.MethodResult;
-import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.pocket.IPocketAccess;
 import dan200.computercraft.api.turtle.ITurtleAccess;
 import dan200.computercraft.api.turtle.TurtleSide;
@@ -18,7 +17,6 @@ import de.srendi.advancedperipherals.common.configuration.APConfig;
 import de.srendi.advancedperipherals.common.util.LuaConverter;
 import de.srendi.advancedperipherals.lib.peripherals.BasePeripheral;
 import de.srendi.advancedperipherals.lib.peripherals.IPeripheralPlugin;
-import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -51,8 +49,9 @@ public class EnvironmentDetectorPeripheral extends BasePeripheral<IPeripheralOwn
     protected EnvironmentDetectorPeripheral(IPeripheralOwner owner) {
         super(PERIPHERAL_TYPE, owner);
         owner.attachOperation(SCAN_ENTITIES);
-        for (Function<IPeripheralOwner, IPeripheralPlugin> plugin : PERIPHERAL_PLUGINS)
+        for (Function<IPeripheralOwner, IPeripheralPlugin> plugin : PERIPHERAL_PLUGINS) {
             addPlugin(plugin.apply(owner));
+        }
     }
 
     public EnvironmentDetectorPeripheral(PeripheralBlockEntity<?> tileEntity) {
@@ -197,17 +196,15 @@ public class EnvironmentDetectorPeripheral extends BasePeripheral<IPeripheralOwn
     }
 
     @LuaFunction(mainThread = true)
-    public final MethodResult scanEntities(@NotNull IComputerAccess access, @NotNull IArguments arguments) throws LuaException {
+    public final MethodResult scanEntities(@NotNull IArguments arguments) throws LuaException {
         int radius = arguments.getInt(0);
         boolean detailed = arguments.count() > 1 ? arguments.getBoolean(1) : false;
         return withOperation(SCAN_ENTITIES, new SphereOperationContext(radius), context -> {
-            if (radius > SCAN_ENTITIES.getMaxCostRadius())
-                return MethodResult.of(null, "Radius exceeds max value");
-            return null;
+            return context.getRadius() > SCAN_ENTITIES.getMaxCostRadius() ? MethodResult.of(null, "Radius exceeds max value") : null;
         }, context -> {
             Vec3 pos = this.getWorldPos();
             AABB box = new AABB(pos, pos);
-            List<Map<String, Object>> entities = getLevel().getEntities((Entity) null, box.inflate(radius + 0.5), entity -> entity instanceof LivingEntity && entity.isAlive()).stream().map(entity -> LuaConverter.completeEntityWithPositionToLua(entity, pos, detailed)).toList();
+            List<Map<String, Object>> entities = getLevel().getEntities((Entity) null, box.inflate(context.getRadius() + 0.5), entity -> entity instanceof LivingEntity && entity.isAlive()).stream().map(entity -> LuaConverter.completeEntityWithPositionToLua(entity, pos, detailed)).toList();
             return MethodResult.of(entities);
         }, null);
     }

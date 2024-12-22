@@ -9,7 +9,8 @@ import java.util.Map;
 
 public enum SphereOperation implements IPeripheralOperation<SphereOperationContext> {
     SCAN_BLOCKS(2_000, 8, 16, 0.17),
-    SCAN_ENTITIES(2_000, 8, 16, 0.17);
+    SCAN_ENTITIES(2_000, 8, 16, 0.17),
+    SCAN_SHIPS(2_500, 8 * 3, 16 * 10 /* common view distance */, 0.17);
 
     private final int defaultCooldown;
     private final int defaultMaxFreeRadius;

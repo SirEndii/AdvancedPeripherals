@@ -198,7 +198,7 @@ public class DistanceDetectorEntity extends PeripheralBlockEntity<DistanceDetect
         Ship ship = APAddons.getVS2Ship(this.getLevel(), this.getBlockPos());
         if (ship == null) {
             return dir;
-        };
+        }
         Vector3d newDir = ship.getShipToWorld().transformDirection(new Vector3d(dir.x, dir.y, dir.z));
         return new Vec3(newDir.x, newDir.y, newDir.z);
     }
