@@ -1,5 +1,6 @@
 package de.srendi.advancedperipherals.common.blocks.blockentities;
 
+import de.srendi.advancedperipherals.common.addons.APAddons;
 import de.srendi.advancedperipherals.common.addons.computercraft.peripheral.DistanceDetectorPeripheral;
 import de.srendi.advancedperipherals.common.blocks.base.BaseBlock;
 import de.srendi.advancedperipherals.common.blocks.base.PeripheralBlockEntity;
@@ -15,6 +16,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.*;
+import org.joml.Vector3d;
+import org.valkyrienskies.core.api.ships.Ship;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -134,7 +137,7 @@ public class DistanceDetectorEntity extends PeripheralBlockEntity<DistanceDetect
         }
         currentDistance += 1.5f;
         Direction direction = getBlockState().getValue(BaseBlock.ORIENTATION).front();
-        Vec3 blockPos = Vec3.atCenterOf(getBlockPos());
+        Vec3 blockPos = Vec3.atCenterOf(this.getBlockPos());
         return new AABB(blockPos, blockPos.add(direction.getStepX() * currentDistance, direction.getStepY() * currentDistance, direction.getStepZ() * currentDistance));
     }
 
@@ -174,18 +177,44 @@ public class DistanceDetectorEntity extends PeripheralBlockEntity<DistanceDetect
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
+    protected Vec3 getCenterPos() {
+        Vec3 pos = Vec3.atCenterOf(this.getBlockPos());
+        if (!APAddons.vs2Loaded) {
+            return pos;
+        }
+        Ship ship = APAddons.getVS2Ship(this.getLevel(), this.getBlockPos());
+        if (ship == null) {
+            return pos;
+        }
+        Vector3d newPos = ship.getShipToWorld().transformPosition(new Vector3d(pos.x, pos.y, pos.z));
+        return new Vec3(newPos.x, newPos.y, newPos.z);
+    }
+
+    protected Vec3 getDirection() {
+        Vec3 dir = Vec3.atLowerCornerOf(getBlockState().getValue(BaseBlock.ORIENTATION).front().getNormal());
+        if (!APAddons.vs2Loaded) {
+            return dir;
+        }
+        Ship ship = APAddons.getVS2Ship(this.getLevel(), this.getBlockPos());
+        if (ship == null) {
+            return dir;
+        }
+        Vector3d newDir = ship.getShipToWorld().transformDirection(new Vector3d(dir.x, dir.y, dir.z));
+        return new Vec3(newDir.x, newDir.y, newDir.z);
+    }
+
     public double calculateDistance() {
         final double maxRange = this.getMaxRange();
-        Direction direction = getBlockState().getValue(BaseBlock.ORIENTATION).front();
-        Vec3 center = Vec3.atCenterOf(getBlockPos());
+        Vec3 direction = getDirection();
+        Vec3 center = getCenterPos();
         Vec3 from = center;
-        Vec3 to = from.add(direction.getStepX() * maxRange, direction.getStepY() * maxRange, direction.getStepZ() * maxRange);
+        Vec3 to = from.add(direction.x * maxRange, direction.y * maxRange, direction.z * maxRange);
 
         HitResult result = this.getHitResult(to, from);
         if (result.getType() == HitResult.Type.MISS) {
             return -1;
         }
-        return getDistanceOnDirection(direction, result.getLocation(), center) - 0.5f;
+        return result.getLocation().distanceTo(center) - 0.5f;
     }
 
     public double calculateAndUpdateDistance() {
@@ -198,13 +227,8 @@ public class DistanceDetectorEntity extends PeripheralBlockEntity<DistanceDetect
         Level level = this.getLevel();
         return switch (this.detectionType) {
             case ENTITY -> HitResultUtil.getEntityHitResult(to, from, level);
-            case BLOCK -> HitResultUtil.getBlockHitResult(to, from, level, this.ignoreTransparent);
-            case BOTH -> HitResultUtil.getHitResult(to, from, level, this.ignoreTransparent);
+            case BLOCK -> HitResultUtil.getBlockHitResult(to, from, level, this.ignoreTransparent, this.getBlockPos());
+            case BOTH -> HitResultUtil.getHitResult(to, from, level, this.ignoreTransparent, this.getBlockPos());
         };
-    }
-
-    private static float getDistanceOnDirection(Direction direction, Vec3 from, Vec3 to) {
-        Direction.Axis axis = direction.getAxis();
-        return Math.abs((float)(axis.choose(from.x, from.y, from.z) - axis.choose(to.x, to.y, to.z)));
     }
 }
