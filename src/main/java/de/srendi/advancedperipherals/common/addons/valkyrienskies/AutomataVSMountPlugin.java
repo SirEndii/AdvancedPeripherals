@@ -8,6 +8,7 @@ import de.srendi.advancedperipherals.common.addons.APAddons;
 import de.srendi.advancedperipherals.common.addons.computercraft.operations.SingleOperationContext;
 import de.srendi.advancedperipherals.common.addons.computercraft.owner.IPeripheralOwner;
 import de.srendi.advancedperipherals.common.addons.computercraft.peripheral.plugins.AutomataCorePlugin;
+import de.srendi.advancedperipherals.common.util.LuaConverter;
 import de.srendi.advancedperipherals.lib.peripherals.AutomataCorePeripheral;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -17,6 +18,7 @@ import org.joml.Vector3d;
 import org.valkyrienskies.core.api.ships.ServerShip;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static de.srendi.advancedperipherals.common.addons.computercraft.operations.SingleOperation.MOUNT_SHIP;
@@ -31,6 +33,17 @@ public class AutomataVSMountPlugin extends AutomataCorePlugin {
     public final boolean isOnShip() {
         IPeripheralOwner owner = this.automataCore.getPeripheralOwner();
         return APAddons.isBlockOnShip(owner.getLevel(), owner.getPos());
+    }
+
+    @LuaFunction(mainThread = true)
+    public final MethodResult getCurrentShip() {
+        IPeripheralOwner owner = this.automataCore.getPeripheralOwner();
+        ServerShip ship = (ServerShip) APAddons.getVS2Ship(owner.getLevel(), owner.getPos());
+        if (ship == null) {
+            return MethodResult.of();
+        }
+        Map<String, Object> data = LuaConverter.shipToObjectOnShip(ship, this.automataCore.getCenterPos());
+        return MethodResult.of(data);
     }
 
     @LuaFunction(mainThread = true)
@@ -85,7 +98,7 @@ public class AutomataVSMountPlugin extends AutomataCorePlugin {
 
     protected Vec3 getMountDetectPosition() {
         IPeripheralOwner owner = this.automataCore.getPeripheralOwner();
-        return owner.getCenterPos().add(Vec3.atLowerCornerOf(owner.getFacing().getNormal()));
+        return owner.getCenterPos();
     }
 
     protected List<ServerShip> getMountableShips() {

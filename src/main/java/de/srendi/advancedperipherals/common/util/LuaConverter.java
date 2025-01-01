@@ -292,6 +292,10 @@ public class LuaConverter {
         return map;
     }
 
+    public static Map<String, Object> shipToObject(ServerShip ship) {
+        return shipToObject(ship, null);
+    }
+
     public static Map<String, Object> shipToObject(ServerShip ship, Vec3 pos) {
         Map<String, Object> map = new HashMap<>();
 
@@ -300,11 +304,13 @@ public class LuaConverter {
 
         ShipTransform tf = ship.getTransform();
 
-        Vector3dc worldPos = tf.getShipPositionInWorldCoordinates();
         Vector3dc shipPos = tf.getShipPositionInShipCoordinates();
-        map.put("x", worldPos.x() - pos.x);
-        map.put("y", worldPos.y() - pos.y);
-        map.put("z", worldPos.z() - pos.z);
+        if (pos != null) {
+            Vector3dc worldPos = tf.getShipPositionInWorldCoordinates();
+            map.put("x", worldPos.x() - pos.x);
+            map.put("y", worldPos.y() - pos.y);
+            map.put("z", worldPos.z() - pos.z);
+        }
         Quaterniondc rot = tf.getShipToWorldRotation();
         final double rotX = rot.x(), rotY = rot.y(), rotZ = rot.z(), rotW = rot.w();
         map.put("rotate", Map.of("x", rotX, "y", rotY, "z", rotZ, "w", rotW));
@@ -327,8 +333,20 @@ public class LuaConverter {
         ShipInertiaData data = ship.getInertiaData();
         map.put("mass", data.getMass());
         Vector3d com = tf.getShipToWorld().transformPosition(data.getCenterOfMassInShipSpace(), new Vector3d());
-        map.put("centerOfMass", Map.of("x", com.x - pos.x, "y", com.y - pos.y, "z", com.z - pos.z));
+        if (pos != null) {
+            map.put("centerOfMass", Map.of("x", com.x - pos.x, "y", com.y - pos.y, "z", com.z - pos.z));
+        }
+        return map;
+    }
 
+    public static Map<String, Object> shipToObjectOnShip(ServerShip ship, Vec3 pos) {
+        Map<String, Object> map = shipToObject(ship);
+        Vector3dc shipPos = ship.getTransform().getShipPositionInShipCoordinates();
+        map.put("x", shipPos.x() - pos.x);
+        map.put("y", shipPos.y() - pos.y);
+        map.put("z", shipPos.z() - pos.z);
+        Vector3dc com = ship.getInertiaData().getCenterOfMassInShipSpace();
+        map.put("centerOfMass", Map.of("x", com.x() - pos.x, "y", com.y() - pos.y, "z", com.z() - pos.z));
         return map;
     }
 }

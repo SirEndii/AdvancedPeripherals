@@ -5,10 +5,12 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.core.apis.TableHelper;
+import de.srendi.advancedperipherals.common.addons.APAddons;
 import de.srendi.advancedperipherals.common.addons.computercraft.owner.TurtlePeripheralOwner;
 import de.srendi.advancedperipherals.common.util.LuaConverter;
 import de.srendi.advancedperipherals.common.util.fakeplayer.APFakePlayer;
 import de.srendi.advancedperipherals.lib.peripherals.AutomataCorePeripheral;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
@@ -16,6 +18,7 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.valkyrienskies.core.api.ships.Ship;
 
 import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
@@ -42,7 +45,8 @@ public class AutomataLookPlugin extends AutomataCorePlugin {
         }
 
         BlockHitResult blockHit = (BlockHitResult) result;
-        BlockState state = owner.getLevel().getBlockState(blockHit.getBlockPos());
+        BlockPos blockPos = blockHit.getBlockPos();
+        BlockState state = owner.getLevel().getBlockState(blockPos);
         Map<String, Object> data = new HashMap<>();
         ResourceLocation blockName = ForgeRegistries.BLOCKS.getKey(state.getBlock());
         data.put("name", blockName == null ? null : blockName.toString());
@@ -52,6 +56,13 @@ public class AutomataLookPlugin extends AutomataCorePlugin {
         data.put("x", pos.x - origin.x);
         data.put("y", pos.y - origin.y);
         data.put("z", pos.z - origin.z);
+        if (APAddons.vs2Loaded) {
+            Ship ship = APAddons.getVS2Ship(automataCore.getLevel(), blockPos);
+            if (ship != null) {
+                data.put("shipId", ship.getId());
+                data.put("shipName", ship.getSlug());
+            }
+        }
         return MethodResult.of(data);
     }
 
