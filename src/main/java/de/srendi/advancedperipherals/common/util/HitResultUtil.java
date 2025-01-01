@@ -128,7 +128,7 @@ public class HitResultUtil {
      */
     @NotNull
     public static BlockHitResult getBlockHitResult(Vec3 to, Vec3 from, Level level, boolean ignoreNoOccluded) {
-        return getBlockHitResult(to, from, level, ignoreNoOccluded);
+        return getBlockHitResult(to, from, level, ignoreNoOccluded, null);
     }
 
     /**

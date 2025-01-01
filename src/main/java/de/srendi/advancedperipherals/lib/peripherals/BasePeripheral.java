@@ -132,23 +132,23 @@ public abstract class BasePeripheral<O extends IPeripheralOwner> implements IBas
         return getPeripheralConfiguration();
     }
 
-    protected BlockPos getPos() {
+    public BlockPos getPos() {
         return owner.getPos();
     }
 
-    protected Vec3 getCenterPos() {
+    public Vec3 getCenterPos() {
         return owner.getCenterPos();
     }
 
-    protected Level getLevel() {
+    public Level getLevel() {
         return owner.getLevel();
     }
 
-    protected boolean isOnShip() {
+    public boolean isOnShip() {
         return APAddons.vs2Loaded && APAddons.isBlockOnShip(owner.getLevel(), owner.getPos());
     }
 
-    protected Vec3 getWorldPos() {
+    public Vec3 getWorldPos() {
         Vec3 pos = this.getCenterPos();
         if (!APAddons.vs2Loaded) {
             return pos;
@@ -161,7 +161,7 @@ public abstract class BasePeripheral<O extends IPeripheralOwner> implements IBas
         return new Vec3(newPos.x, newPos.y, newPos.z);
     }
 
-    protected final BlockPos getWorldBlockPos() {
+    public final BlockPos getWorldBlockPos() {
         return new BlockPos(this.getWorldPos());
     }
 

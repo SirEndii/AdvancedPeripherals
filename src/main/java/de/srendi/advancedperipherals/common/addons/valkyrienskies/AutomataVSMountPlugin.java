@@ -1,4 +1,4 @@
-package de.srendi.advancedperipherals.common.addons.computercraft.peripheral.plugins;
+package de.srendi.advancedperipherals.common.addons.valkyrienskies;
 
 import dan200.computercraft.api.lua.IArguments;
 import dan200.computercraft.api.lua.LuaException;
@@ -7,7 +7,7 @@ import dan200.computercraft.api.lua.MethodResult;
 import de.srendi.advancedperipherals.common.addons.APAddons;
 import de.srendi.advancedperipherals.common.addons.computercraft.operations.SingleOperationContext;
 import de.srendi.advancedperipherals.common.addons.computercraft.owner.IPeripheralOwner;
-import de.srendi.advancedperipherals.common.addons.valkyrienskies.ValkyrienSkies;
+import de.srendi.advancedperipherals.common.addons.computercraft.peripheral.plugins.AutomataCorePlugin;
 import de.srendi.advancedperipherals.lib.peripherals.AutomataCorePeripheral;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;

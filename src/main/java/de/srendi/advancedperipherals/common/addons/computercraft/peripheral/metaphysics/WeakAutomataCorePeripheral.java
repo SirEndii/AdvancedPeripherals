@@ -8,6 +8,7 @@ import de.srendi.advancedperipherals.common.addons.computercraft.peripheral.plug
 import de.srendi.advancedperipherals.common.configuration.APConfig;
 import de.srendi.advancedperipherals.lib.metaphysics.IAutomataCoreTier;
 import de.srendi.advancedperipherals.lib.peripherals.AutomataCorePeripheral;
+import de.srendi.advancedperipherals.lib.peripherals.IPeripheralPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,11 +19,11 @@ public class WeakAutomataCorePeripheral extends AutomataCorePeripheral {
     private static final List<Function<AutomataCorePeripheral, IPeripheralPlugin>> PERIPHERAL_PLUGINS = new ArrayList<>();
 
     static {
-        PERIPHERAL_PLUGINS.add(AutomataItemSuckPlugin::new);
-        PERIPHERAL_PLUGINS.add(AutomataLookPlugin::new);
-        PERIPHERAL_PLUGINS.add(AutomataBlockHandPlugin::new);
-        PERIPHERAL_PLUGINS.add(AutomataSoulFeedingPlugin::new);
-        PERIPHERAL_PLUGINS.add(AutomataChargingPlugin::new);
+        addIntegrationPlugin(AutomataItemSuckPlugin::new);
+        addIntegrationPlugin(AutomataLookPlugin::new);
+        addIntegrationPlugin(AutomataBlockHandPlugin::new);
+        addIntegrationPlugin(AutomataSoulFeedingPlugin::new);
+        addIntegrationPlugin(AutomataChargingPlugin::new);
     }
 
     public WeakAutomataCorePeripheral(ITurtleAccess turtle, TurtleSide side) {
@@ -31,14 +32,13 @@ public class WeakAutomataCorePeripheral extends AutomataCorePeripheral {
 
     protected WeakAutomataCorePeripheral(String type, ITurtleAccess turtle, TurtleSide side, IAutomataCoreTier tier) {
         super(type, turtle, side, tier);
-        addPlugin(new AutomataItemSuckPlugin(this));
-        addPlugin(new AutomataLookPlugin(this));
-        addPlugin(new AutomataBlockHandPlugin(this));
-        addPlugin(new AutomataSoulFeedingPlugin(this));
-        addPlugin(new AutomataChargingPlugin(this));
-        if (APAddons.vs2Loaded) {
-            addPlugin(new AutomataVSMountPlugin(this));
+        for (Function<AutomataCorePeripheral, IPeripheralPlugin> plugin : PERIPHERAL_PLUGINS) {
+            addPlugin(plugin.apply(this));
         }
+    }
+
+    public static void addIntegrationPlugin(Function<AutomataCorePeripheral, IPeripheralPlugin> plugin) {
+        PERIPHERAL_PLUGINS.add(plugin);
     }
 
     @Override
