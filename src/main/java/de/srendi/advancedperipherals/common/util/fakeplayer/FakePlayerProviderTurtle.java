@@ -3,16 +3,21 @@ package de.srendi.advancedperipherals.common.util.fakeplayer;
 import com.mojang.authlib.GameProfile;
 import dan200.computercraft.api.turtle.ITurtleAccess;
 import dan200.computercraft.shared.util.WorldUtil;
+import de.srendi.advancedperipherals.common.addons.APAddons;
+import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.wrapper.InvWrapper;
+import org.joml.Matrix4dc;
+import org.joml.Vector3d;
+import org.valkyrienskies.core.api.ships.Ship;
 
 import java.util.WeakHashMap;
 import java.util.function.Function;
@@ -32,11 +37,27 @@ public final class FakePlayerProviderTurtle {
     }
 
     public static void load(APFakePlayer player, ITurtleAccess turtle) {
-        Direction direction = turtle.getDirection();
-        player.setLevel((ServerLevel) turtle.getLevel());
-        // Player position
-        BlockPos position = turtle.getPosition();
-        player.moveTo(position.getX() + 0.5, position.getY() + 0.5, position.getZ() + 0.5, direction.toYRot(), 0);
+        ServerLevel level = (ServerLevel) turtle.getLevel();
+        player.setLevel(level);
+
+        BlockPos pos = turtle.getPosition();
+        player.setSourceBlock(pos);
+
+        Vec3 direction = Vec3.atLowerCornerOf(turtle.getDirection().getNormal());
+        Vec3 position = Vec3.atCenterOf(pos);
+        if (APAddons.vs2Loaded) {
+            Ship ship = APAddons.getVS2Ship(level, pos);
+            if (ship != null) {
+                Matrix4dc matrix = ship.getShipToWorld();
+                Vector3d newPos = matrix.transformPosition(new Vector3d(position.x, position.y, position.z));
+                Vector3d newDir = matrix.transformDirection(new Vector3d(direction.x, direction.y, direction.z));
+                position = new Vec3(newPos.x, newPos.y, newPos.z);
+                direction = new Vec3(newDir.x, newDir.y, newDir.z);
+            }
+        }
+        player.lookAt(EntityAnchorArgument.Anchor.FEET, position.add(direction));
+        player.moveTo(position.x, position.y, position.z, player.getYRot(), player.getXRot());
+
         // Player inventory
         Inventory playerInventory = player.getInventory();
         playerInventory.selected = 0;
@@ -55,9 +76,9 @@ public final class FakePlayerProviderTurtle {
 
         // Add properties
         ItemStack activeStack = player.getItemInHand(InteractionHand.MAIN_HAND);
-        if (!activeStack.isEmpty())
+        if (!activeStack.isEmpty()) {
             player.getAttributes().addTransientAttributeModifiers(activeStack.getAttributeModifiers(EquipmentSlot.MAINHAND));
-
+        }
     }
 
     public static void unload(APFakePlayer player, ITurtleAccess turtle) {

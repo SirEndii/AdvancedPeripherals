@@ -44,7 +44,7 @@ import static de.srendi.advancedperipherals.common.addons.computercraft.operatio
 public class EnvironmentDetectorPeripheral extends BasePeripheral<IPeripheralOwner> {
 
     public static final String PERIPHERAL_TYPE = "environment_detector";
-    private static final List<Function<IPeripheralOwner, IPeripheralPlugin>> PERIPHERAL_PLUGINS = new LinkedList<>();
+    private static final List<Function<IPeripheralOwner, IPeripheralPlugin>> PERIPHERAL_PLUGINS = new ArrayList<>();
 
     protected EnvironmentDetectorPeripheral(IPeripheralOwner owner) {
         super(PERIPHERAL_TYPE, owner);
