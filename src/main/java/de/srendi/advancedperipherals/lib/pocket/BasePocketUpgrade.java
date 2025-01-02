@@ -16,7 +16,7 @@ public abstract class BasePocketUpgrade<T extends IBasePeripheral<?>> extends Ab
     protected T peripheral;
 
     protected BasePocketUpgrade(ResourceLocation id, ItemStack stack) {
-        super(id, TranslationUtil.pocket(id.getPath()), stack);
+        super(TranslationUtil.pocket(id.getPath()), stack);
     }
 
     protected abstract T getPeripheral(IPocketAccess access);

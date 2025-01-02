@@ -5,6 +5,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
@@ -39,16 +40,16 @@ public class VillagerTrade implements VillagerTrades.ItemListing {
     public MerchantOffer getOffer(@NotNull Entity trader, @NotNull RandomSource rand) {
         if (type == Type.EMERALD_FOR_ITEM) {
             if (itemStack != null)
-                return new MerchantOffer(itemStack, new ItemStack(Items.EMERALD, emeraldAmount), maxUses, xp, 1);
+                return new MerchantOffer(new ItemCost(itemStack.getItem()), new ItemStack(Items.EMERALD, emeraldAmount), maxUses, xp, 1);
             if (item != null)
-                return new MerchantOffer(new ItemStack(item, itemAmount), new ItemStack(Items.EMERALD, emeraldAmount), maxUses, xp, 1);
+                return new MerchantOffer(new ItemCost(new ItemStack(item, itemAmount).getItem()), new ItemStack(Items.EMERALD, emeraldAmount), maxUses, xp, 1);
 
         }
         if (type == Type.ITEM_FOR_EMERALD) {
             if (itemStack != null)
-                return new MerchantOffer(new ItemStack(Items.EMERALD, emeraldAmount), itemStack, maxUses, xp, 1);
+                return new MerchantOffer(new ItemCost(new ItemStack(Items.EMERALD, emeraldAmount).getItem()), itemStack, maxUses, xp, 1);
             if (item != null)
-                return new MerchantOffer(new ItemStack(Items.EMERALD, emeraldAmount), new ItemStack(item, itemAmount), maxUses, xp, 1);
+                return new MerchantOffer(new ItemCost(new ItemStack(Items.EMERALD, emeraldAmount).getItem()), new ItemStack(item, itemAmount), maxUses, xp, 1);
         }
         return null;
     }

@@ -12,14 +12,16 @@ import net.minecraft.world.level.levelgen.structure.pools.SinglePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorList;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Mod.EventBusSubscriber(modid = AdvancedPeripherals.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@EventBusSubscriber(modid = AdvancedPeripherals.MOD_ID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.GAME)
 public class VillageStructures {
 
     // Adapted from Pneumaticcraft
@@ -54,13 +56,13 @@ public class VillageStructures {
             return;
 
         Holder<StructureProcessorList> emptyProcessor = event.getServer().registryAccess().registryOrThrow(Registries.PROCESSOR_LIST)
-                .getHolderOrThrow(ResourceKey.create(Registries.PROCESSOR_LIST, new ResourceLocation("minecraft:empty")));
+                .getHolderOrThrow(ResourceKey.create(Registries.PROCESSOR_LIST, ResourceLocation.parse("minecraft:empty")));
 
         Registry<StructureTemplatePool> templatePoolRegistry = event.getServer().registryAccess().registryOrThrow(Registries.TEMPLATE_POOL);
 
         for (String biome : new String[]{"desert", "snowy", "plains", "savanna", "taiga"}) {
             AdvancedPeripherals.debug("Register generating scientist_" + biome + " village house");
-            addPieceToPool(templatePoolRegistry, emptyProcessor, new ResourceLocation("village/" + biome + "/houses"), AdvancedPeripherals.MOD_ID + ":villages/scientist_" + biome, StructureTemplatePool.Projection.RIGID, APConfig.WORLD_CONFIG.villagerStructureWeight.get());
+            addPieceToPool(templatePoolRegistry, emptyProcessor, ResourceLocation.parse("village/" + biome + "/houses"), AdvancedPeripherals.MOD_ID + ":villages/scientist_" + biome, StructureTemplatePool.Projection.RIGID, APConfig.WORLD_CONFIG.villagerStructureWeight.get());
         }
     }
 }

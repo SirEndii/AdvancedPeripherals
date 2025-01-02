@@ -23,7 +23,7 @@ public class RefinedStorageNode extends NetworkNode {
 
     @Override
     public ResourceLocation getId() {
-        return new ResourceLocation(AdvancedPeripherals.MOD_ID, "rs_bridge");
+        return AdvancedPeripherals.getRL("rs_bridge");
     }
 
     @NotNull

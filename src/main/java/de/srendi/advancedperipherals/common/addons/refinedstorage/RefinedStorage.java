@@ -285,7 +285,7 @@ public class RefinedStorage {
     }
 
     public void initiate() {
-        api.getNetworkNodeRegistry().add(new ResourceLocation(AdvancedPeripherals.MOD_ID, "rs_bridge"), (tag, world, pos) -> read(tag, new RefinedStorageNode(world, pos)));
+        api.getNetworkNodeRegistry().add(AdvancedPeripherals.getRL("rs_bridge"), (tag, world, pos) -> read(tag, new RefinedStorageNode(world, pos)));
     }
 
     public IRSAPI getApi() {

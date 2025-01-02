@@ -37,7 +37,7 @@ public class FluidFilter {
             try {
                 String name = TableHelper.getStringField(item, "name");
                 if (name.startsWith("#")) {
-                    fluidFilter.tag = TagKey.create(Registries.FLUID, new ResourceLocation(name.substring(1)));
+                    fluidFilter.tag = TagKey.create(Registries.FLUID, ResourceLocation.parse(name.substring(1)));
                 } else if ((fluidFilter.fluid = ItemUtil.getRegistryEntry(name, BuiltInRegistries.FLUID)) == null) {
                     return Pair.of(null, "FLUID_NOT_FOUND");
                 }

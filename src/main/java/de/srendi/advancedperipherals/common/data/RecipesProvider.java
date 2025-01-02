@@ -6,6 +6,8 @@ import com.refinedmods.refinedstorage.RSItems;
 import dan200.computercraft.shared.ModRegistry;
 import de.srendi.advancedperipherals.common.addons.APAddons;
 import de.srendi.advancedperipherals.common.setup.Blocks;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -15,21 +17,22 @@ import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.conditions.IConditionBuilder;
 import net.neoforged.neoforge.common.conditions.ModLoadedCondition;
-import net.neoforged.neoforge.common.crafting.NBTIngredient;
+
+import java.util.concurrent.CompletableFuture;
 
 public class RecipesProvider extends RecipeProvider implements IConditionBuilder {
 
     private static final Block CASING = Blocks.PERIPHERAL_CASING.get();
     private static final String HAS_ITEM = "has_item";
 
-    public RecipesProvider(PackOutput pGenerator) {
-        super(pGenerator);
+    public RecipesProvider(PackOutput pGenerator, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+        super(pGenerator, lookupProvider);
     }
 
 
@@ -49,7 +52,7 @@ public class RecipesProvider extends RecipeProvider implements IConditionBuilder
 
         ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, Blocks.INVENTORY_MANAGER.get()).define('I', Tags.Items.INGOTS_IRON).define('C', Tags.Items.CHESTS).define('A', CASING).pattern("ICI").pattern("CAC").pattern("ICI").unlockedBy(HAS_ITEM, has(CASING)).save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, de.srendi.advancedperipherals.common.setup.Items.MEMORY_CARD.get()).define('I', Tags.Items.INGOTS_IRON).define('W', Tags.Items.GLASS_WHITE).define('O', Items.OBSERVER).define('G', Tags.Items.INGOTS_GOLD).pattern("IWI").pattern("IOI").pattern(" G ").unlockedBy(HAS_ITEM, has(Items.OBSERVER)).save(recipeOutput);
+        ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, de.srendi.advancedperipherals.common.setup.Items.MEMORY_CARD.get()).define('I', Tags.Items.INGOTS_IRON).define('W', Tags.Items.GLASS_BLOCKS_CHEAP).define('O', Items.OBSERVER).define('G', Tags.Items.INGOTS_GOLD).pattern("IWI").pattern("IOI").pattern(" G ").unlockedBy(HAS_ITEM, has(Items.OBSERVER)).save(recipeOutput);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, Blocks.PERIPHERAL_CASING.get()).define('I', Tags.Items.INGOTS_IRON).define('i', Items.IRON_BARS).define('R', Tags.Items.STORAGE_BLOCKS_REDSTONE).pattern("IiI").pattern("iRi").pattern("IiI").unlockedBy(HAS_ITEM, has(Items.REDSTONE_BLOCK)).save(recipeOutput);
 
@@ -67,7 +70,21 @@ public class RecipesProvider extends RecipeProvider implements IConditionBuilder
 
         ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, Blocks.RS_BRIDGE.get()).define('Q', RSItems.QUARTZ_ENRICHED_IRON.get()).define('A', CASING).define('I', RSBlocks.INTERFACE.get()).pattern("QIQ").pattern("IAI").pattern("QIQ").unlockedBy(HAS_ITEM, has(CASING)).save(recipeOutput.withConditions(new ModLoadedCondition(APAddons.REFINEDSTORAGE_MODID)));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, de.srendi.advancedperipherals.common.setup.Items.WEAK_AUTOMATA_CORE.get()).define('A', CASING).define('R', Tags.Items.STORAGE_BLOCKS_REDSTONE).define('S', Items.SOUL_LANTERN).define('D', Tags.Items.GEMS_DIAMOND).define('L', NBTIngredient.of(true, PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.LONG_REGENERATION))).pattern("RAR").pattern("DSD").pattern("RLR").unlockedBy(HAS_ITEM, has(CASING)).save(recipeOutput);
+        ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, de.srendi.advancedperipherals.common.setup.Items.WEAK_AUTOMATA_CORE.get())
+                .define('A', CASING)
+                .define('R', Tags.Items.STORAGE_BLOCKS_REDSTONE)
+                .define('S', Items.SOUL_LANTERN)
+                .define('D', Tags.Items.GEMS_DIAMOND)
+                .define('L', () -> {
+                    ItemStack potion = Items.POTION.getDefaultInstance();
+                    potion.update(DataComponents.POTION_CONTENTS, PotionContents.EMPTY, Potions.LONG_REGENERATION, PotionContents::withPotion);
+                    return potion.getItem();
+                })
+                .pattern("RAR")
+                .pattern("DSD")
+                .pattern("RLR")
+                .unlockedBy(HAS_ITEM, has(CASING))
+                .save(recipeOutput);
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.REDSTONE, de.srendi.advancedperipherals.common.setup.Items.OVERPOWERED_WEAK_AUTOMATA_CORE.get()).requires(de.srendi.advancedperipherals.common.setup.Items.WEAK_AUTOMATA_CORE.get()).requires(Items.NETHER_STAR).unlockedBy(HAS_ITEM, has(de.srendi.advancedperipherals.common.setup.Items.WEAK_AUTOMATA_CORE.get())).save(recipeOutput);
 

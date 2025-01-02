@@ -52,7 +52,7 @@ public class AdvancedPeripherals {
     }
 
     public static ResourceLocation getRL(String resource) {
-        return new ResourceLocation(MOD_ID, resource);
+        return ResourceLocation.fromNamespaceAndPath(MOD_ID, resource);
     }
 
     public void commonSetup(FMLCommonSetupEvent event) {

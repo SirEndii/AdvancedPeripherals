@@ -39,7 +39,7 @@ public class ItemFilter {
             try {
                 String name = TableHelper.getStringField(item, "name");
                 if (name.startsWith("#")) {
-                    itemFilter.tag = TagKey.create(Registries.ITEM, new ResourceLocation(name.substring(1)));
+                    itemFilter.tag = TagKey.create(Registries.ITEM, ResourceLocation.parse(name.substring(1)));
                 } else if ((itemFilter.item = ItemUtil.getRegistryEntry(name, BuiltInRegistries.ITEM)) == null) {
                     return Pair.of(null, "ITEM_NOT_FOUND");
                 }

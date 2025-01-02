@@ -95,7 +95,7 @@ public class BlockStatesAndModelsProvider extends BlockStateProvider {
 
     private ResourceLocation blockTexture(Block block, String offset) {
         ResourceLocation name = key(block);
-        return new ResourceLocation(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/" + name.getPath() + "_" + offset);
+        return ResourceLocation.fromNamespaceAndPath(name.getNamespace(), ModelProvider.BLOCK_FOLDER + "/" + name.getPath() + "_" + offset);
     }
 
     private ResourceLocation key(Block block) {

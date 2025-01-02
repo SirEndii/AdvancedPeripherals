@@ -33,7 +33,7 @@ public class ItemUtil {
     public static <T> T getRegistryEntry(String name, Registry<T> forgeRegistry) {
         ResourceLocation location;
         try {
-            location = new ResourceLocation(name);
+            location = ResourceLocation.parse(name);
         } catch (ResourceLocationException ex) {
             location = null;
         }
