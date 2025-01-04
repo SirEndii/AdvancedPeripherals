@@ -4,6 +4,7 @@ import dan200.computercraft.api.turtle.ITurtleAccess;
 import dan200.computercraft.api.turtle.TurtleSide;
 import de.srendi.advancedperipherals.common.util.DataStorageUtil;
 import de.srendi.advancedperipherals.lib.peripherals.IBasePeripheral;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -46,24 +47,25 @@ public abstract class ClockwiseAnimatedTurtleUpgrade<T extends IBasePeripheral<?
     }
 
     @Override
-    public ItemStack getUpgradeItem(CompoundTag upgradeData) {
+    public ItemStack getUpgradeItem(DataComponentPatch upgradeData) {
         if (upgradeData.isEmpty()) return getCraftingItem();
-        var baseItem = getCraftingItem().copy();
-        baseItem.addTagElement(STORED_DATA_TAG, upgradeData);
+        ItemStack baseItem = getCraftingItem().copy();
+        baseItem.applyComponents(upgradeData);
         return baseItem;
     }
 
     @Override
-    public CompoundTag getUpgradeData(ItemStack stack) {
-        var storedData = stack.getTagElement(STORED_DATA_TAG);
+    public DataComponentPatch getUpgradeData(ItemStack stack) {
+        var storedData = stack.get(STORED_DATA_TAG);
         if (storedData == null)
-            return new CompoundTag();
+            return DataComponentPatch.EMPTY;
         return storedData;
     }
 
     @Override
-    public boolean isItemSuitable(ItemStack stack) {
-        if (stack.getTagElement(STORED_DATA_TAG) == null) return super.isItemSuitable(stack);
+    public boolean isItemSuitable(@NotNull ItemStack stack) {
+        if (stack.getTagElement(STORED_DATA_TAG) == null)
+            return super.isItemSuitable(stack);
         var tweakedStack = stack.copy();
         tweakedStack.getOrCreateTag().remove(STORED_DATA_TAG);
         return super.isItemSuitable(tweakedStack);
