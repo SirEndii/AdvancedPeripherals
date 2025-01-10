@@ -16,7 +16,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Random;
 
-@Mod(AdvancedPeripherals.MOD_ID)
+@Mod(AdvancedPeripherals.MOD_ID + "_lite")
 public class AdvancedPeripherals {
 
     public static final String MOD_ID = "advancedperipherals";
