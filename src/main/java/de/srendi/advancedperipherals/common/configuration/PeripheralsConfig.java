@@ -1,8 +1,8 @@
 package de.srendi.advancedperipherals.common.configuration;
 
-import de.srendi.advancedperipherals.common.addons.computercraft.operations.SimpleFreeOperation;
-import de.srendi.advancedperipherals.common.addons.computercraft.operations.SingleOperation;
-import de.srendi.advancedperipherals.common.addons.computercraft.operations.SphereOperation;
+// import de.srendi.advancedperipherals.common.addons.computercraft.operations.SimpleFreeOperation;
+// import de.srendi.advancedperipherals.common.addons.computercraft.operations.SingleOperation;
+// import de.srendi.advancedperipherals.common.addons.computercraft.operations.SphereOperation;
 import net.minecraft.FieldsAreNonnullByDefault;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig;
@@ -205,9 +205,9 @@ public class PeripheralsConfig implements IAPConfig {
 
         pop("Operations", builder);
 
-        register(SingleOperation.values(), builder);
-        register(SphereOperation.values(), builder);
-        register(SimpleFreeOperation.values(), builder);
+        // register(SingleOperation.values(), builder);
+        // register(SphereOperation.values(), builder);
+        // register(SimpleFreeOperation.values(), builder);
 
         builder.pop();
 
