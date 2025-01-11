@@ -23,7 +23,7 @@ public class ToastToClientPacket implements IAPPacket {
     }
 
     public static ToastToClientPacket decode(FriendlyByteBuf buffer) {
-        return new ToastToClientPacket(buffer.readComponent(), buffer.readComponent());
+        return new ToastToClientPacket(buffer.read(), buffer.readComponent());
     }
 
     @Override

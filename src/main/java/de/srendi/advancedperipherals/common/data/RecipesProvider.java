@@ -1,8 +1,6 @@
 package de.srendi.advancedperipherals.common.data;
 
 import appeng.core.definitions.AEBlocks;
-import com.refinedmods.refinedstorage.RSBlocks;
-import com.refinedmods.refinedstorage.RSItems;
 import dan200.computercraft.shared.ModRegistry;
 import de.srendi.advancedperipherals.common.addons.APAddons;
 import de.srendi.advancedperipherals.common.setup.Blocks;
@@ -67,8 +65,6 @@ public class RecipesProvider extends RecipeProvider implements IConditionBuilder
         ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, Blocks.NBT_STORAGE.get()).define('C', Tags.Items.CHESTS).define('A', CASING).define('R', Tags.Items.STORAGE_BLOCKS_REDSTONE).define('I', Tags.Items.INGOTS_IRON).pattern("ICI").pattern("CAC").pattern("RCR").unlockedBy(HAS_ITEM, has(CASING)).save(recipeOutput);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, Blocks.ME_BRIDGE.get()).define('F', AEBlocks.FLUIX_BLOCK.asItem()).define('A', CASING).define('I', AEBlocks.INTERFACE.asItem()).pattern("FIF").pattern("IAI").pattern("FIF").unlockedBy(HAS_ITEM, has(CASING)).save(recipeOutput.withConditions(new ModLoadedCondition(APAddons.AE2_MODID)));
-
-        ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, Blocks.RS_BRIDGE.get()).define('Q', RSItems.QUARTZ_ENRICHED_IRON.get()).define('A', CASING).define('I', RSBlocks.INTERFACE.get()).pattern("QIQ").pattern("IAI").pattern("QIQ").unlockedBy(HAS_ITEM, has(CASING)).save(recipeOutput.withConditions(new ModLoadedCondition(APAddons.REFINEDSTORAGE_MODID)));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, de.srendi.advancedperipherals.common.setup.Items.WEAK_AUTOMATA_CORE.get())
                 .define('A', CASING)

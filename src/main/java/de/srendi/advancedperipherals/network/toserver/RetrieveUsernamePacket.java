@@ -6,6 +6,7 @@ import de.srendi.advancedperipherals.network.APNetworking;
 import de.srendi.advancedperipherals.network.IAPPacket;
 import de.srendi.advancedperipherals.network.toclient.UsernameToCachePacket;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -56,5 +57,13 @@ public class RetrieveUsernamePacket implements IAPPacket {
     @Override
     public ResourceLocation id() {
         return ID;
+    }
+
+    /**
+     * @return
+     */
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return null;
     }
 }

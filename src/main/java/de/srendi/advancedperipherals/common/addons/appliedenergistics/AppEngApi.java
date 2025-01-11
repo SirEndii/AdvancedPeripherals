@@ -421,7 +421,7 @@ public class AppEngApi {
                     int bytesPerType = cell.getBytesPerType(null);
 
                     if (cell.getKeyType().getClass().isAssignableFrom(AEKeyType.items().getClass())) {
-                        if (stack.getTag() == null)
+                        if (stack.get() == null)
                             continue;
                         int numOfType = stack.getTag().getLongArray("amts").length;
                         long numItemsInCell = stack.getTag().getLong("ic");

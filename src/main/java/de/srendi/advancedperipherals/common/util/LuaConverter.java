@@ -5,6 +5,8 @@ import dan200.computercraft.shared.util.NBTUtil;
 import de.srendi.advancedperipherals.common.addons.computercraft.peripheral.InventoryManagerPeripheral;
 import de.srendi.advancedperipherals.common.util.inventory.ItemUtil;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.StringRepresentable;
@@ -52,7 +54,7 @@ public class LuaConverter {
         data.put("inLove", animal.isInLove());
         data.put("aggressive", animal.isAggressive());
         if (animal instanceof IShearable shareable && !itemInHand.isEmpty()) {
-            data.put("shareable", shareable.isShearable(itemInHand, animal.level(), animal.blockPosition()));
+            data.put("shareable", shareable.isShearable(null, itemInHand, animal.level(), animal.blockPosition()));
         }
         return data;
     }
@@ -103,11 +105,11 @@ public class LuaConverter {
     public static Map<String, Object> stackToObject(@NotNull ItemStack stack) {
         if (stack.isEmpty()) return new HashMap<>();
         Map<String, Object> map = itemToObject(stack.getItem());
-        CompoundTag nbt = stack.copy().getOrCreateTag();
+        DataComponentMap components = stack.copy().getComponents();
         map.put("count", stack.getCount());
         map.put("displayName", stack.getDisplayName().getString());
         map.put("maxStackSize", stack.getMaxStackSize());
-        map.put("nbt", NBTUtil.toLua(nbt));
+        map.put("nbt", NBTUtil.toLua(components.));
         map.put("fingerprint", ItemUtil.getFingerprint(stack));
         return map;
     }
