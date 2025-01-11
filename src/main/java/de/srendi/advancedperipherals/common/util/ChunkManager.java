@@ -25,7 +25,7 @@ import java.util.*;
 @Mod.EventBusSubscriber(modid = AdvancedPeripherals.MOD_ID)
 public class ChunkManager extends SavedData {
 
-    private static final String DATA_NAME = AdvancedPeripherals.MOD_ID + "_ForcedChunks";
+    private static final String DATA_NAME = AdvancedPeripherals.ITEM_MOD_ID + "_ForcedChunks";
     private static final String FORCED_CHUNKS_TAG = "forcedChunks";
     private static int tickCounter = 0;
     private final Map<UUID, LoadChunkRecord> forcedChunks = new HashMap<>();
@@ -69,12 +69,12 @@ public class ChunkManager extends SavedData {
 
     private static boolean forceChunk(UUID owner, ServerLevel level, ChunkPos pos) {
         AdvancedPeripherals.debug("Forcing chunk " + pos, Level.WARN);
-        return ForgeChunkManager.forceChunk(level, AdvancedPeripherals.MOD_ID, owner, pos.x, pos.z, true, true);
+        return ForgeChunkManager.forceChunk(level, AdvancedPeripherals.ITEM_MOD_ID, owner, pos.x, pos.z, true, true);
     }
 
     private static boolean unforceChunk(UUID owner, ServerLevel level, ChunkPos pos) {
         AdvancedPeripherals.debug("Unforcing chunk " + pos, Level.WARN);
-        return ForgeChunkManager.forceChunk(level, AdvancedPeripherals.MOD_ID, owner, pos.x, pos.z, false, true);
+        return ForgeChunkManager.forceChunk(level, AdvancedPeripherals.ITEM_MOD_ID, owner, pos.x, pos.z, false, true);
     }
 
     public synchronized boolean addForceChunk(ServerLevel level, UUID owner, ChunkPos pos) {
