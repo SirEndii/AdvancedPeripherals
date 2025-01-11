@@ -5,6 +5,7 @@ import de.srendi.advancedperipherals.common.setup.Items;
 import de.srendi.advancedperipherals.common.setup.Registration;
 import de.srendi.advancedperipherals.common.util.inventory.ItemUtil;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -24,8 +25,8 @@ public class APCreativeTab extends CreativeModeTab {
     public void fillItemList(NonNullList<ItemStack> items) {
         Registration.ITEMS.getEntries().stream().map(RegistryObject::get).forEach(item -> items.add(new ItemStack(item)));
 
-        items.addAll(turtleUpgrade(CCRegistration.ID.CHUNKY_TURTLE));
-        items.addAll(turtleUpgrade(CCRegistration.ID.COMPASS_TURTLE));
+        items.addAll(turtleUpgrade(Registry.ITEM.getKey(Items.CHUNK_CONTROLLER.get())));
+        items.addAll(turtleUpgrade(Registry.ITEM.getKey(net.minecraft.world.item.Items.COMPASS)));
 
     }
 
@@ -34,9 +35,9 @@ public class APCreativeTab extends CreativeModeTab {
                 ItemUtil.makePocket(ItemUtil.POCKET_ADVANCED, pocketId.toString()));
     }
 
-    private static Collection<ItemStack> turtleUpgrade(ResourceLocation pocketId) {
-        return Set.of(ItemUtil.makeTurtle(ItemUtil.TURTLE_NORMAL, pocketId.toString()),
-                ItemUtil.makeTurtle(ItemUtil.TURTLE_ADVANCED, pocketId.toString()));
+    private static Collection<ItemStack> turtleUpgrade(ResourceLocation turtleId) {
+        return Set.of(ItemUtil.makeTurtle(ItemUtil.TURTLE_NORMAL, turtleId.toString()),
+                ItemUtil.makeTurtle(ItemUtil.TURTLE_ADVANCED, turtleId.toString()));
     }
 
     @Override
