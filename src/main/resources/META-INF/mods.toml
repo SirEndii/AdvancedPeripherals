@@ -5,14 +5,13 @@ issueTrackerURL = "https://github.com/IntelligenceModding/AdvancedPeripherals/is
 logoFile = "pack.png"
 [[mods]]
 modId = "advancedperipherals"
-version = "0.0.0"
+version = "0.0.0-INCOMPLETE"
 displayName = "Advanced Peripherals (ID only)"
-displayURL = "https://docs.intelligence-modding.de/"
-description = "Does nothing"
+description = "Only register ID to handle chunk tickets"
 [[mods]]
 modId = "${mod_id}"
 version = "${version}"
-displayName = "Advanced Peripherals"
+displayName = "Advanced Peripherals Lite"
 displayURL = "https://docs.intelligence-modding.de/"
 authors = "Srendi"
 description = '''
