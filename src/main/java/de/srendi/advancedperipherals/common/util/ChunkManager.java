@@ -79,15 +79,15 @@ public class ChunkManager extends SavedData {
 
     public synchronized boolean addForceChunk(ServerLevel level, UUID owner, ChunkPos pos) {
         AdvancedPeripherals.debug("Trying to load forced chunk cluster " + pos, Level.WARN);
+        final int chunkRadius = APConfig.PERIPHERALS_CONFIG.chunkyTurtleRadius.get();
         LoadChunkRecord oldRecord = forcedChunks.get(owner);
         if (oldRecord != null) {
             ServerLevel oldLevel = getServerLevel(oldRecord.getDimensionName());
-            if (oldLevel == level && pos.equals(oldRecord.getPos())) {
+            if (oldLevel == level && chunkRadius == oldRecord.getRadius() && pos.equals(oldRecord.getPos())) {
                 return true;
             }
             unforceChunkRecord(owner, oldRecord, oldLevel);
         }
-        final int chunkRadius = APConfig.PERIPHERALS_CONFIG.chunkyTurtleRadius.get();
         forcedChunks.put(owner, new LoadChunkRecord(level.dimension().location().toString(), pos, chunkRadius));
         setDirty();
         boolean result = true;
@@ -117,11 +117,13 @@ public class ChunkManager extends SavedData {
     public synchronized boolean removeForceChunk(ServerLevel level, UUID owner) {
         AdvancedPeripherals.debug("Attempting to unload forced chunk cluster " + owner, Level.WARN);
         LoadChunkRecord chunkRecord = forcedChunks.get(owner);
-        if (chunkRecord == null)
+        if (chunkRecord == null) {
             return true;
+        }
         String dimensionName = level.dimension().location().toString();
-        if (!chunkRecord.getDimensionName().equals(dimensionName))
+        if (!chunkRecord.getDimensionName().equals(dimensionName)) {
             throw new IllegalArgumentException(String.format("Incorrect dimension! Should be %s instead of %s", chunkRecord.getDimensionName(), dimensionName));
+        }
         boolean result = unforceChunkRecord(owner, chunkRecord, level);
         if (result) {
             forcedChunks.remove(owner);

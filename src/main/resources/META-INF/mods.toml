@@ -4,6 +4,12 @@ license = "All rights reserved"
 issueTrackerURL = "https://github.com/IntelligenceModding/AdvancedPeripherals/issues"
 logoFile = "pack.png"
 [[mods]]
+modId = "advancedperipherals"
+version = "0.0.0"
+displayName = "Advanced Peripherals (ID only)"
+displayURL = "https://docs.intelligence-modding.de/"
+description = "Does nothing"
+[[mods]]
 modId = "${mod_id}"
 version = "${version}"
 displayName = "Advanced Peripherals"

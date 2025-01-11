@@ -218,10 +218,6 @@ dependencies {
     implementation fg.deobf("org.squiddev:cc-tweaked-${minecraft_version}:${cc_version}")
     // Minimal requirements end
 
-    //Patchouli
-    compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
-    runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
-
     // Crash utilities. Used to debug the chunky turtle. Can be commented if not needed
     runtimeOnly fg.deobf("curse.maven:crash-utilities-371813:4406293")
 
