@@ -169,14 +169,6 @@ minecraft {
 repositories {
     mavenCentral()
     maven {
-        name = "Blamejared maven botania patchouli"
-        url = 'https://maven.blamejared.com'
-        content {
-            includeGroup("vazkii.botania")
-            includeGroup("vazkii.patchouli")
-        }
-    }
-    maven {
         name = "Squiddev maven cct"
         url = 'https://squiddev.cc/maven/'
         content {
@@ -324,8 +316,7 @@ tasks.named('processResources', ProcessResources).configure {
                              loader_version            : loader_version,
                              mod_id                    : mod_id,
                              version                   : version,
-                             cc_version                : cc_version,
-                             patchouli_version         : patchouli_version,]
+                             cc_version                : cc_version,]
 
     inputs.properties replaceProperties
 
