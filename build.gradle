@@ -80,7 +80,7 @@ minecraft {
             properties 'forge.logging.console.level': 'debug'
 
             mods {
-                advancedperipherals {
+                advancedperipherals_lite {
                     source sourceSets.main
                 }
             }
@@ -104,7 +104,7 @@ minecraft {
             property 'forge.logging.console.level', 'info'
 
             mods {
-                advancedperipherals {
+                advancedperipherals_lite {
                     source sourceSets.main
                 }
             }
@@ -118,13 +118,13 @@ minecraft {
             property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
             property 'forge.logging.console.level', 'debug'
 
-            args '--mod', 'advancedperipherals', '--all',
+            args '--mod', 'advancedperipherals_lite', '--all',
                     '--existing', file('src/main/resources').toString(),
                     '--existing', file('src/generated/resources').toString(),
                     '--output', file('src/generated/resources/')
 
             mods {
-                advancedperipherals {
+                advancedperipherals_lite {
                     source sourceSets.main
                 }
             }
@@ -307,7 +307,7 @@ jar {
                     "Implementation-Vendor"   : "Srendi",
                     "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")])
     })
-    archiveFileName = "AdvancedPeripherals-${minecraft_version}-${mod_version}.jar"
+    archiveFileName = "AdvancedPeripherals-lite-${minecraft_version}-${mod_version}.jar"
 }
 
 jar.finalizedBy('reobfJar')
@@ -419,7 +419,7 @@ publishing {
             publication.from((SoftwareComponent) components.java)
             publication.groupId = project.group
             publication.version = isSnapshotVersion ? "${minecraft_version}-${version}-${project.teamcityBuild}" : "${minecraft_version}-${version}"
-            publication.artifactId =  isSnapshotVersion ? "advancedperipherals-snapshots" : "advancedperipherals"
+            publication.artifactId =  isSnapshotVersion ? "advancedperipherals-lite-snapshots" : "advancedperipherals-lite"
             publication.artifacts = [jar, sourcesJar]
             publication.pom {
                 name.set("AdvancedPeripherals")
@@ -428,11 +428,11 @@ publishing {
                         'It also integrates with multiple third party mods.')
                 url.set('https://docs.intelligence-modding.de/')
                 scm {
-                    url.set('https://github.com/SirEndii/AdvancedPeripherals.git')
+                    url.set('https://github.com/IntelligenceModding/AdvancedPeripherals.git')
                 }
                 issueManagement {
                     system.set('github')
-                    url.set('https://github.com/SirEndii/AdvancedPeripherals/issues')
+                    url.set('https://github.com/IntelligenceModding/AdvancedPeripherals/issues')
                 }
                 licenses {
                     license {

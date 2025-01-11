@@ -20,15 +20,15 @@ public class Events {
     public static void onWorldJoin(PlayerEvent.PlayerLoggedInEvent event) {
         Player player = event.getEntity();
 
-        if (APConfig.WORLD_CONFIG.givePlayerBookOnJoin.get()) {
-            if (!hasPlayedBefore(player)) {
-                ItemStack book = new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation("patchouli", "guide_book")));
-                CompoundTag nbt = new CompoundTag();
-                nbt.putString("patchouli:book", "advancedperipherals:manual");
-                book.setTag(nbt);
-                player.addItem(book);
-            }
-        }
+        // if (APConfig.WORLD_CONFIG.givePlayerBookOnJoin.get()) {
+        //     if (!hasPlayedBefore(player)) {
+        //         ItemStack book = new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation("patchouli", "guide_book")));
+        //         CompoundTag nbt = new CompoundTag();
+        //         nbt.putString("patchouli:book", "advancedperipherals:manual");
+        //         book.setTag(nbt);
+        //         player.addItem(book);
+        //     }
+        // }
     }
 
     private static boolean hasPlayedBefore(Player player) {

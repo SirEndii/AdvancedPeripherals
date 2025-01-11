@@ -21,7 +21,7 @@ public class ClientRegistry {
     @SubscribeEvent
     public static void registerModels(ModelEvent.RegisterAdditional event) {
         for (String model : TURTLE_MODELS) {
-            event.register(new ModelResourceLocation(new ResourceLocation(AdvancedPeripherals.MOD_ID, model), "inventory"));
+            event.register(new ModelResourceLocation(AdvancedPeripherals.getRL(model), "inventory"));
         }
     }
 

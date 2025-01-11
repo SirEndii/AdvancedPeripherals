@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 public class EnUsLanguageProvider extends LanguageProvider {
 
     public EnUsLanguageProvider(DataGenerator gen) {
-        super(gen, AdvancedPeripherals.MOD_ID, "en_us");
+        super(gen, AdvancedPeripherals.ITEM_MOD_ID, "en_us");
     }
 
     @Override
@@ -69,12 +69,12 @@ public class EnUsLanguageProvider extends LanguageProvider {
     }
 
     private void addAdvancement(@NotNull String advancement, @NotNull String name, @NotNull String description) {
-        add("advancements." + AdvancedPeripherals.MOD_ID + "." + advancement, name);
-        add("advancements." + AdvancedPeripherals.MOD_ID + "." + advancement + ".description", description);
+        add("advancements." + AdvancedPeripherals.ITEM_MOD_ID + "." + advancement, name);
+        add("advancements." + AdvancedPeripherals.ITEM_MOD_ID + "." + advancement + ".description", description);
     }
 
     private void add(@NotNull Supplier<VillagerProfession> key, @NotNull String name) {
-        add("entity.minecraft.villager." + AdvancedPeripherals.MOD_ID + "." + key.get().name().split(":")[1], name);
+        add("entity.minecraft.villager." + AdvancedPeripherals.ITEM_MOD_ID + "." + key.get().name().split(":")[1], name);
     }
 
     private void addTurtle(@NotNull ResourceLocation key, @NotNull String name) {
@@ -94,7 +94,7 @@ public class EnUsLanguageProvider extends LanguageProvider {
     }
 
     private void addTooltip(String tooltip, String name) {
-        add("item." + AdvancedPeripherals.MOD_ID + ".tooltip." + tooltip, name);
+        add("item." + AdvancedPeripherals.ITEM_MOD_ID + ".tooltip." + tooltip, name);
     }
 
     private void addKeybind(@NotNull KeyMapping keybind, String name) {

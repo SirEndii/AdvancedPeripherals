@@ -16,10 +16,11 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Random;
 
-@Mod(AdvancedPeripherals.MOD_ID + "_lite")
+@Mod(AdvancedPeripherals.MOD_ID)
 public class AdvancedPeripherals {
 
-    public static final String MOD_ID = "advancedperipherals";
+    public static final String MOD_ID = "advancedperipherals_lite";
+    public static final String ITEM_MOD_ID = "advancedperipherals";
     public static final String NAME = "Advanced Peripherals";
     public static final Logger LOGGER = LogManager.getLogger(NAME);
     public static final Random RANDOM = new Random();
@@ -47,7 +48,7 @@ public class AdvancedPeripherals {
     }
 
     public static ResourceLocation getRL(String resource) {
-        return new ResourceLocation(MOD_ID, resource);
+        return new ResourceLocation(ITEM_MOD_ID, resource);
     }
 
     public void commonSetup(FMLCommonSetupEvent event) {

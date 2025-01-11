@@ -1,0 +1,12 @@
+{
+  "advancedperipherals.name": "Advanced Peripherals",
+  "item.advancedperipherals.chunk_controller": "Chunk Controller",
+  "item.advancedperipherals.tooltip.chunk_controller": "&7A crafting ingredient for the Chunky Turtle.",
+  "item.advancedperipherals.tooltip.disabled": "&cThis item is disabled in the config, so you can craft it, but it'll not have any functionality.",
+  "item.advancedperipherals.tooltip.show_desc": "&b[&7%s&b] &7For Description",
+  "itemGroup.advancedperipheralstab": "Advanced Peripherals",
+  "keybind.advancedperipherals.category": "Advanced Peripherals",
+  "keybind.advancedperipherals.description": "Show Description",
+  "turtle.advancedperipherals.chunky_turtle": "Chunky",
+  "turtle.advancedperipherals.compass_turtle": "Compass"
+}

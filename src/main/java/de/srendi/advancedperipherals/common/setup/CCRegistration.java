@@ -26,8 +26,8 @@ public class CCRegistration {
 
     public static class ID {
 
-        public static final ResourceLocation CHUNKY_TURTLE = new ResourceLocation(AdvancedPeripherals.MOD_ID, "chunky_turtle");
-        public static final ResourceLocation COMPASS_TURTLE = new ResourceLocation(AdvancedPeripherals.MOD_ID, "compass_turtle");
+        public static final ResourceLocation CHUNKY_TURTLE = new ResourceLocation(AdvancedPeripherals.ITEM_MOD_ID, "chunky_turtle");
+        public static final ResourceLocation COMPASS_TURTLE = new ResourceLocation(AdvancedPeripherals.ITEM_MOD_ID, "compass_turtle");
 
     }
 }

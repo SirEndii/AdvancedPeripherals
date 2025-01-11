@@ -14,7 +14,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class BlockStatesAndModelsProvider extends BlockStateProvider {
 
     public BlockStatesAndModelsProvider(DataGenerator packOutput, ExistingFileHelper exFileHelper) {
-        super(packOutput, AdvancedPeripherals.MOD_ID, exFileHelper);
+        super(packOutput, AdvancedPeripherals.ITEM_MOD_ID, exFileHelper);
     }
 
     @Override
