@@ -59,7 +59,6 @@ public class EnUsLanguageProvider extends LanguageProvider {
         addBlock(Blocks.GEO_SCANNER, "Geo Scanner");
         addBlock(Blocks.INVENTORY_MANAGER, "Inventory Manager");
         addBlock(Blocks.ME_BRIDGE, "ME Bridge");
-        addBlock(Blocks.RS_BRIDGE, "RS Bridge");
         addBlock(Blocks.NBT_STORAGE, "NBT Storage");
         addBlock(Blocks.PERIPHERAL_CASING, "Peripheral Casing");
         addBlock(Blocks.PLAYER_DETECTOR, "Player Detector");
@@ -108,7 +107,6 @@ public class EnUsLanguageProvider extends LanguageProvider {
         addTooltip(Items.CHUNK_CONTROLLER.get(), "&7A crafting ingredient for the Chunky Turtle.");
         addTooltip(Blocks.ENVIRONMENT_DETECTOR.get(), "&7This peripheral interacts with the minecraft world.");
         addTooltip(Blocks.PLAYER_DETECTOR.get(), "&7This peripheral can be used to interact with players, but don't be a stalker.");
-        addTooltip(Blocks.RS_BRIDGE.get(), "&7The RS Bridge interacts with Refined Storage to manage your items.");
         addTooltip(Blocks.ME_BRIDGE.get(), "&7The ME Bridge interacts with Applied Energistics to manage your items.");
         addTooltip(Blocks.CHAT_BOX.get(), "&7Interacts with the ingame chat, can read and write messages.");
         addTooltip(Blocks.PERIPHERAL_CASING.get(), "&7An empty hull without the love it deserves. Used as a crafting ingredient");

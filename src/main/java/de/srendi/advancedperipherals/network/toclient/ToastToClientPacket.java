@@ -4,7 +4,9 @@ import de.srendi.advancedperipherals.AdvancedPeripherals;
 import de.srendi.advancedperipherals.common.util.ToastUtil;
 import de.srendi.advancedperipherals.network.IAPPacket;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -22,8 +24,8 @@ public class ToastToClientPacket implements IAPPacket {
         this.component = component;
     }
 
-    public static ToastToClientPacket decode(FriendlyByteBuf buffer) {
-        return new ToastToClientPacket(buffer.read(), buffer.readComponent());
+    public static ToastToClientPacket decode(RegistryFriendlyByteBuf buffer) {
+        return null; // new ToastToClientPacket(buffer.compo, buffer.readComponent());
     }
 
     @Override
@@ -36,7 +38,7 @@ public class ToastToClientPacket implements IAPPacket {
         ToastUtil.displayToast(title, component);
     }
 
-    @Override
+    /*@Override
     public void write(@NotNull FriendlyByteBuf buffer) {
         buffer.writeComponent(this.title);
         buffer.writeComponent(this.component);
@@ -46,6 +48,10 @@ public class ToastToClientPacket implements IAPPacket {
     @Override
     public ResourceLocation id() {
         return ID;
-    }
+    }*/
 
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return null;
+    }
 }

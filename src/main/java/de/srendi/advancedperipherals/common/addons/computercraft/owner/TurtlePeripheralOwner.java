@@ -10,7 +10,7 @@ import de.srendi.advancedperipherals.common.util.fakeplayer.FakePlayerProviderTu
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.FrontAndTop;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -67,15 +67,18 @@ public class TurtlePeripheralOwner extends BasePeripheralOwner {
         return turtle.getLevel().getPlayerByUUID(owningPlayer.getId());
     }
 
-    @NotNull
     @Override
-    public CompoundTag getDataStorage() {
+    public DataComponentPatch getDataStorage() {
         return DataStorageUtil.getDataStorage(turtle, side);
     }
 
     @Override
+    public void putDataStorage(DataComponentPatch dataStorage) {
+        DataStorageUtil.putDataStorage(turtle, side, dataStorage);
+    }
+
+    @Override
     public void markDataStorageDirty() {
-        turtle.updateUpgradeNBTData(side);
     }
 
     @Override

@@ -10,6 +10,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import static de.srendi.advancedperipherals.common.setup.DataComponents.TURTLE_UPGRADE_STORED_DATA;
+
 public abstract class ClockwiseAnimatedTurtleUpgrade<T extends IBasePeripheral<?>> extends PeripheralTurtleUpgrade<T> {
 
     public static final String STORED_DATA_TAG = "storedData";
@@ -56,7 +58,7 @@ public abstract class ClockwiseAnimatedTurtleUpgrade<T extends IBasePeripheral<?
 
     @Override
     public DataComponentPatch getUpgradeData(ItemStack stack) {
-        var storedData = stack.get(STORED_DATA_TAG);
+        var storedData = stack.get(TURTLE_UPGRADE_STORED_DATA);
         if (storedData == null)
             return DataComponentPatch.EMPTY;
         return storedData;
@@ -64,10 +66,10 @@ public abstract class ClockwiseAnimatedTurtleUpgrade<T extends IBasePeripheral<?
 
     @Override
     public boolean isItemSuitable(@NotNull ItemStack stack) {
-        if (stack.getTagElement(STORED_DATA_TAG) == null)
+        if (!stack.has(TURTLE_UPGRADE_STORED_DATA))
             return super.isItemSuitable(stack);
         var tweakedStack = stack.copy();
-        tweakedStack.getOrCreateTag().remove(STORED_DATA_TAG);
+        tweakedStack.remove(TURTLE_UPGRADE_STORED_DATA);
         return super.isItemSuitable(tweakedStack);
     }
 

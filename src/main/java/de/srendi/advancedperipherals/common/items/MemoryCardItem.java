@@ -13,9 +13,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+
+import static de.srendi.advancedperipherals.common.setup.DataComponents.OWNER;
 
 public class MemoryCardItem extends BaseItem {
 
@@ -31,14 +34,13 @@ public class MemoryCardItem extends BaseItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level levelIn, List<Component> tooltip, TooltipFlag flagIn) {
-        super.appendHoverText(stack, levelIn, tooltip, flagIn);
-        CompoundTag data = stack.getOrCreateTag();
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flagIn) {
+        super.appendHoverText(stack, context, tooltip, flagIn);
         Minecraft minecraft = Minecraft.getInstance();
-        if (data.contains(OWNER_NBT_KEY)) {
-            String username = ClientUUIDCache.getUsername(data.getUUID(OWNER_NBT_KEY), minecraft.player.getUUID());
+        if (stack.has(OWNER)) {
+            String username = ClientUUIDCache.getUsername(stack.get(OWNER), minecraft.player.getUUID());
             if (username == null)
-                username = data.getUUID(OWNER_NBT_KEY).toString();
+                username = stack.get(OWNER).toString();
             tooltip.add(EnumColor.buildTextComponent(Component.translatable("item.advancedperipherals.tooltip.memory_card.bound", username)));
         }
     }
@@ -47,13 +49,12 @@ public class MemoryCardItem extends BaseItem {
     public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
         if (!worldIn.isClientSide) {
             ItemStack stack = playerIn.getItemInHand(handIn);
-            CompoundTag data = stack.getOrCreateTag();
-            if (data.contains(OWNER_NBT_KEY)) {
+            if (stack.has(OWNER)) {
                 playerIn.displayClientMessage(Component.translatable("text.advancedperipherals.removed_player"), true);
-                data.remove(OWNER_NBT_KEY);
+                stack.remove(OWNER);
             } else {
                 playerIn.displayClientMessage(Component.translatable("text.advancedperipherals.added_player"), true);
-                data.putUUID(OWNER_NBT_KEY, playerIn.getUUID());
+                stack.set(OWNER, playerIn.getUUID());
             }
         }
         return super.use(worldIn, playerIn, handIn);

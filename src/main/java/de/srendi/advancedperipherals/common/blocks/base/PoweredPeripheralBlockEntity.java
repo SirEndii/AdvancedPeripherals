@@ -4,6 +4,7 @@ import de.srendi.advancedperipherals.common.configuration.APConfig;
 import de.srendi.advancedperipherals.lib.peripherals.BasePeripheral;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -28,15 +29,15 @@ public abstract class PoweredPeripheralBlockEntity<T extends BasePeripheral<?>> 
     protected abstract int getMaxEnergyStored();
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag compound) {
-        super.saveAdditional(compound);
+    public void saveAdditional(@NotNull CompoundTag compound, @NotNull HolderLookup.Provider provider) {
+        super.saveAdditional(compound, provider);
         if (energyStorage != null)
             compound.putInt("energy", energyStorage.getEnergyStored());
     }
 
     @Override
-    public void load(@NotNull CompoundTag compound) {
-        super.load(compound);
+    public void loadAdditional(@NotNull CompoundTag compound, @NotNull HolderLookup.Provider provider) {
+        super.loadAdditional(compound, provider);
         if (energyStorage != null)
             energyStorage.receiveEnergy(compound.getInt("energy") - energyStorage.getEnergyStored(), false);
     }

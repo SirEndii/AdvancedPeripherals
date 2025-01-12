@@ -31,7 +31,7 @@ public class DataGenerators {
         CompletableFuture<HolderLookup.Provider> completablefuture = CompletableFuture.supplyAsync(VanillaRegistries::createLookup, Util.backgroundExecutor());
         generator.addProvider(event.includeServer(), new BlockTagsProvider(packOutput, completablefuture, existingFileHelper, Registration.BLOCKS));
         generator.addProvider(event.includeServer(), new RecipesProvider(packOutput, lookupProvider));
-        generator.addProvider(event.includeServer(), new BlockLootTablesProvider(packOutput));
+        generator.addProvider(event.includeServer(), new BlockLootTablesProvider(packOutput, lookupProvider));
         TurtleUpgradesProvider.generate(generator.getVanillaPack(true), completablefuture);
         PocketUpgradesProvider.generate(generator.getVanillaPack(true), completablefuture);
         generator.addProvider(event.includeServer(), new PoiTypeProvider(packOutput, completablefuture, existingFileHelper));

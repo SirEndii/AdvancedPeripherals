@@ -15,8 +15,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class TurtleEnvironmentDetectorUpgrade extends PeripheralTurtleUpgrade<EnvironmentDetectorPeripheral> {
 
-    public TurtleEnvironmentDetectorUpgrade(ResourceLocation id, ItemStack stack) {
-        super(id, stack);
+    public TurtleEnvironmentDetectorUpgrade(ItemStack stack) {
+        super(CCRegistration.ID.ENVIRONMENT_TURTLE,  stack);
     }
 
     @Override

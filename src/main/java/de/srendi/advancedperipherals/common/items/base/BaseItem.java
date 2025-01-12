@@ -37,14 +37,16 @@ public abstract class BaseItem extends Item {
         if (this instanceof IInventoryItem inventoryItem) {
             ServerPlayer serverPlayerEntity = (ServerPlayer) playerIn;
             ItemStack stack = playerIn.getItemInHand(handIn);
-            serverPlayerEntity.openMenu(inventoryItem.createContainer(playerIn, stack), buf -> buf.writeItem(stack));
+
+            //TODO
+            //serverPlayerEntity.openMenu(inventoryItem.createContainer(playerIn, stack), buf -> buf.write(stack));
         }
         return super.use(worldIn, playerIn, handIn);
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        super.appendHoverText(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flagIn) {
+        super.appendHoverText(stack, context, tooltip, flagIn);
         if (!KeybindUtil.isKeyPressed(KeyBindings.DESCRIPTION_KEYBINDING)) {
             tooltip.add(EnumColor.buildTextComponent(Component.translatable("item.advancedperipherals.tooltip.show_desc", KeyBindings.DESCRIPTION_KEYBINDING.getTranslatedKeyMessage())));
         } else {

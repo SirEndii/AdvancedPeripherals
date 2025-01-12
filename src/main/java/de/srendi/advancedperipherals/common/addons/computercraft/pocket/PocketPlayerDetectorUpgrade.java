@@ -13,8 +13,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class PocketPlayerDetectorUpgrade extends BasePocketUpgrade<PlayerDetectorPeripheral> {
 
-    public PocketPlayerDetectorUpgrade(ResourceLocation id, ItemStack stack) {
-        super(id, stack);
+    public PocketPlayerDetectorUpgrade(ItemStack stack) {
+        super(CCRegistration.ID.PLAYER_POCKET, stack);
     }
 
     @Nullable

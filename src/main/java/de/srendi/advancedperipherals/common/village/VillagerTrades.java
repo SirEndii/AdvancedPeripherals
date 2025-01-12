@@ -58,14 +58,14 @@ public class VillagerTrades {
                     .setXp(4)
                     .build();
 
-            TradeBuilder.createTrade(event, ItemUtil.makeTurtle(ItemUtil.TURTLE_NORMAL, CCRegistration.ID.ENVIRONMENT_TURTLE.toString()), VillagerTrade.Type.ITEM_FOR_EMERALD, 4, 3)
+            /*TradeBuilder.createTrade(event, ItemUtil.makeTurtle(ItemUtil.TURTLE_NORMAL, CCRegistration.ID.ENVIRONMENT_TURTLE.toString()), VillagerTrade.Type.ITEM_FOR_EMERALD, 4, 3)
                     .setMaxUses(4)
                     .setXp(5)
                     .build();
             TradeBuilder.createTrade(event, ItemUtil.makePocket(ItemUtil.POCKET_ADVANCED, CCRegistration.ID.PLAYER_POCKET.toString()), VillagerTrade.Type.ITEM_FOR_EMERALD, 4, 3)
                     .setMaxUses(4)
                     .setXp(7)
-                    .build();
+                    .build();*/
             TradeBuilder.createTrade(event, Items.CHUNK_CONTROLLER.get(), VillagerTrade.Type.EMERALD_FOR_ITEM, 5, 3)
                     .setMaxUses(6)
                     .setXp(8)

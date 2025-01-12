@@ -162,13 +162,13 @@ public class AppEngApi {
     private static Map<String, Object> getObjectFromItemStack(Pair<Long, AEItemKey> stack, @Nullable ICraftingService craftingService) {
         Map<String, Object> map = new HashMap<>();
         String displayName = stack.getRight().getDisplayName().getString();
-        CompoundTag nbt = stack.getRight().toTag();
+        //CompoundTag nbt = stack.getRight().toTag();
         long amount = stack.getLeft();
         map.put("fingerprint", ItemUtil.getFingerprint(stack.getRight().toStack()));
         map.put("name", ItemUtil.getRegistryKey(stack.getRight().getItem()).toString());
         map.put("amount", amount);
         map.put("displayName", displayName);
-        map.put("nbt", NBTUtil.toLua(nbt));
+        //map.put("nbt", NBTUtil.toLua(nbt));
         map.put("tags", LuaConverter.tagsToList(() -> stack.getRight().getItem().builtInRegistryHolder().tags()));
         map.put("isCraftable", craftingService != null && craftingService.isCraftable(stack.getRight()));
 
@@ -193,7 +193,7 @@ public class AppEngApi {
         map.put("name", stack.getRight().getStack().getTypeRegistryName().toString());
         map.put("amount", amount);
         map.put("displayName", stack.getRight().getDisplayName().getString());
-        map.put("tags", LuaConverter.tagsToList(() -> stack.getRight().getStack().getType().getTags()));
+        map.put("tags", LuaConverter.tagsToList(() -> stack.getRight().getStack().getTags()));
 
         return map;
     }
@@ -421,10 +421,11 @@ public class AppEngApi {
                     int bytesPerType = cell.getBytesPerType(null);
 
                     if (cell.getKeyType().getClass().isAssignableFrom(AEKeyType.items().getClass())) {
-                        if (stack.get() == null)
-                            continue;
-                        int numOfType = stack.getTag().getLongArray("amts").length;
-                        long numItemsInCell = stack.getTag().getLong("ic");
+                        //if (stack.get() == null)
+                          //  continue;
+                        //TODO
+                        int numOfType = 0;//stack.get().getLongArray("amts").length;
+                        long numItemsInCell = 0;//stack.getTag().getLong("ic");
 
                         used += ((int) Math.ceil(((double) numItemsInCell) / 8)) + ((long) bytesPerType * numOfType);
                     }
@@ -466,10 +467,11 @@ public class AppEngApi {
                     int bytesPerType = cell.getBytesPerType(null);
 
                     if (cell.getKeyType().getClass().isAssignableFrom(AEKeyType.fluids().getClass())) {
-                        if (stack.getTag() == null)
-                            continue;
-                        int numOfType = stack.getTag().getLongArray("amts").length;
-                        long numBucketsInCell = stack.getTag().getLong("ic") / 1000;
+                        //if (stack.getTag() == null)
+                          //  continue;
+                        //TODO
+                        int numOfType = 0;//stack.getTag().getLongArray("amts").length;
+                        long numBucketsInCell = 0;//stack.getTag().getLong("ic") / 1000;
 
                         used += ((int) Math.ceil(((double) numBucketsInCell) / 8)) + ((long) bytesPerType * numOfType);
                     }

@@ -17,6 +17,7 @@ import net.minecraft.world.item.Items;
 
 import java.util.Map;
 
+//TODO tag
 public class ItemFilter {
 
     private Item item = Items.AIR;
@@ -94,7 +95,7 @@ public class ItemFilter {
     public static ItemFilter fromStack(ItemStack stack) {
         ItemFilter filter = empty();
         filter.item = stack.getItem();
-        filter.nbt = stack.hasTag() ? stack.getTag() : null;
+        //filter.nbt = stack.hasTag() ? stack.getTag() : null;
         return filter;
     }
 
@@ -108,7 +109,7 @@ public class ItemFilter {
 
     public ItemStack toItemStack() {
         var result = new ItemStack(item, count);
-        result.setTag(nbt != null ? nbt.copy() : null);
+        //result.setTag(nbt != null ? nbt.copy() : null);
         return result;
     }
 
@@ -124,9 +125,9 @@ public class ItemFilter {
         if (tag != null && !stack.is(tag)) {
             return false;
         }
-        if (nbt != null && !stack.getOrCreateTag().equals(nbt)) {
-            return false;
-        }
+        //if (nbt != null && !stack.getOrCreateTag().equals(nbt)) {
+          //  return false;
+        //}
         return true;
     }
 

@@ -7,7 +7,7 @@ import de.srendi.advancedperipherals.common.util.fakeplayer.APFakePlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.FrontAndTop;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -75,15 +75,15 @@ public class PocketPeripheralOwner extends BasePeripheralOwner {
         return null;
     }
 
-    @NotNull
     @Override
-    public CompoundTag getDataStorage() {
+    public DataComponentPatch getDataStorage() {
         return DataStorageUtil.getDataStorage(pocket);
     }
 
     @Override
     public void markDataStorageDirty() {
-        pocket.updateUpgradeNBTData();
+        //TODO do we still need this?
+        //pocket.updateUpgradeNBTData();
     }
 
     @Override

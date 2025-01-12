@@ -1,6 +1,9 @@
 package de.srendi.advancedperipherals.common.data;
 
 import de.srendi.advancedperipherals.common.setup.Registration;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.block.Block;
@@ -11,8 +14,8 @@ import java.util.Set;
 
 public class BlockLootTables extends BlockLootSubProvider {
 
-    protected BlockLootTables() {
-        super(Set.of(), FeatureFlags.REGISTRY.allFlags());
+    protected BlockLootTables(HolderLookup.Provider provider) {
+        super(Set.of(), FeatureFlags.REGISTRY.allFlags(), provider);
     }
 
     @Override

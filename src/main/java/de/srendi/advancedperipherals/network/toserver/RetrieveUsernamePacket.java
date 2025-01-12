@@ -47,7 +47,7 @@ public class RetrieveUsernamePacket implements IAPPacket {
         APNetworking.sendTo(player, new UsernameToCachePacket(gameProfile.get().getId(), gameProfile.get().getName()));
     }
 
-    @Override
+    /*@Override
     public void write(FriendlyByteBuf buffer) {
         buffer.writeUUID(uuid);
         buffer.writeUUID(requester);
@@ -57,11 +57,8 @@ public class RetrieveUsernamePacket implements IAPPacket {
     @Override
     public ResourceLocation id() {
         return ID;
-    }
+    }*/
 
-    /**
-     * @return
-     */
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return null;

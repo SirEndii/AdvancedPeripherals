@@ -14,8 +14,8 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public class TurtleChatBoxUpgrade extends PeripheralTurtleUpgrade<ChatBoxPeripheral> {
-    public TurtleChatBoxUpgrade(ResourceLocation id, ItemStack item) {
-        super(id, item);
+    public TurtleChatBoxUpgrade(ItemStack item) {
+        super(CCRegistration.ID.CHATTY_TURTLE, item);
     }
 
     @Override

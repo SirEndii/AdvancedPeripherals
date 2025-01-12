@@ -8,7 +8,7 @@ import de.srendi.advancedperipherals.lib.peripherals.IPeripheralTileEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.FrontAndTop;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.player.Player;
@@ -75,9 +75,8 @@ public class BlockEntityPeripheralOwner<T extends BlockEntity & IPeripheralTileE
         return null;
     }
 
-    @NotNull
     @Override
-    public CompoundTag getDataStorage() {
+    public DataComponentPatch getDataStorage() {
         return DataStorageUtil.getDataStorage(tileEntity);
     }
 

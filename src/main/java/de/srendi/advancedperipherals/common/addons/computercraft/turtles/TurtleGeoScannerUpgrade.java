@@ -15,8 +15,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class TurtleGeoScannerUpgrade extends PeripheralTurtleUpgrade<GeoScannerPeripheral> {
 
-    public TurtleGeoScannerUpgrade(ResourceLocation id, ItemStack stack) {
-        super(id, stack);
+    public TurtleGeoScannerUpgrade(ItemStack stack) {
+        super(CCRegistration.ID.GEOSCANNER_TURTLE, stack);
     }
 
     @Override

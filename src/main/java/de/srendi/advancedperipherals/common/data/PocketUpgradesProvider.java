@@ -23,10 +23,10 @@ public class PocketUpgradesProvider {
     public static void generate(DataGenerator.PackGenerator output, CompletableFuture<HolderLookup.Provider> registries) {
         var newRegistries = RegistryPatchGenerator.createLookup(registries, Util.make(new RegistrySetBuilder(), builder -> {
             builder.add(ITurtleUpgrade.REGISTRY, upgrades -> {
-                upgrades.register(id(CCRegistration.ID.CHATTY_POCKET), new TurtleChatBoxUpgrade(CCRegistration.ID.CHATTY_POCKET, new ItemStack(Blocks.CHAT_BOX.get())));
-                upgrades.register(id(CCRegistration.ID.PLAYER_POCKET), new TurtlePlayerDetectorUpgrade(CCRegistration.ID.PLAYER_POCKET, new ItemStack(Blocks.PLAYER_DETECTOR.get())));
-                upgrades.register(id(CCRegistration.ID.ENVIRONMENT_POCKET), new TurtleEnvironmentDetectorUpgrade(CCRegistration.ID.ENVIRONMENT_POCKET, new ItemStack(Blocks.ENVIRONMENT_DETECTOR.get())));
-                upgrades.register(id(CCRegistration.ID.GEOSCANNER_TURTLE), new TurtleGeoScannerUpgrade(CCRegistration.ID.GEOSCANNER_TURTLE, new ItemStack(Blocks.GEO_SCANNER.get())));
+                upgrades.register(id(CCRegistration.ID.CHATTY_POCKET), new TurtleChatBoxUpgrade(new ItemStack(Blocks.CHAT_BOX.get())));
+                upgrades.register(id(CCRegistration.ID.PLAYER_POCKET), new TurtlePlayerDetectorUpgrade(new ItemStack(Blocks.PLAYER_DETECTOR.get())));
+                upgrades.register(id(CCRegistration.ID.ENVIRONMENT_POCKET), new TurtleEnvironmentDetectorUpgrade(new ItemStack(Blocks.ENVIRONMENT_DETECTOR.get())));
+                upgrades.register(id(CCRegistration.ID.GEOSCANNER_TURTLE), new TurtleGeoScannerUpgrade(new ItemStack(Blocks.GEO_SCANNER.get())));
             });
         }));
         output.addProvider(o -> new DatapackBuiltinEntriesProvider(o, newRegistries, Set.of(AdvancedPeripherals.MOD_ID)));

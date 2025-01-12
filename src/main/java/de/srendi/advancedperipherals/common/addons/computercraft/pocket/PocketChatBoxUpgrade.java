@@ -12,8 +12,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class PocketChatBoxUpgrade extends BasePocketUpgrade<ChatBoxPeripheral> {
 
-    public PocketChatBoxUpgrade(ResourceLocation id, ItemStack stack) {
-        super(id, stack);
+    public PocketChatBoxUpgrade(ItemStack stack) {
+        super(CCRegistration.ID.CHATTY_POCKET, stack);
     }
 
     @Nullable

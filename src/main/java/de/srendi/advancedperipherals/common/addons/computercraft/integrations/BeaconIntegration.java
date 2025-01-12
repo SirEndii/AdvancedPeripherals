@@ -13,19 +13,17 @@ public class BeaconIntegration implements APGenericPeripheral {
 
     @LuaFunction(mainThread = true)
     public final int getLevel(BeaconBlockEntity blockEntity) {
-        // because levels are now protected field .... why?
-        CompoundTag savedData = blockEntity.saveWithoutMetadata();
-        return savedData.getInt("Levels");
+        return blockEntity.levels;
     }
 
     @LuaFunction(mainThread = true)
     public final String getPrimaryEffect(BeaconBlockEntity blockEntity) {
-        return blockEntity.primaryPower == null ? "none" : blockEntity.primaryPower.getDescriptionId();
+        return blockEntity.primaryPower == null ? "none" : blockEntity.primaryPower.getRegisteredName();
     }
 
     @LuaFunction(mainThread = true)
     public final String getSecondaryEffect(BeaconBlockEntity blockEntity) {
-        return blockEntity.secondaryPower == null ? "none" : blockEntity.secondaryPower.getDescriptionId();
+        return blockEntity.secondaryPower == null ? "none" : blockEntity.secondaryPower.getRegisteredName();
     }
 
 }

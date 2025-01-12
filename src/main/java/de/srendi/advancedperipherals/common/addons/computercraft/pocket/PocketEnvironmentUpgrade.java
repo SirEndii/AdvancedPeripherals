@@ -13,8 +13,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class PocketEnvironmentUpgrade extends BasePocketUpgrade<EnvironmentDetectorPeripheral> {
 
-    public PocketEnvironmentUpgrade(ResourceLocation id, ItemStack stack) {
-        super(id, stack);
+    public PocketEnvironmentUpgrade(ItemStack stack) {
+        super(CCRegistration.ID.ENVIRONMENT_POCKET, stack);
     }
 
     @Nullable

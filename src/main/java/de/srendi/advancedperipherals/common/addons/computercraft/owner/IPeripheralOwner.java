@@ -5,7 +5,7 @@ import de.srendi.advancedperipherals.lib.peripherals.IPeripheralOperation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.FrontAndTop;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -29,7 +29,9 @@ public interface IPeripheralOwner {
 
     @Nullable Player getOwner();
 
-    @NotNull CompoundTag getDataStorage();
+    DataComponentPatch getDataStorage();
+
+    void putDataStorage(DataComponentPatch dataStorage);
 
     void markDataStorageDirty();
 

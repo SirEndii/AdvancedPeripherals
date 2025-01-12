@@ -7,6 +7,7 @@ import de.srendi.advancedperipherals.common.blocks.blockentities.BlockReaderEnti
 import de.srendi.advancedperipherals.common.configuration.APConfig;
 import de.srendi.advancedperipherals.common.util.LuaConverter;
 import de.srendi.advancedperipherals.lib.peripherals.BasePeripheral;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -42,7 +43,7 @@ public class BlockReaderPeripheral extends BasePeripheral<BlockEntityPeripheralO
         BlockEntity target = getLevel().getBlockEntity(getPos().relative(owner.getFacing()));
         if (target == null)
             return null;
-        return NBTUtil.toLua(target.saveWithoutMetadata());
+        return NBTUtil.toLua(target.saveWithoutMetadata(RegistryAccess.EMPTY));
     }
 
     @LuaFunction(mainThread = true)

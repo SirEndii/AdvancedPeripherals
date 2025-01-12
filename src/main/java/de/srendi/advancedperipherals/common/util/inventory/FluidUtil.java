@@ -73,7 +73,7 @@ public class FluidUtil {
 
     @NotNull
     public static String getFingerprint(@NotNull FluidStack stack) {
-        String fingerprint = stack.getOrCreateTag() + getRegistryKey(stack).toString() + stack.getDisplayName().getString();
+        String fingerprint = stack.getComponents() + getRegistryKey(stack).toString() + stack.getDisplayName().getString();
         try {
             byte[] bytesOfHash = fingerprint.getBytes(StandardCharsets.UTF_8);
             MessageDigest md = MessageDigest.getInstance("MD5");

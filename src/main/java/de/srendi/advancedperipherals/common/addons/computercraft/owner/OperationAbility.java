@@ -8,6 +8,9 @@ import de.srendi.advancedperipherals.lib.peripherals.IPeripheralCheck;
 import de.srendi.advancedperipherals.lib.peripherals.IPeripheralFunction;
 import de.srendi.advancedperipherals.lib.peripherals.IPeripheralOperation;
 import de.srendi.advancedperipherals.lib.peripherals.IPeripheralPlugin;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.PatchedDataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -32,8 +35,8 @@ public class OperationAbility implements IOwnerAbility, IPeripheralPlugin {
 
     protected void setCooldown(@NotNull IPeripheralOperation<?> operation, int cooldown) {
         if (cooldown > 0) {
-            CompoundTag dataStorage = owner.getDataStorage();
-            if (!dataStorage.contains(COOLDOWNS_TAG)) dataStorage.put(COOLDOWNS_TAG, new CompoundTag());
+            PatchedDataComponentMap patch = PatchedDataComponentMap.fromPatch(DataComponentMap.EMPTY, owner.getDataStorage());
+            if (!patch.has(COOLDOWNS_TAG)) patch.put(COOLDOWNS_TAG, new CompoundTag());
             dataStorage.getCompound(COOLDOWNS_TAG).putLong(operation.settingsName(), Timestamp.valueOf(LocalDateTime.now().plus(cooldown, ChronoUnit.MILLIS)).getTime());
         }
     }

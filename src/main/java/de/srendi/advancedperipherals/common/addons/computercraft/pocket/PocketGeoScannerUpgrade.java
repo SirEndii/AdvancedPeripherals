@@ -13,8 +13,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class PocketGeoScannerUpgrade extends BasePocketUpgrade<GeoScannerPeripheral> {
 
-    public PocketGeoScannerUpgrade(ResourceLocation id, ItemStack stack) {
-        super(id, stack);
+    public PocketGeoScannerUpgrade(ItemStack stack) {
+        super(CCRegistration.ID.GEOSCANNER_POCKET, stack);
     }
 
     @Nullable

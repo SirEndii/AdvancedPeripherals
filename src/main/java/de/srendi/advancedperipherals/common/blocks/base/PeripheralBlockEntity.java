@@ -7,6 +7,7 @@ import de.srendi.advancedperipherals.lib.peripherals.BasePeripheral;
 import de.srendi.advancedperipherals.lib.peripherals.IPeripheralTileEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -95,17 +96,17 @@ public abstract class PeripheralBlockEntity<T extends BasePeripheral<?>> extends
     }*/
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag compound) {
-        super.saveAdditional(compound);
-        ContainerHelper.saveAllItems(compound, items);
-        if (!peripheralSettings.isEmpty()) compound.put(PERIPHERAL_SETTINGS_KEY, peripheralSettings);
+    protected void saveAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+        super.saveAdditional(tag, provider);
+        ContainerHelper.saveAllItems(tag, items, provider);
+        if (!peripheralSettings.isEmpty()) tag.put(PERIPHERAL_SETTINGS_KEY, peripheralSettings);
     }
 
     @Override
-    public void load(@NotNull CompoundTag compound) {
-        ContainerHelper.loadAllItems(compound, items);
-        peripheralSettings = compound.getCompound(PERIPHERAL_SETTINGS_KEY);
-        super.load(compound);
+    protected void loadAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+        ContainerHelper.loadAllItems(tag, items, provider);
+        peripheralSettings = tag.getCompound(PERIPHERAL_SETTINGS_KEY);
+        super.loadAdditional(tag, provider);
     }
 
     @Override
@@ -125,7 +126,7 @@ public abstract class PeripheralBlockEntity<T extends BasePeripheral<?>> extends
     }
 
     @Override
-    public int[] getSlotsForFace(@NotNull Direction side) {
+    public int @NotNull [] getSlotsForFace(@NotNull Direction side) {
         return new int[]{0};
     }
 
@@ -180,6 +181,17 @@ public abstract class PeripheralBlockEntity<T extends BasePeripheral<?>> extends
         if (stack.getCount() > getMaxStackSize()) {
             stack.setCount(getMaxStackSize());
         }
+    }
+
+    @NotNull
+    @Override
+    public NonNullList<ItemStack> getItems() {
+        return items;
+    }
+
+    @Override
+    public void setItems(@NotNull NonNullList<ItemStack> items) {
+        this.items = items;
     }
 
     @Override

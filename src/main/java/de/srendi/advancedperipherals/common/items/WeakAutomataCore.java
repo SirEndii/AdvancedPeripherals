@@ -57,15 +57,17 @@ public class WeakAutomataCore extends APItem implements IFeedableAutomataCore {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        super.appendHoverText(stack, worldIn, tooltip, flagIn);
-        CompoundTag tag = stack.getOrCreateTag();
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flagIn) {
+        super.appendHoverText(stack, context, tooltip, flagIn);
+
+        //TODO
+        /*CompoundTag tag = stack.getOrCreateTag();
         CompoundTag consumedData = tag.getCompound(CONSUMER_ENTITY_COMPOUND);
         consumedData.getAllKeys().forEach(key -> {
             WeakAutomataCoreRecord record = AUTOMATA_CORE_REGISTRY.get(key);
             CompoundTag recordData = consumedData.getCompound(key);
             tooltip.add(EnumColor.buildTextComponent(Component.literal(String.format("Consumed: %d/%d %s", recordData.getInt(CONSUMED_ENTITY_COUNT), record.getRequiredCount(key), recordData.getString(CONSUMED_ENTITY_NAME)))));
-        });
+        });*/
     }
 
     @Override
@@ -77,7 +79,8 @@ public class WeakAutomataCore extends APItem implements IFeedableAutomataCore {
         }
         String entityType = EntityType.getKey(entity.getType()).toString();
         if (AUTOMATA_CORE_REGISTRY.containsKey(entityType)) {
-            CompoundTag tag = stack.getOrCreateTag();
+            //TODO
+            /*CompoundTag tag = stack.getOrCreateTag();
             CompoundTag consumedData = tag.getCompound(CONSUMER_ENTITY_COMPOUND);
             WeakAutomataCoreRecord record;
             if (consumedData.isEmpty()) {
@@ -97,7 +100,7 @@ public class WeakAutomataCore extends APItem implements IFeedableAutomataCore {
                 player.setItemInHand(hand, new ItemStack(record.resultSoul));
             }
             tag.put(CONSUMER_ENTITY_COMPOUND, consumedData);
-            return InteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;*/
         }
         return InteractionResult.PASS;
     }

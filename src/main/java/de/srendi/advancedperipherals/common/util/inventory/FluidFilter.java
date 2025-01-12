@@ -17,6 +17,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.Map;
 
+//TODO tag
 public class FluidFilter {
 
     private Fluid fluid = Fluids.EMPTY;
@@ -74,7 +75,7 @@ public class FluidFilter {
     public static FluidFilter fromStack(FluidStack stack) {
         FluidFilter filter = empty();
         filter.fluid = stack.getFluid();
-        filter.nbt = stack.hasTag() ? stack.getTag() : null;
+        //filter.nbt = stack.hasTag() ? stack.getTag() : null;
         return filter;
     }
 
@@ -88,7 +89,7 @@ public class FluidFilter {
 
     public FluidStack toFluidStack() {
         var result = new FluidStack(fluid, count);
-        result.setTag(nbt != null ? nbt.copy() : null);
+        //result.setTag(nbt != null ? nbt.copy() : null);
         return result;
     }
 
@@ -109,9 +110,9 @@ public class FluidFilter {
         if (tag != null && !stack.getFluid().is(tag)) {
             return false;
         }
-        if (nbt != null && !stack.getOrCreateTag().equals(nbt)) {
-            return false;
-        }
+        //if (nbt != null && !stack.getOrCreateTag().equals(nbt)) {
+          //  return false;
+        //}
         return true;
     }
 

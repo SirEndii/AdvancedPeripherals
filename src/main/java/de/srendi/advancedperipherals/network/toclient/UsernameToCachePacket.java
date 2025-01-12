@@ -32,7 +32,7 @@ public class UsernameToCachePacket implements IAPPacket {
         ClientUUIDCache.putUsername(uuid, username);
     }
 
-    @Override
+    /*@Override
     public void write(FriendlyByteBuf buffer) {
         buffer.writeUUID(uuid);
         buffer.writeUtf(username);
@@ -42,11 +42,8 @@ public class UsernameToCachePacket implements IAPPacket {
     @Override
     public ResourceLocation id() {
         return ID;
-    }
+    }*/
 
-    /**
-     * @return
-     */
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return null;
