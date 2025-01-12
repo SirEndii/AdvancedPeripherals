@@ -1,18 +1,15 @@
 package de.srendi.advancedperipherals;
 
-import appeng.api.AECapabilities;
 import dan200.computercraft.api.peripheral.PeripheralCapability;
 import de.srendi.advancedperipherals.common.addons.APAddons;
 import de.srendi.advancedperipherals.common.blocks.base.ICapabilityProvider;
 import de.srendi.advancedperipherals.common.configuration.APConfig;
-import de.srendi.advancedperipherals.common.setup.BlockEntityTypes;
 import de.srendi.advancedperipherals.common.setup.Registration;
 import de.srendi.advancedperipherals.common.util.ChunkManager;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.apache.logging.log4j.Level;
@@ -96,9 +93,9 @@ public class AdvancedPeripherals {
         });
 
         //if (APAddons.ae2Loaded)
-            /*event.registerBlockEntity(
-                    AECapabilities.IN_WORLD_GRID_NODE_HOST,
-                    BlockEntityTypes.ME_BRIDGE.get(),
-                    (blockEntity, side) -> blockEntity);*/
+        /*event.registerBlockEntity(
+        AECapabilities.IN_WORLD_GRID_NODE_HOST,
+        BlockEntityTypes.ME_BRIDGE.get(),
+        (blockEntity, side) -> blockEntity);*/
     }
 }

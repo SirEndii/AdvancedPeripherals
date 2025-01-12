@@ -4,14 +4,12 @@ import com.google.common.collect.EvictingQueue;
 import com.mojang.brigadier.context.CommandContextBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.srendi.advancedperipherals.AdvancedPeripherals;
-import de.srendi.advancedperipherals.common.addons.APAddons;
 import de.srendi.advancedperipherals.common.configuration.APConfig;
 import de.srendi.advancedperipherals.common.util.Pair;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.MessageArgument;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -19,8 +17,6 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.CommandEvent;
 import net.neoforged.neoforge.event.ServerChatEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
-import vazkii.patchouli.api.PatchouliAPI;
-import vazkii.patchouli.common.base.PatchouliAPIImpl;
 
 import java.util.function.Consumer;
 
@@ -42,13 +38,14 @@ public class Events {
         // We could switch to the advancement way to give new players the book. However, that would not allow us to create
         // a config option for that. So we will stick with the custom solution here.
         // See https://vazkiimods.github.io/Patchouli/docs/patchouli-basics/giving-new
-        if (APConfig.WORLD_CONFIG.givePlayerBookOnJoin.get() && APAddons.patchouliLoaded) {
+        //TODO
+        /*if (APConfig.WORLD_CONFIG.givePlayerBookOnJoin.get() && APAddons.patchouliLoaded) {
             if (!hasPlayedBefore(player)) {
-                //PatchouliAPI.IPatchouliAPI patchouli = new PatchouliAPIImpl();
-                //ItemStack book = patchouli.getBookStack(AdvancedPeripherals.getRL("manual"));
-                //player.addItem(book);
+                PatchouliAPI.IPatchouliAPI patchouli = new PatchouliAPIImpl();
+                ItemStack book = patchouli.getBookStack(AdvancedPeripherals.getRL("manual"));
+                player.addItem(book);
             }
-        }
+        }*/
 
         putPlayerMessage(Pair.of(getLastPlayerMessageID(), new PlayerMessageObject("playerJoin", player.getName().getString(), player.level().dimension().location().toString(), "")));
     }
