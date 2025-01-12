@@ -11,7 +11,9 @@ import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -35,7 +37,7 @@ public final class FakePlayerProviderTurtle {
 
     public static void load(APFakePlayer player, ITurtleAccess turtle) {
         Direction direction = turtle.getDirection();
-        player.setLevel((ServerLevel) turtle.getLevel());
+        player.setLevel(turtle.getLevel());
         // Player position
         BlockPos position = turtle.getPosition();
         player.moveTo(position.getX() + 0.5, position.getY() + 0.5, position.getZ() + 0.5, direction.toYRot(), 0);
@@ -58,9 +60,12 @@ public final class FakePlayerProviderTurtle {
         // Add properties
         ItemStack activeStack = player.getItemInHand(InteractionHand.MAIN_HAND);
         if (!activeStack.isEmpty()) {
-            HashMultimap<Holder<Attribute>, AttributeModifier> attributes = HashMultimap.create();
-            activeStack.getAttributeModifiers().modifiers().forEach(entry -> attributes.put(entry.attribute(), entry.modifier()));
-            player.getAttributes().addTransientAttributeModifiers(attributes);
+            activeStack.getAttributeModifiers().forEach(EquipmentSlot.MAINHAND, (attr, modif) -> {
+                AttributeInstance inst = player.getAttribute(attr);
+                if (inst != null) {
+                    inst.addOrUpdateTransientModifier(modif);
+                }
+            });
         }
     }
 
@@ -71,9 +76,12 @@ public final class FakePlayerProviderTurtle {
         // Remove properties
         ItemStack activeStack = player.getItemInHand(InteractionHand.MAIN_HAND);
         if (!activeStack.isEmpty()) {
-            HashMultimap<Holder<Attribute>, AttributeModifier> attributes = HashMultimap.create();
-            activeStack.getAttributeModifiers().modifiers().forEach(entry -> attributes.put(entry.attribute(), entry.modifier()));
-            player.getAttributes().removeAttributeModifiers(attributes);
+            activeStack.getAttributeModifiers().forEach(EquipmentSlot.MAINHAND, (attr, modif) -> {
+                AttributeInstance inst = player.getAttribute(attr);
+                if (inst != null) {
+                    inst.addOrUpdateTransientModifier(modif);
+                }
+            });
         }
 
         // Copy primary items into turtle inventory and then insert/drop the rest
