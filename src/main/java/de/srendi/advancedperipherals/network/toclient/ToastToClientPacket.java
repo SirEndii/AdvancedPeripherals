@@ -5,15 +5,19 @@ import de.srendi.advancedperipherals.common.util.ToastUtil;
 import de.srendi.advancedperipherals.network.IAPPacket;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.network.codec.StreamCodec;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public class ToastToClientPacket implements IAPPacket {
+    public static final StreamCodec<RegistryFriendlyByteBuf, ToastToClientPacket> CODEC = StreamCodec.composite(
+            ComponentSerialization.STREAM_CODEC, packet -> packet.title,
+            ComponentSerialization.STREAM_CODEC, packet -> packet.component,
+            ToastToClientPacket::new);
 
-    public static final ResourceLocation ID = AdvancedPeripherals.getRL("toasttoclient");
+    public static final Type<ToastToClientPacket> TYPE = new Type<>(AdvancedPeripherals.getRL("toasttoclient"));
 
     private final Component title;
     private final Component component;
@@ -21,10 +25,6 @@ public class ToastToClientPacket implements IAPPacket {
     public ToastToClientPacket(Component title, Component component) {
         this.title = title;
         this.component = component;
-    }
-
-    public static ToastToClientPacket decode(RegistryFriendlyByteBuf buffer) {
-        return null; // new ToastToClientPacket(buffer.compo, buffer.readComponent());
     }
 
     @Override
@@ -37,20 +37,9 @@ public class ToastToClientPacket implements IAPPacket {
         ToastUtil.displayToast(title, component);
     }
 
-    /*@Override
-    public void write(@NotNull FriendlyByteBuf buffer) {
-        buffer.writeComponent(this.title);
-        buffer.writeComponent(this.component);
-    }
-
     @NotNull
     @Override
-    public ResourceLocation id() {
-        return ID;
-    }*/
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return null;
+    public Type<ToastToClientPacket> type() {
+        return TYPE;
     }
 }

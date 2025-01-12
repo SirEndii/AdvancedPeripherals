@@ -6,18 +6,21 @@ import de.srendi.advancedperipherals.network.APNetworking;
 import de.srendi.advancedperipherals.network.IAPPacket;
 import de.srendi.advancedperipherals.network.toclient.UsernameToCachePacket;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 import java.util.UUID;
 
 public class RetrieveUsernamePacket implements IAPPacket {
+    public static final StreamCodec<RegistryFriendlyByteBuf, RetrieveUsernamePacket> CODEC = StreamCodec.of((buffer, value) -> value.write(buffer), RetrieveUsernamePacket::decode);
 
-    public static final ResourceLocation ID = AdvancedPeripherals.getRL("retrieveusername");
+    public static final Type<RetrieveUsernamePacket> TYPE = new Type<>(AdvancedPeripherals.getRL("retrieveusername"));
 
     public UUID uuid;
     public UUID requester;
@@ -42,11 +45,9 @@ public class RetrieveUsernamePacket implements IAPPacket {
 
         if (gameProfile.isEmpty())
             return;
-
         APNetworking.sendTo(player, new UsernameToCachePacket(gameProfile.get().getId(), gameProfile.get().getName()));
     }
 
-    /*@Override
     public void write(FriendlyByteBuf buffer) {
         buffer.writeUUID(uuid);
         buffer.writeUUID(requester);
@@ -54,12 +55,7 @@ public class RetrieveUsernamePacket implements IAPPacket {
 
     @NotNull
     @Override
-    public ResourceLocation id() {
-        return ID;
-    }*/
-
-    @Override
     public Type<? extends CustomPacketPayload> type() {
-        return null;
+        return TYPE;
     }
 }

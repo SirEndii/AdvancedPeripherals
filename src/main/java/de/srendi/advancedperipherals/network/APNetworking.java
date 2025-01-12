@@ -1,6 +1,9 @@
 package de.srendi.advancedperipherals.network;
 
 import de.srendi.advancedperipherals.AdvancedPeripherals;
+import de.srendi.advancedperipherals.network.toclient.ToastToClientPacket;
+import de.srendi.advancedperipherals.network.toclient.UsernameToCachePacket;
+import de.srendi.advancedperipherals.network.toserver.RetrieveUsernamePacket;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -16,12 +19,11 @@ public class APNetworking {
     private static final String PROTOCOL_VERSION = ModLoadingContext.get().getActiveContainer().getModInfo().getVersion().toString();
 
     public static void init(PayloadRegistrar registrar) {
-        //registrar.playToClient(ToastToClientPacket.ID, ToastToClientPacket::decode, handler -> handler);
-        //registrar.playToClient(UsernameToCachePacket.ID, UsernameToCachePacket::decode, handler -> handler.client(IAPPacket::handlePacket));
+        registrar.playToClient(ToastToClientPacket.TYPE, ToastToClientPacket.CODEC, ToastToClientPacket::handle);
+        registrar.playToClient(UsernameToCachePacket.TYPE, UsernameToCachePacket.CODEC, UsernameToCachePacket::handle);
 
-        //registrar.playToServer(RetrieveUsernamePacket.ID, RetrieveUsernamePacket::decode, handler -> handler.server(IAPPacket::handlePacket));
+        registrar.playToServer(RetrieveUsernamePacket.TYPE, RetrieveUsernamePacket.CODEC, RetrieveUsernamePacket::handle);
     }
-
     @SubscribeEvent
     public static void register(final RegisterPayloadHandlersEvent event) {
         final PayloadRegistrar registrar = event.registrar(AdvancedPeripherals.MOD_ID)
