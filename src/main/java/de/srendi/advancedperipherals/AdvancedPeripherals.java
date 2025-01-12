@@ -31,10 +31,10 @@ public class AdvancedPeripherals {
 
     public AdvancedPeripherals(IEventBus modBus) {
         LOGGER.info("AdvancedPeripherals says hello!");
+        APAddons.setup();
 
         APConfig.register(ModLoadingContext.get());
 
-        modBus.addListener(this::commonSetup);
         modBus.addListener(this::registerCapabilities);
         modBus.addListener(ChunkManager::registerTicketController);
 
@@ -53,10 +53,6 @@ public class AdvancedPeripherals {
 
     public static ResourceLocation getRL(String resource) {
         return ResourceLocation.fromNamespaceAndPath(MOD_ID, resource);
-    }
-
-    public void commonSetup(FMLCommonSetupEvent event) {
-        APAddons.commonSetup();
     }
 
     public void registerCapabilities(RegisterCapabilitiesEvent event) {
@@ -99,10 +95,10 @@ public class AdvancedPeripherals {
                     });
         });
 
-        if (APAddons.ae2Loaded)
-            event.registerBlockEntity(
+        //if (APAddons.ae2Loaded)
+            /*event.registerBlockEntity(
                     AECapabilities.IN_WORLD_GRID_NODE_HOST,
                     BlockEntityTypes.ME_BRIDGE.get(),
-                    (blockEntity, side) -> blockEntity);
+                    (blockEntity, side) -> blockEntity);*/
     }
 }

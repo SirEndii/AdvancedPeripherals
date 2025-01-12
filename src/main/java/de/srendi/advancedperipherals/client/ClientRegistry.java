@@ -22,7 +22,7 @@ public class ClientRegistry {
     @SubscribeEvent
     public static void registerModels(ModelEvent.RegisterAdditional event) {
         for (String model : TURTLE_MODELS) {
-            event.register(new ModelResourceLocation(AdvancedPeripherals.getRL(model), "inventory"));
+            event.register(new ModelResourceLocation(AdvancedPeripherals.getRL(model), "standalone"));
         }
     }
 

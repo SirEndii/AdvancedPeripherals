@@ -37,6 +37,7 @@ public class Registration {
         TURTLE_SERIALIZER.register(modEventBus);
         POCKET_SERIALIZER.register(modEventBus);
         CREATIVE_MODE_TABS.register(modEventBus);
+        DATA_COMPONENT_TYPES.register(modEventBus);
 
         Blocks.register();
         BlockEntityTypes.register();
@@ -45,5 +46,6 @@ public class Registration {
         Villagers.register();
         CCRegistration.register();
         CreativeTabs.register();
+        DataComponents.register();
     }
 }

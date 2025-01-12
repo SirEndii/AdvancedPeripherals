@@ -24,8 +24,6 @@ import java.util.function.Consumer;
 import static de.srendi.advancedperipherals.common.setup.DataComponents.ABILITY_COOLDOWN;
 
 public class OperationAbility implements IOwnerAbility, IPeripheralPlugin {
-    private static final String COOLDOWNS_TAG = "cooldowns";
-
     private final Map<String, IPeripheralOperation<?>> allowedOperations = new HashMap<>();
     private final IPeripheralOwner owner;
 

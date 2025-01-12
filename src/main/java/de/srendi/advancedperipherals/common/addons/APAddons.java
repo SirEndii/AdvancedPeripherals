@@ -24,7 +24,7 @@ public class APAddons {
     private APAddons() {
     }
 
-    public static void commonSetup() {
+    public static void setup() {
         ModList modList = ModList.get();
         ae2Loaded = modList.isLoaded(AE2_MODID);
         curiosLoaded = modList.isLoaded(CURIOS_MODID);

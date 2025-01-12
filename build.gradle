@@ -217,26 +217,26 @@ dependencies {
     // Extended requirements
     // We don't use the api since we need a specific class from mekanism
     compileOnly "mekanism:Mekanism:${mekanism_version}"
-    runtimeOnly "mekanism:Mekanism:${mekanism_version}"
+    //runtimeOnly "mekanism:Mekanism:${mekanism_version}"
 
     // Applied Energistics 2
-    runtimeOnly "appeng:appliedenergistics2:${appliedenergistics_version}"
+    //runtimeOnly "appeng:appliedenergistics2:${appliedenergistics_version}"
     compileOnly "appeng:appliedenergistics2:${appliedenergistics_version}"
 
     // Applied Mekanistics
-    runtimeOnly "curse.maven:applied-mekanistics-574300:${appliedmekanistics_version}"
+    //runtimeOnly "curse.maven:applied-mekanistics-574300:${appliedmekanistics_version}"
     compileOnly "curse.maven:applied-mekanistics-574300:${appliedmekanistics_version}"
 
     // AE2 Things
     compileOnly "curse.maven:ae2things-609977:${ae2things_version}-sources"
-    runtimeOnly "curse.maven:ae2things-609977:${ae2things_version}-sources"
+    //runtimeOnly "curse.maven:ae2things-609977:${ae2things_version}-sources"
 
     // Minecolonies
     // Remove/Comment this section if you want to use runData.
-    runtimeOnly "com.ldtteam:minecolonies:${minecolonies_version}"
-    runtimeOnly "com.ldtteam:structurize:${structurize_version}"
-    runtimeOnly "com.ldtteam:domum-ornamentum:${domumornamentum_version}"
-    runtimeOnly "com.ldtteam:blockui:${blockui_version}"
+    //runtimeOnly "com.ldtteam:minecolonies:${minecolonies_version}"
+    //runtimeOnly "com.ldtteam:structurize:${structurize_version}"
+    //runtimeOnly "com.ldtteam:domum-ornamentum:${domumornamentum_version}"
+    //runtimeOnly "com.ldtteam:blockui:${blockui_version}"
 
     compileOnly "com.ldtteam:minecolonies:${minecolonies_version}"
     compileOnly "com.ldtteam:structurize:${structurize_version}"
@@ -244,11 +244,11 @@ dependencies {
     compileOnly "com.ldtteam:blockui:${blockui_version}"
 
     //Patchouli
-    runtimeOnly "vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE"
+    //runtimeOnly "vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE"
     compileOnly "vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE"
 
     //Powah
-    implementation "curse.maven:powah-633483:${powah_version}"
+    //implementation "curse.maven:powah-633483:${powah_version}"
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_version}"
     testImplementation "org.junit.jupiter:junit-jupiter-params:${junit_version}"

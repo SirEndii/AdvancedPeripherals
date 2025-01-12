@@ -44,9 +44,9 @@ public class Events {
         // See https://vazkiimods.github.io/Patchouli/docs/patchouli-basics/giving-new
         if (APConfig.WORLD_CONFIG.givePlayerBookOnJoin.get() && APAddons.patchouliLoaded) {
             if (!hasPlayedBefore(player)) {
-                PatchouliAPI.IPatchouliAPI patchouli = new PatchouliAPIImpl();
-                ItemStack book = patchouli.getBookStack(AdvancedPeripherals.getRL("manual"));
-                player.addItem(book);
+                //PatchouliAPI.IPatchouliAPI patchouli = new PatchouliAPIImpl();
+                //ItemStack book = patchouli.getBookStack(AdvancedPeripherals.getRL("manual"));
+                //player.addItem(book);
             }
         }
 
