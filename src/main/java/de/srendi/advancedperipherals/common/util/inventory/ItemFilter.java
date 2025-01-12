@@ -126,7 +126,7 @@ public class ItemFilter {
             return false;
         }
         //if (nbt != null && !stack.getOrCreateTag().equals(nbt)) {
-          //  return false;
+        //  return false;
         //}
         return true;
     }

@@ -4,14 +4,11 @@ import dan200.computercraft.shared.ModRegistry;
 import de.srendi.advancedperipherals.AdvancedPeripherals;
 import de.srendi.advancedperipherals.common.configuration.APConfig;
 import de.srendi.advancedperipherals.common.setup.Blocks;
-import de.srendi.advancedperipherals.common.setup.CCRegistration;
 import de.srendi.advancedperipherals.common.setup.Items;
 import de.srendi.advancedperipherals.common.setup.Villagers;
-import de.srendi.advancedperipherals.common.util.inventory.ItemUtil;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
 import net.neoforged.neoforge.event.village.WandererTradesEvent;
 
@@ -57,7 +54,7 @@ public class VillagerTrades {
             TradeBuilder.createTrade(event, ModRegistry.Blocks.COMPUTER_ADVANCED.get(), VillagerTrade.Type.ITEM_FOR_EMERALD, 3, 2)
                     .setXp(4)
                     .build();
-
+            //TODO
             /*TradeBuilder.createTrade(event, ItemUtil.makeTurtle(ItemUtil.TURTLE_NORMAL, CCRegistration.ID.ENVIRONMENT_TURTLE.toString()), VillagerTrade.Type.ITEM_FOR_EMERALD, 4, 3)
                     .setMaxUses(4)
                     .setXp(5)
@@ -89,9 +86,9 @@ public class VillagerTrades {
             TradeBuilder.createTrade(event, Items.MEMORY_CARD.get(), VillagerTrade.Type.EMERALD_FOR_ITEM, 2, 4)
                     .setXp(4)
                     .build();
-            TradeBuilder.createTrade(event, ItemUtil.makeTurtle(ItemUtil.TURTLE_ADVANCED, CCRegistration.ID.CHUNKY_TURTLE.toString()), VillagerTrade.Type.ITEM_FOR_EMERALD, 8, 4)
+            /*TradeBuilder.createTrade(event, ItemUtil.makeTurtle(ItemUtil.TURTLE_ADVANCED, CCRegistration.ID.CHUNKY_TURTLE.toString()), VillagerTrade.Type.ITEM_FOR_EMERALD, 8, 4)
                     .setXp(7)
-                    .build();
+                    .build();*/
             TradeBuilder.createTrade(event, Items.CHUNK_CONTROLLER.get(), VillagerTrade.Type.ITEM_FOR_EMERALD, 6, 4)
                     .setMaxUses(6)
                     .setXp(6)

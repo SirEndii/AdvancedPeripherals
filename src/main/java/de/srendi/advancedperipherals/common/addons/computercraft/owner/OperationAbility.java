@@ -11,17 +11,17 @@ import de.srendi.advancedperipherals.lib.peripherals.IPeripheralPlugin;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.PatchedDataComponentMap;
-import net.minecraft.nbt.CompoundTag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+
+import static de.srendi.advancedperipherals.common.setup.DataComponents.ABILITY_COOLDOWN;
 
 public class OperationAbility implements IOwnerAbility, IPeripheralPlugin {
     private static final String COOLDOWNS_TAG = "cooldowns";
@@ -36,19 +36,27 @@ public class OperationAbility implements IOwnerAbility, IPeripheralPlugin {
     protected void setCooldown(@NotNull IPeripheralOperation<?> operation, int cooldown) {
         if (cooldown > 0) {
             PatchedDataComponentMap patch = PatchedDataComponentMap.fromPatch(DataComponentMap.EMPTY, owner.getDataStorage());
-            if (!patch.has(COOLDOWNS_TAG)) patch.put(COOLDOWNS_TAG, new CompoundTag());
-            dataStorage.getCompound(COOLDOWNS_TAG).putLong(operation.settingsName(), Timestamp.valueOf(LocalDateTime.now().plus(cooldown, ChronoUnit.MILLIS)).getTime());
+            if (!patch.has(ABILITY_COOLDOWN.get()))
+                patch.set(ABILITY_COOLDOWN.get(), DataComponentPatch.EMPTY);
+
+            PatchedDataComponentMap operationPatch = PatchedDataComponentMap.fromPatch(DataComponentMap.EMPTY, patch.get(ABILITY_COOLDOWN.get()));
+            operationPatch.set(operation.dataComponentType(), (long) cooldown);
+
+            patch.set(ABILITY_COOLDOWN.get(), operationPatch.asPatch());
+            owner.putDataStorage(patch.asPatch());
         }
     }
 
     protected int getCooldown(@NotNull IPeripheralOperation<?> operation) {
-        CompoundTag dataStorage = owner.getDataStorage();
-        if (!dataStorage.contains(COOLDOWNS_TAG)) return 0;
-        CompoundTag cooldowns = dataStorage.getCompound(COOLDOWNS_TAG);
-        String operationName = operation.settingsName();
-        if (!cooldowns.contains(operationName)) return 0;
+        DataComponentPatch componentPatch = owner.getDataStorage();
+
+        if (componentPatch.get(ABILITY_COOLDOWN.get()).isEmpty())
+            return 0;
+        DataComponentPatch cooldowns = componentPatch.get(ABILITY_COOLDOWN.get()).get();
+        if (cooldowns.get(operation.dataComponentType()).isEmpty())
+            return 0;
         long currentTime = Timestamp.valueOf(LocalDateTime.now()).getTime();
-        return (int) Math.max(0, cooldowns.getLong(operationName) - currentTime);
+        return (int) Math.max(0, cooldowns.get(operation.dataComponentType()).get() - currentTime);
     }
 
     public void registerOperation(@NotNull IPeripheralOperation<?> operation) {

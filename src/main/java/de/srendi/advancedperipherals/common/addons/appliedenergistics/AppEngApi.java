@@ -18,7 +18,6 @@ import appeng.api.storage.MEStorage;
 import appeng.api.storage.cells.IBasicCellItem;
 import appeng.blockentity.storage.DriveBlockEntity;
 import appeng.parts.storagebus.StorageBusPart;
-import dan200.computercraft.shared.util.NBTUtil;
 import de.srendi.advancedperipherals.AdvancedPeripherals;
 import de.srendi.advancedperipherals.common.addons.APAddons;
 import de.srendi.advancedperipherals.common.util.LuaConverter;
@@ -29,7 +28,6 @@ import de.srendi.advancedperipherals.common.util.inventory.ItemUtil;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import me.ramidzkh.mekae2.ae2.MekanismKey;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -422,10 +420,10 @@ public class AppEngApi {
 
                     if (cell.getKeyType().getClass().isAssignableFrom(AEKeyType.items().getClass())) {
                         //if (stack.get() == null)
-                          //  continue;
+                        //  continue;
                         //TODO
-                        int numOfType = 0;//stack.get().getLongArray("amts").length;
-                        long numItemsInCell = 0;//stack.getTag().getLong("ic");
+                        int numOfType = 0; //stack.get().getLongArray("amts").length;
+                        long numItemsInCell = 0; //stack.getTag().getLong("ic");
 
                         used += ((int) Math.ceil(((double) numItemsInCell) / 8)) + ((long) bytesPerType * numOfType);
                     }
@@ -468,10 +466,10 @@ public class AppEngApi {
 
                     if (cell.getKeyType().getClass().isAssignableFrom(AEKeyType.fluids().getClass())) {
                         //if (stack.getTag() == null)
-                          //  continue;
+                        //  continue;
                         //TODO
-                        int numOfType = 0;//stack.getTag().getLongArray("amts").length;
-                        long numBucketsInCell = 0;//stack.getTag().getLong("ic") / 1000;
+                        int numOfType = 0; //stack.getTag().getLongArray("amts").length;
+                        long numBucketsInCell = 0; //stack.getTag().getLong("ic") / 1000;
 
                         used += ((int) Math.ceil(((double) numBucketsInCell) / 8)) + ((long) bytesPerType * numOfType);
                     }

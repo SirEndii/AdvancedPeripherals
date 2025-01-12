@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.FrontAndTop;
 import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -30,6 +31,9 @@ public interface IPeripheralOwner {
     @Nullable Player getOwner();
 
     DataComponentPatch getDataStorage();
+
+    // Not everything from MC uses the new data component system, so we provide a nbt data storage too
+    CompoundTag getNbtStorage();
 
     void putDataStorage(DataComponentPatch dataStorage);
 

@@ -1,6 +1,7 @@
 package de.srendi.advancedperipherals.common.addons.computercraft.owner;
 
 import dan200.computercraft.api.pocket.IPocketAccess;
+import de.srendi.advancedperipherals.AdvancedPeripherals;
 import de.srendi.advancedperipherals.common.configuration.APConfig;
 import de.srendi.advancedperipherals.common.util.DataStorageUtil;
 import de.srendi.advancedperipherals.common.util.fakeplayer.APFakePlayer;
@@ -8,6 +9,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.FrontAndTop;
 import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -78,6 +80,17 @@ public class PocketPeripheralOwner extends BasePeripheralOwner {
     @Override
     public DataComponentPatch getDataStorage() {
         return DataStorageUtil.getDataStorage(pocket);
+    }
+
+    @Override
+    public CompoundTag getNbtStorage() {
+        AdvancedPeripherals.debug("Pocket peripheral at " + getPos() + " tried to use nbt storage but it should instead use data component storage, report to github!", org.apache.logging.log4j.Level.WARN);
+        return null;
+    }
+
+    @Override
+    public void putDataStorage(DataComponentPatch dataStorage) {
+        DataStorageUtil.putDataStorage(pocket, dataStorage);
     }
 
     @Override

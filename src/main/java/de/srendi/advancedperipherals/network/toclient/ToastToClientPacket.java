@@ -3,7 +3,6 @@ package de.srendi.advancedperipherals.network.toclient;
 import de.srendi.advancedperipherals.AdvancedPeripherals;
 import de.srendi.advancedperipherals.common.util.ToastUtil;
 import de.srendi.advancedperipherals.network.IAPPacket;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;

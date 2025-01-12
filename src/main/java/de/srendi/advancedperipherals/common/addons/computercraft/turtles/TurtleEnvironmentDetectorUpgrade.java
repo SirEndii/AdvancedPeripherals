@@ -9,14 +9,13 @@ import de.srendi.advancedperipherals.common.addons.computercraft.peripheral.Envi
 import de.srendi.advancedperipherals.common.setup.CCRegistration;
 import de.srendi.advancedperipherals.lib.turtle.PeripheralTurtleUpgrade;
 import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public class TurtleEnvironmentDetectorUpgrade extends PeripheralTurtleUpgrade<EnvironmentDetectorPeripheral> {
 
     public TurtleEnvironmentDetectorUpgrade(ItemStack stack) {
-        super(CCRegistration.ID.ENVIRONMENT_TURTLE,  stack);
+        super(CCRegistration.ID.ENVIRONMENT_TURTLE, stack);
     }
 
     @Override

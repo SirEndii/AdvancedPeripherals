@@ -22,7 +22,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-import static de.srendi.advancedperipherals.common.items.MemoryCardItem.OWNER_NBT_KEY;
 import static de.srendi.advancedperipherals.common.setup.DataComponents.OWNER;
 
 public class InventoryManagerEntity extends PeripheralBlockEntity<InventoryManagerPeripheral> implements IInventoryBlock<InventoryManagerContainer> {

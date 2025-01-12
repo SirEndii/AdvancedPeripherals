@@ -1,7 +1,9 @@
 package de.srendi.advancedperipherals.common.addons.computercraft.operations;
 
 import com.google.common.math.IntMath;
+import de.srendi.advancedperipherals.common.setup.DataComponents;
 import de.srendi.advancedperipherals.lib.peripherals.IPeripheralOperation;
+import net.minecraft.core.component.DataComponentType;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.util.HashMap;
@@ -79,5 +81,10 @@ public enum SphereOperation implements IPeripheralOperation<SphereOperationConte
 
     public SphereOperationContext cost() {
         return new SphereOperationContext(getMaxCostRadius());
+    }
+
+    @Override
+    public DataComponentType<Long> dataComponentType() {
+        return DataComponents.SPHERE_OPERATION.get();
     }
 }

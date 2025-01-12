@@ -2,7 +2,6 @@ package de.srendi.advancedperipherals.common.addons.computercraft.integrations;
 
 import dan200.computercraft.api.lua.LuaFunction;
 import de.srendi.advancedperipherals.lib.peripherals.APGenericPeripheral;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BeaconBlockEntity;
 
 public class BeaconIntegration implements APGenericPeripheral {

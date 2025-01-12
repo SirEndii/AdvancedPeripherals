@@ -13,6 +13,8 @@ import de.srendi.advancedperipherals.common.util.Pair;
 import de.srendi.advancedperipherals.lib.peripherals.AutomataCorePeripheral;
 import de.srendi.advancedperipherals.lib.peripherals.IPeripheralOperation;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.PatchedDataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -21,11 +23,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 
 import static de.srendi.advancedperipherals.common.addons.computercraft.operations.SingleOperation.WARP;
+import static de.srendi.advancedperipherals.common.setup.DataComponents.POINT_DATA_MARK;
+import static de.srendi.advancedperipherals.common.setup.DataComponents.WORLD_DATA_MARK;
 
 public class AutomataWarpingPlugin extends AutomataCorePlugin {
-
-    private static final String POINT_DATA_MARK = "warp_points";
-    private static final String WORLD_DATA_MARK = "warp_world";
 
     public AutomataWarpingPlugin(AutomataCorePeripheral automataCore) {
         super(automataCore);
@@ -39,18 +40,18 @@ public class AutomataWarpingPlugin extends AutomataCorePlugin {
     @NotNull
     protected Pair<MethodResult, CompoundTag> getPointData() {
         TurtlePeripheralOwner owner = automataCore.getPeripheralOwner();
-        CompoundTag settings = owner.getDataStorage();
-        if (!settings.contains(WORLD_DATA_MARK)) {
-            settings.putString(WORLD_DATA_MARK, owner.getLevel().dimension().location().toString());
+        PatchedDataComponentMap settings = PatchedDataComponentMap.fromPatch(DataComponentMap.EMPTY, owner.getDataStorage());
+        if (!settings.has(WORLD_DATA_MARK.get())) {
+            settings.set(WORLD_DATA_MARK.get(), owner.getLevel().dimension().location().toString());
         } else {
-            String worldName = settings.getString(WORLD_DATA_MARK);
+            String worldName = settings.get(WORLD_DATA_MARK.get());
             if (!owner.getLevel().dimension().location().toString().equals(worldName))
                 return Pair.onlyLeft(MethodResult.of(null, "Incorrect world for this upgrade"));
         }
-        if (!settings.contains(POINT_DATA_MARK))
-            settings.put(POINT_DATA_MARK, new CompoundTag());
+        if (!settings.has(POINT_DATA_MARK.get()))
+            settings.set(POINT_DATA_MARK.get(), new CompoundTag());
 
-        return Pair.onlyRight(settings.getCompound(POINT_DATA_MARK));
+        return Pair.onlyRight(settings.get(POINT_DATA_MARK.get()));
     }
 
     private int getWarpCost(SingleOperationContext context) {

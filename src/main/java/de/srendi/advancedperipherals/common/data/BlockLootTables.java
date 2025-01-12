@@ -2,8 +2,6 @@ package de.srendi.advancedperipherals.common.data;
 
 import de.srendi.advancedperipherals.common.setup.Registration;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.block.Block;
