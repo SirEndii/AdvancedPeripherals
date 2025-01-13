@@ -78,8 +78,9 @@ public class WeakAutomataCore extends APItem implements IFeedableAutomataCore {
         String entityType = EntityType.getKey(entity.getType()).toString();
 
         if (AUTOMATA_CORE_REGISTRY.containsKey(entityType)) {
-
-            CompoundTag consumedData = stack.get(CONSUMED_ENTITY_COMPOUND);
+            CompoundTag consumedData = stack.get(CONSUMED_ENTITY_COMPOUND) == null ? new CompoundTag() : stack.get(CONSUMED_ENTITY_COMPOUND);
+            if (consumedData == null)
+                return InteractionResult.PASS;
             WeakAutomataCoreRecord record;
             if (consumedData.isEmpty()) {
                 record = AUTOMATA_CORE_REGISTRY.get(entityType);
