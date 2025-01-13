@@ -95,8 +95,6 @@ public class PocketPeripheralOwner extends BasePeripheralOwner {
 
     @Override
     public void markDataStorageDirty() {
-        //TODO do we still need this?
-        //pocket.updateUpgradeNBTData();
     }
 
     @Override

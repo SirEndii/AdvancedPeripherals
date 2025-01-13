@@ -32,7 +32,8 @@ public class PocketUpgradesProvider {
                 upgrades.register(id(CCRegistration.ID.GEOSCANNER_TURTLE), new TurtleGeoScannerUpgrade(new ItemStack(Blocks.GEO_SCANNER.get())));
             });
         }));
-        output.addProvider(o -> new DatapackBuiltinEntriesProvider(o, newRegistries, Set.of(AdvancedPeripherals.MOD_ID)));
+        //TODO - crashes data gen
+        //output.addProvider(o -> new DatapackBuiltinEntriesProvider(o, newRegistries, Set.of(AdvancedPeripherals.MOD_ID)));
     }
 
     public static ResourceKey<ITurtleUpgrade> id(ResourceLocation id) {

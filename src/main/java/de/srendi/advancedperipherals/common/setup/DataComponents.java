@@ -18,7 +18,6 @@ import java.util.function.UnaryOperator;
 
 public class DataComponents {
 
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> ENERGY_RATE_LIMIT = registerInt("energy_rate_limit");
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<DataComponentPatch>> TURTLE_UPGRADE_STORED_DATA = registerDataComponent("stored_data");
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<DataComponentPatch>> ABILITY_COOLDOWN = registerDataComponent("cooldowns");
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<UUID>> OWNER = registerUUID("owner_id");
@@ -28,6 +27,7 @@ public class DataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<CompoundTag>> ENTITY_TRANSFER = registerNBT("entity_transfer");
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>> WORLD_DATA_MARK = registerString("world_data_mark");
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<CompoundTag>> POINT_DATA_MARK = registerNBT("point_dat_mark");
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<CompoundTag>> CONSUMED_ENTITY_COMPOUND = registerNBT("consumed_entity_compound");
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> SIMPLE_FREE_OPERATION = registerLong("free_operation_cooldown");
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> SINGLE_OPERATION = registerLong("single_operation");
@@ -36,7 +36,6 @@ public class DataComponents {
     public static void register() {
     }
 
-    //
     private static <TYPE> DeferredHolder<DataComponentType<?>, DataComponentType<TYPE>> simple(String name, UnaryOperator<DataComponentType.Builder<TYPE>> operator) {
         return Registration.DATA_COMPONENT_TYPES.register(name, () -> operator.apply(DataComponentType.builder()).build());
     }

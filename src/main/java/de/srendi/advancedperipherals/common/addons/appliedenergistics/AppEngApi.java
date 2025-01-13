@@ -18,6 +18,7 @@ import appeng.api.storage.MEStorage;
 import appeng.api.storage.cells.IBasicCellItem;
 import appeng.blockentity.storage.DriveBlockEntity;
 import appeng.parts.storagebus.StorageBusPart;
+import dan200.computercraft.shared.util.NBTUtil;
 import de.srendi.advancedperipherals.AdvancedPeripherals;
 import de.srendi.advancedperipherals.common.addons.APAddons;
 import de.srendi.advancedperipherals.common.util.LuaConverter;
@@ -28,6 +29,8 @@ import de.srendi.advancedperipherals.common.util.inventory.ItemUtil;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import me.ramidzkh.mekae2.ae2.MekanismKey;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -160,13 +163,13 @@ public class AppEngApi {
     private static Map<String, Object> getObjectFromItemStack(Pair<Long, AEItemKey> stack, @Nullable ICraftingService craftingService) {
         Map<String, Object> map = new HashMap<>();
         String displayName = stack.getRight().getDisplayName().getString();
-        //CompoundTag nbt = stack.getRight().toTag();
+        CompoundTag nbt = stack.getRight().toTag(RegistryAccess.EMPTY);
         long amount = stack.getLeft();
         map.put("fingerprint", ItemUtil.getFingerprint(stack.getRight().toStack()));
         map.put("name", ItemUtil.getRegistryKey(stack.getRight().getItem()).toString());
         map.put("amount", amount);
         map.put("displayName", displayName);
-        //map.put("nbt", NBTUtil.toLua(nbt));
+        map.put("nbt", NBTUtil.toLua(nbt));
         map.put("tags", LuaConverter.tagsToList(() -> stack.getRight().getItem().builtInRegistryHolder().tags()));
         map.put("isCraftable", craftingService != null && craftingService.isCraftable(stack.getRight()));
 

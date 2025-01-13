@@ -29,16 +29,17 @@ public abstract class BaseItem extends Item {
         super(new Properties());
     }
 
+    @NotNull
     @Override
-    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
+    public InteractionResultHolder<ItemStack> use(Level worldIn, @NotNull Player playerIn, @NotNull InteractionHand handIn) {
         if (worldIn.isClientSide)
             return new InteractionResultHolder<>(InteractionResult.PASS, playerIn.getItemInHand(handIn));
         if (this instanceof IInventoryItem inventoryItem) {
             ServerPlayer serverPlayerEntity = (ServerPlayer) playerIn;
             ItemStack stack = playerIn.getItemInHand(handIn);
-
-            //TODO
-            //serverPlayerEntity.openMenu(inventoryItem.createContainer(playerIn, stack), buf -> buf.write(stack));
+            serverPlayerEntity.openMenu(inventoryItem.createContainer(playerIn, stack), buf -> {
+                ItemStack.STREAM_CODEC.encode(buf, stack);
+            });
         }
         return super.use(worldIn, playerIn, handIn);
     }
@@ -55,8 +56,8 @@ public abstract class BaseItem extends Item {
             tooltip.add(EnumColor.buildTextComponent(Component.translatable("item.advancedperipherals.tooltip.disabled")));
     }
 
-
-    public @NotNull Component getDescription() {
+    @NotNull
+    public Component getDescription() {
         if (description == null) description = TranslationUtil.itemTooltip(getDescriptionId());
         return description;
     }
