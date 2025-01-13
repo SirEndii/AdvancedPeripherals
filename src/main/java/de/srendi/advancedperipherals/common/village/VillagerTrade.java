@@ -5,6 +5,7 @@ import dan200.computercraft.api.turtle.ITurtleUpgrade;
 import dan200.computercraft.api.upgrades.UpgradeData;
 import dan200.computercraft.shared.ModRegistry;
 import dan200.computercraft.shared.util.DataComponentUtil;
+import de.srendi.advancedperipherals.AdvancedPeripherals;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
@@ -177,7 +178,11 @@ public class VillagerTrade implements VillagerTrades.ItemListing {
 
             Holder.Reference<IPocketUpgrade> pocketUpgrade = access.registryOrThrow(IPocketUpgrade.REGISTRY)
                     .getHolder(id)
-                    .orElseThrow();
+                    .orElse(null);
+            if (pocketUpgrade == null) {
+                AdvancedPeripherals.debug("Pocket upgrade " + id + " does not exist or was removed by a datapack, skipping villager trade");
+                return this;
+            }
 
             ItemStack pocketStack = DataComponentUtil.createStack(advanced ? ModRegistry.Items.POCKET_COMPUTER_ADVANCED.get() : ModRegistry.Items.POCKET_COMPUTER_NORMAL.get(), ModRegistry.DataComponents.POCKET_UPGRADE.get(), UpgradeData.ofDefault(pocketUpgrade));
 
@@ -196,7 +201,12 @@ public class VillagerTrade implements VillagerTrades.ItemListing {
 
             Holder.Reference<ITurtleUpgrade> turtleUpgrade = access.registryOrThrow(ITurtleUpgrade.REGISTRY)
                     .getHolder(id)
-                    .orElseThrow();
+                    .orElse(null);
+
+            if (turtleUpgrade == null) {
+                AdvancedPeripherals.debug("Pocket upgrade " + id + " does not exist or was removed by a datapack, skipping villager trade");
+                return this;
+            }
 
             ItemStack turtleStack = DataComponentUtil.createStack(advanced ? ModRegistry.Items.TURTLE_ADVANCED.get() : ModRegistry.Items.TURTLE_NORMAL.get(), ModRegistry.DataComponents.RIGHT_TURTLE_UPGRADE.get(), UpgradeData.ofDefault(turtleUpgrade));
 
