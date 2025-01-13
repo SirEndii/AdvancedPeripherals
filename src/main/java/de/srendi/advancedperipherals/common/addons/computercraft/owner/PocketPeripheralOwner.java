@@ -14,6 +14,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,17 +39,14 @@ public class PocketPeripheralOwner extends BasePeripheralOwner {
     @Nullable
     @Override
     public Level getLevel() {
-        Entity owner = pocket.getEntity();
-        if (owner == null) return null;
-        return owner.getCommandSenderWorld();
+        return pocket.getLevel();
     }
 
     @NotNull
     @Override
     public BlockPos getPos() {
-        Entity owner = pocket.getEntity();
-        if (owner == null) return new BlockPos(0, 0, 0);
-        return owner.blockPosition();
+        Vec3 position = pocket.getPosition();
+        return new BlockPos((int) position.x, (int) position.y, (int) position.z);
     }
 
     @NotNull

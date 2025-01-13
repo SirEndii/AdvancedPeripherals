@@ -1,5 +1,13 @@
 package de.srendi.advancedperipherals.common.village;
 
+import dan200.computercraft.api.pocket.IPocketUpgrade;
+import dan200.computercraft.api.turtle.ITurtleUpgrade;
+import dan200.computercraft.api.upgrades.UpgradeData;
+import dan200.computercraft.shared.ModRegistry;
+import dan200.computercraft.shared.util.DataComponentUtil;
+import net.minecraft.core.Holder;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.npc.VillagerTrades;
@@ -72,40 +80,18 @@ public class VillagerTrade implements VillagerTrades.ItemListing {
         private int maxUses = 10;
         private int xp = 2;
 
-        private final ItemLike item;
-        private final ItemStack itemStack;
+        private ItemLike item;
+        private ItemStack itemStack;
 
-        private TradeBuilder(VillagerTradesEvent event, ItemLike item, Type type, int emeraldAmount, int professionLevel) {
+        private TradeBuilder(VillagerTradesEvent event, Type type, int emeraldAmount, int professionLevel) {
             this.villagerEvent = event;
-            this.item = item;
-            this.itemStack = null;
             this.type = type;
             this.emeraldAmount = emeraldAmount;
             this.professionLevel = professionLevel;
         }
 
-        private TradeBuilder(VillagerTradesEvent event, ItemStack stack, Type type, int emeraldAmount, int professionLevel) {
-            this.villagerEvent = event;
-            this.itemStack = stack;
-            this.item = null;
-            this.type = type;
-            this.emeraldAmount = emeraldAmount;
-            this.professionLevel = professionLevel;
-        }
-
-        private TradeBuilder(WandererTradesEvent event, ItemLike item, Type type, int emeraldAmount, int professionLevel) {
+        private TradeBuilder(WandererTradesEvent event, Type type, int emeraldAmount, int professionLevel) {
             this.wandererEvent = event;
-            this.item = item;
-            this.itemStack = null;
-            this.type = type;
-            this.emeraldAmount = emeraldAmount;
-            this.professionLevel = professionLevel;
-        }
-
-        private TradeBuilder(WandererTradesEvent event, ItemStack stack, Type type, int emeraldAmount, int professionLevel) {
-            this.wandererEvent = event;
-            this.itemStack = stack;
-            this.item = null;
             this.type = type;
             this.emeraldAmount = emeraldAmount;
             this.professionLevel = professionLevel;
@@ -124,22 +110,20 @@ public class VillagerTrade implements VillagerTrades.ItemListing {
          * @return a builder instance
          */
         public static TradeBuilder createTrade(VillagerTradesEvent event, ItemLike itemLike, Type type, int emeraldAmount, int professionLevel) {
-            return new TradeBuilder(event, itemLike, type, emeraldAmount, professionLevel);
+            return new TradeBuilder(event, type, emeraldAmount, professionLevel).withItem(itemLike);
         }
 
         /**
          * Creates a new TradeBuilder instance. Can be used to create villager trades for normal villagers
-         * This one is for normal villagers with item stacks
          *
          * @param event this should be executed in an event - pass the villager trade event here
-         * @param itemStack the item for trade
          * @param type the trade type
          * @param emeraldAmount the emerald amount of the trade
          * @param professionLevel the profession level of the villager. 1 to 5
          * @return a builder instance
          */
-        public static TradeBuilder createTrade(VillagerTradesEvent event, ItemStack itemStack, Type type, int emeraldAmount, int professionLevel) {
-            return new TradeBuilder(event, itemStack, type, emeraldAmount, professionLevel);
+        public static TradeBuilder createTrade(VillagerTradesEvent event, Type type, int emeraldAmount, int professionLevel) {
+            return new TradeBuilder(event, type, emeraldAmount, professionLevel);
         }
 
         /**
@@ -155,22 +139,68 @@ public class VillagerTrade implements VillagerTrades.ItemListing {
          * @return a builder instance
          */
         public static TradeBuilder createTrade(WandererTradesEvent event, ItemLike itemLike, Type type, int emeraldAmount, int professionLevel) {
-            return new TradeBuilder(event, itemLike, type, emeraldAmount, professionLevel);
+            return new TradeBuilder(event, type, emeraldAmount, professionLevel).withItem(itemLike);
         }
 
         /**
          * Creates a new TradeBuilder instance. Can be used to create villager trades for wandering traders.
-         * This one is for normal villagers with item stacks
          *
          * @param event this should be executed in an event - pass the villager trade event here
-         * @param itemStack the item for trade
          * @param type the trade type
          * @param emeraldAmount the emerald amount of the trade
          * @param professionLevel the profession level of the villager. 1 to 5
          * @return a builder instance
          */
-        public static TradeBuilder createTrade(WandererTradesEvent event, ItemStack itemStack, Type type, int emeraldAmount, int professionLevel) {
-            return new TradeBuilder(event, itemStack, type, emeraldAmount, professionLevel);
+        public static TradeBuilder createTrade(WandererTradesEvent event, Type type, int emeraldAmount, int professionLevel) {
+            return new TradeBuilder(event, type, emeraldAmount, professionLevel);
+        }
+
+        public TradeBuilder withItem(ItemLike item) {
+            this.item = item;
+            return this;
+        }
+
+        public TradeBuilder withItemStack(ItemStack itemStack) {
+            this.itemStack = itemStack;
+            return this;
+        }
+
+        /**
+         * Sets a pocket upgrade as the item stack
+         *
+         * @param advanced should it be an advanced pocket computer
+         * @param id the id of the upgrade
+         * @return the current instance of the builder
+         */
+        public TradeBuilder withPocketUpgrade(boolean advanced, ResourceLocation id) {
+            RegistryAccess access = wandererEvent != null ? wandererEvent.getRegistryAccess() : villagerEvent.getRegistryAccess();
+
+            Holder.Reference<IPocketUpgrade> pocketUpgrade = access.registryOrThrow(IPocketUpgrade.REGISTRY)
+                    .getHolder(id)
+                    .orElseThrow();
+
+            ItemStack pocketStack = DataComponentUtil.createStack(advanced ? ModRegistry.Items.POCKET_COMPUTER_ADVANCED.get() : ModRegistry.Items.POCKET_COMPUTER_NORMAL.get(), ModRegistry.DataComponents.POCKET_UPGRADE.get(), UpgradeData.ofDefault(pocketUpgrade));
+
+            return withItemStack(pocketStack);
+        }
+
+        /**
+         * Sets a turtle upgrade as the item stack
+         *
+         * @param advanced should it be an advanced turtle
+         * @param id the id of the upgrade
+         * @return the current instance of the builder
+         */
+        public TradeBuilder withTurtleUpgrade(boolean advanced, ResourceLocation id) {
+            RegistryAccess access = wandererEvent != null ? wandererEvent.getRegistryAccess() : villagerEvent.getRegistryAccess();
+
+            Holder.Reference<ITurtleUpgrade> turtleUpgrade = access.registryOrThrow(ITurtleUpgrade.REGISTRY)
+                    .getHolder(id)
+                    .orElseThrow();
+
+            ItemStack turtleStack = DataComponentUtil.createStack(advanced ? ModRegistry.Items.TURTLE_ADVANCED.get() : ModRegistry.Items.TURTLE_NORMAL.get(), ModRegistry.DataComponents.RIGHT_TURTLE_UPGRADE.get(), UpgradeData.ofDefault(turtleUpgrade));
+
+            return withItemStack(turtleStack);
         }
 
         /**
