@@ -13,34 +13,10 @@ import static de.srendi.advancedperipherals.common.setup.DataComponents.TURTLE_U
 
 public abstract class ClockwiseAnimatedTurtleUpgrade<T extends IBasePeripheral<?>> extends PeripheralTurtleUpgrade<T> {
 
-    public static final String STORED_DATA_TAG = "storedData";
 
     protected ClockwiseAnimatedTurtleUpgrade(ResourceLocation id, ItemStack item) {
         super(id, item);
     }
-
-    /*@NotNull
-    @Override
-    public TransformedModel getModel(@Nullable ITurtleAccess turtle, @NotNull TurtleSide side) {
-        if (getLeftModel() == null) {
-            PoseStack stack = new PoseStack();
-            stack.pushPose();
-            stack.translate(0.0f, 0.5f, 0.5f);
-            if (turtle != null) {
-                int rotationStep = DataStorageUtil.RotationCharge.get(turtle, side);
-                stack.mulPose(Vector3f.XN.rotationDegrees(-10 * rotationStep));
-            }
-            stack.translate(0.0f, -0.5f, -0.5f);
-            stack.mulPose(Vector3f.YN.rotationDegrees(90));
-            if (side == TurtleSide.LEFT) {
-                stack.translate(0, 0, -0.6);
-            } else {
-                stack.translate(0, 0, -1.4);
-            }
-            return TransformedModel.of(getCraftingItem(), new Transformation(stack.last().pose()));
-        }
-        return TransformedModel.of(side == TurtleSide.LEFT ? getLeftModel() : getRightModel());
-    }*/
 
     // Optional callbacks for addons based on AP
     public void chargeConsumingCallback() {

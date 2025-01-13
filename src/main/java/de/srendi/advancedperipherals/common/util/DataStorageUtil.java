@@ -49,8 +49,8 @@ public class DataStorageUtil {
          * Used for gear rotation animation
          */
         public static int get(@NotNull ITurtleAccess access, @NotNull TurtleSide side) {
-            Optional<? extends Integer> rotation_charge = getDataStorage(access, side).get(ROTATION_CHARGE_SETTING.get());
-            return rotation_charge != null && rotation_charge.isPresent() ? rotation_charge.get() : 0;
+            Optional<? extends Integer> rotationCharge = getDataStorage(access, side).get(ROTATION_CHARGE_SETTING.get());
+            return rotationCharge != null && rotationCharge.isPresent() ? rotationCharge.get() : 0;
         }
 
         public static boolean consume(@NotNull ITurtleAccess access, @NotNull TurtleSide side) {
@@ -68,7 +68,7 @@ public class DataStorageUtil {
             PatchedDataComponentMap patch = PatchedDataComponentMap.fromPatch(DataComponentMap.EMPTY, owner.getDataStorage());
             Integer currentCharge = patch.get(ROTATION_CHARGE_SETTING.get());
             if (currentCharge == null)
-                return;
+                currentCharge = 0;
             patch.set(ROTATION_CHARGE_SETTING.get(), Math.max(0, currentCharge) + count * ROTATION_STEPS);
             owner.putDataStorage(patch.asPatch());
         }
