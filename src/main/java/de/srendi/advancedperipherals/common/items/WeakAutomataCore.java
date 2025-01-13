@@ -59,13 +59,13 @@ public class WeakAutomataCore extends APItem implements IFeedableAutomataCore {
     public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flagIn) {
         super.appendHoverText(stack, context, tooltip, flagIn);
 
-
         CompoundTag consumedData = stack.get(CONSUMED_ENTITY_COMPOUND.get());
-        consumedData.getAllKeys().forEach(key -> {
-            WeakAutomataCoreRecord record = AUTOMATA_CORE_REGISTRY.get(key);
-            CompoundTag recordData = consumedData.getCompound(key);
-            tooltip.add(EnumColor.buildTextComponent(Component.literal(String.format("Consumed: %d/%d %s", recordData.getInt(CONSUMED_ENTITY_COUNT), record.getRequiredCount(key), recordData.getString(CONSUMED_ENTITY_NAME)))));
-        });
+        if (consumedData != null)
+            consumedData.getAllKeys().forEach(key -> {
+                WeakAutomataCoreRecord record = AUTOMATA_CORE_REGISTRY.get(key);
+                CompoundTag recordData = consumedData.getCompound(key);
+                tooltip.add(EnumColor.buildTextComponent(Component.literal(String.format("Consumed: %d/%d %s", recordData.getInt(CONSUMED_ENTITY_COUNT), record.getRequiredCount(key), recordData.getString(CONSUMED_ENTITY_NAME)))));
+            });
     }
 
     @Override
