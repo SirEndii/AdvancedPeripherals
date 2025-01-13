@@ -1,7 +1,6 @@
 package de.srendi.advancedperipherals.common.data;
 
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
-import de.srendi.advancedperipherals.AdvancedPeripherals;
 import de.srendi.advancedperipherals.common.addons.computercraft.turtles.TurtleChatBoxUpgrade;
 import de.srendi.advancedperipherals.common.addons.computercraft.turtles.TurtleEnvironmentDetectorUpgrade;
 import de.srendi.advancedperipherals.common.addons.computercraft.turtles.TurtleGeoScannerUpgrade;
@@ -16,9 +15,7 @@ import net.minecraft.data.registries.RegistryPatchGenerator;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 public class PocketUpgradesProvider {
