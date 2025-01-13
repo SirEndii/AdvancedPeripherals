@@ -1,5 +1,6 @@
 package de.srendi.advancedperipherals.common.addons.appliedenergistics;
 
+import appeng.api.AECapabilities;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.CraftingJobStatus;
@@ -21,6 +22,8 @@ import appeng.parts.storagebus.StorageBusPart;
 import dan200.computercraft.shared.util.NBTUtil;
 import de.srendi.advancedperipherals.AdvancedPeripherals;
 import de.srendi.advancedperipherals.common.addons.APAddons;
+import de.srendi.advancedperipherals.common.setup.BlockEntityTypes;
+import de.srendi.advancedperipherals.common.util.DataComponentUtil;
 import de.srendi.advancedperipherals.common.util.LuaConverter;
 import de.srendi.advancedperipherals.common.util.Pair;
 import de.srendi.advancedperipherals.common.util.inventory.FluidFilter;
@@ -29,10 +32,10 @@ import de.srendi.advancedperipherals.common.util.inventory.ItemUtil;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import me.ramidzkh.mekae2.ae2.MekanismKey;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -48,6 +51,13 @@ import java.util.Map;
 import java.util.Set;
 
 public class AppEngApi {
+
+    public static void registerCapabilities(RegisterCapabilitiesEvent event) {
+        event.registerBlockEntity(
+                AECapabilities.IN_WORLD_GRID_NODE_HOST,
+                BlockEntityTypes.ME_BRIDGE.get(),
+                (blockEntity, side) -> blockEntity);
+    }
 
     public static Pair<Long, AEItemKey> findAEStackFromStack(MEStorage monitor, @Nullable ICraftingService crafting, ItemStack item) {
         return findAEStackFromFilter(monitor, crafting, ItemFilter.fromStack(item));
@@ -163,13 +173,13 @@ public class AppEngApi {
     private static Map<String, Object> getObjectFromItemStack(Pair<Long, AEItemKey> stack, @Nullable ICraftingService craftingService) {
         Map<String, Object> map = new HashMap<>();
         String displayName = stack.getRight().getDisplayName().getString();
-        CompoundTag nbt = stack.getRight().toTag(RegistryAccess.EMPTY);
+        Tag nbt = DataComponentUtil.toNbt(stack.getRight().getReadOnlyStack().getComponentsPatch());
         long amount = stack.getLeft();
         map.put("fingerprint", ItemUtil.getFingerprint(stack.getRight().toStack()));
         map.put("name", ItemUtil.getRegistryKey(stack.getRight().getItem()).toString());
         map.put("amount", amount);
         map.put("displayName", displayName);
-        map.put("nbt", NBTUtil.toLua(nbt));
+        map.put("components", NBTUtil.toLua(nbt));
         map.put("tags", LuaConverter.tagsToList(() -> stack.getRight().getItem().builtInRegistryHolder().tags()));
         map.put("isCraftable", craftingService != null && craftingService.isCraftable(stack.getRight()));
 

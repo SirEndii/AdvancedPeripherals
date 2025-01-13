@@ -3,11 +3,12 @@ package de.srendi.advancedperipherals.common.util.inventory;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.core.apis.TableHelper;
 import de.srendi.advancedperipherals.AdvancedPeripherals;
+import de.srendi.advancedperipherals.common.util.DataComponentUtil;
 import de.srendi.advancedperipherals.common.util.NBTUtil;
 import de.srendi.advancedperipherals.common.util.Pair;
+import net.minecraft.core.component.PatchedDataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -22,7 +23,8 @@ public class ItemFilter {
 
     private Item item = Items.AIR;
     private TagKey<Item> tag = null;
-    private CompoundTag nbt = null;
+    private Tag componentsAsNbt = null;
+    private PatchedDataComponentMap components;
     private int count = 64;
     private String fingerprint = "";
     public int fromSlot = -1;
@@ -48,14 +50,14 @@ public class ItemFilter {
                 return Pair.of(null, "NO_VALID_ITEM");
             }
         }
-        if (item.containsKey("nbt")) {
+        if (item.containsKey("components")) {
             try {
-                itemFilter.nbt = NBTUtil.fromText(TableHelper.getStringField(item, "nbt"));
+                itemFilter.componentsAsNbt = NBTUtil.fromText(TableHelper.getStringField(item, "components"));
             } catch (LuaException luaException) {
                 try {
-                    itemFilter.nbt = NBTUtil.fromText(TableHelper.getTableField(item, "nbt").toString());
+                    itemFilter.componentsAsNbt = NBTUtil.fromText(TableHelper.getTableField(item, "components").toString());
                 } catch (LuaException e) {
-                    return Pair.of(null, "NO_VALID_NBT");
+                    return Pair.of(null, "NO_VALID_COMPONENTS");
                 }
             }
         }
@@ -95,7 +97,8 @@ public class ItemFilter {
     public static ItemFilter fromStack(ItemStack stack) {
         ItemFilter filter = empty();
         filter.item = stack.getItem();
-        //filter.nbt = stack.hasTag() ? stack.getTag() : null;
+        filter.componentsAsNbt = DataComponentUtil.toNbt(stack.getComponentsPatch());
+        filter.components = (PatchedDataComponentMap) stack.getComponents();
         return filter;
     }
 
@@ -104,12 +107,12 @@ public class ItemFilter {
     }
 
     public boolean isEmpty() {
-        return fingerprint.isEmpty() && item == Items.AIR && tag == null && nbt == null;
+        return fingerprint.isEmpty() && item == Items.AIR && tag == null && componentsAsNbt == null;
     }
 
     public ItemStack toItemStack() {
         var result = new ItemStack(item, count);
-        //result.setTag(nbt != null ? nbt.copy() : null);
+        result.applyComponents(components);
         return result;
     }
 
@@ -125,9 +128,9 @@ public class ItemFilter {
         if (tag != null && !stack.is(tag)) {
             return false;
         }
-        //if (nbt != null && !stack.getOrCreateTag().equals(nbt)) {
-        //  return false;
-        //}
+        if (componentsAsNbt != null && !DataComponentUtil.toNbt(stack.getComponentsPatch()).equals(componentsAsNbt)) {
+            return false;
+        }
         return true;
     }
 
@@ -147,8 +150,8 @@ public class ItemFilter {
         return toSlot;
     }
 
-    public Tag getNbt() {
-        return nbt;
+    public Tag getComponentsAsNbt() {
+        return componentsAsNbt;
     }
 
     @Override
@@ -156,7 +159,7 @@ public class ItemFilter {
         return "ItemFilter{" +
                 "item=" + ItemUtil.getRegistryKey(item) +
                 ", tag=" + tag +
-                ", nbt=" + nbt +
+                ", components=" + componentsAsNbt +
                 ", count=" + count +
                 ", fingerprint='" + fingerprint + '\'' +
                 ", fromSlot=" + fromSlot +

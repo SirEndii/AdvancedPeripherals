@@ -1,8 +1,6 @@
 package de.srendi.advancedperipherals.common.data;
 
-import dan200.computercraft.api.pocket.IPocketUpgrade;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
-import de.srendi.advancedperipherals.AdvancedPeripherals;
 import de.srendi.advancedperipherals.common.addons.computercraft.turtles.TurtleChatBoxUpgrade;
 import de.srendi.advancedperipherals.common.addons.computercraft.turtles.TurtleChunkyUpgrade;
 import de.srendi.advancedperipherals.common.addons.computercraft.turtles.TurtleCompassUpgrade;
@@ -18,19 +16,10 @@ import de.srendi.advancedperipherals.common.addons.computercraft.turtles.metaphy
 import de.srendi.advancedperipherals.common.setup.Blocks;
 import de.srendi.advancedperipherals.common.setup.CCRegistration;
 import de.srendi.advancedperipherals.common.setup.Items;
-import net.minecraft.Util;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistrySetBuilder;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.registries.RegistryPatchGenerator;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
-
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 
 public class TurtleUpgradesProvider {
 

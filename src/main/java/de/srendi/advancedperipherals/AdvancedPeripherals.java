@@ -2,6 +2,7 @@ package de.srendi.advancedperipherals;
 
 import dan200.computercraft.api.peripheral.PeripheralCapability;
 import de.srendi.advancedperipherals.common.addons.APAddons;
+import de.srendi.advancedperipherals.common.addons.appliedenergistics.AppEngApi;
 import de.srendi.advancedperipherals.common.blocks.base.ICapabilityProvider;
 import de.srendi.advancedperipherals.common.configuration.APConfig;
 import de.srendi.advancedperipherals.common.setup.Registration;
@@ -92,10 +93,7 @@ public class AdvancedPeripherals {
                     });
         });
 
-        //if (APAddons.ae2Loaded)
-        /*event.registerBlockEntity(
-        AECapabilities.IN_WORLD_GRID_NODE_HOST,
-        BlockEntityTypes.ME_BRIDGE.get(),
-        (blockEntity, side) -> blockEntity);*/
+        if (APAddons.ae2Loaded)
+            AppEngApi.registerCapabilities(event);
     }
 }
