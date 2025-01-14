@@ -18,6 +18,8 @@ import appeng.api.storage.IStorageProvider;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.cells.IBasicCellItem;
 import appeng.blockentity.storage.DriveBlockEntity;
+import appeng.me.cells.BasicCellHandler;
+import appeng.me.cells.BasicCellInventory;
 import appeng.parts.storagebus.StorageBusPart;
 import dan200.computercraft.shared.util.NBTUtil;
 import de.srendi.advancedperipherals.AdvancedPeripherals;
@@ -429,16 +431,14 @@ public class AppEngApi {
                     continue;
 
                 if (stack.getItem() instanceof IBasicCellItem cell) {
-                    int bytesPerType = cell.getBytesPerType(null);
-
                     if (cell.getKeyType().getClass().isAssignableFrom(AEKeyType.items().getClass())) {
-                        //if (stack.get() == null)
-                        //  continue;
-                        //TODO
-                        int numOfType = 0; //stack.get().getLongArray("amts").length;
-                        long numItemsInCell = 0; //stack.getTag().getLong("ic");
 
-                        used += ((int) Math.ceil(((double) numItemsInCell) / 8)) + ((long) bytesPerType * numOfType);
+                        BasicCellInventory cellInventory =  BasicCellHandler.INSTANCE.getCellInventory(stack, null);
+
+                        if (cellInventory == null)
+                            continue;
+
+                        used += cellInventory.getUsedBytes();
                     }
                 }
             }
@@ -475,16 +475,13 @@ public class AppEngApi {
                 ItemStack stack = inventory.getStackInSlot(i);
 
                 if (stack.getItem() instanceof IBasicCellItem cell) {
-                    int bytesPerType = cell.getBytesPerType(null);
-
                     if (cell.getKeyType().getClass().isAssignableFrom(AEKeyType.fluids().getClass())) {
-                        //if (stack.getTag() == null)
-                        //  continue;
-                        //TODO
-                        int numOfType = 0; //stack.getTag().getLongArray("amts").length;
-                        long numBucketsInCell = 0; //stack.getTag().getLong("ic") / 1000;
+                        BasicCellInventory cellInventory =  BasicCellHandler.INSTANCE.getCellInventory(stack, null);
 
-                        used += ((int) Math.ceil(((double) numBucketsInCell) / 8)) + ((long) bytesPerType * numOfType);
+                        if (cellInventory == null)
+                            continue;
+
+                        used += cellInventory.getUsedBytes();
                     }
                 }
             }
