@@ -24,6 +24,7 @@ jobs:
       ARTIFACT_ID: ${{ steps.metadata.outputs.ARTIFACT_ID }}
       ARTIFACT_URL: ${{ steps.metadata.outputs.ARTIFACT_URL }}
       ARTIFACT_EXP: ${{ steps.metadata.outputs.ARTIFACT_EXP }}
+      ARTIFACT_NAME: ${{ steps.metadata.outputs.ARTIFACT_NAME }}
     steps:
       - name: Get Artifact URL & PR Info
         id: metadata
@@ -70,9 +71,13 @@ jobs:
           echo "ARTIFACT_URL=$ARTIFACT_URL" >> "$GITHUB_OUTPUT"
 
           if [[ "$ARTIFACT_ID" != "" ]]; then
-            ARTIFACT_EXP=$(gh api "/repos/$OWNER/$REPO/actions/artifacts/$ARTIFACT_ID" --jq ".expires_at")
+            ARTIFACT_INFO="$(gh api "/repos/$OWNER/$REPO/actions/artifacts/$ARTIFACT_ID")"
+            ARTIFACT_EXP=$(echo "$ARTIFACT_INFO" | jq ".expires_at")
             echo "ARTIFACT EXP: $ARTIFACT_EXP"
             echo "ARTIFACT_EXP=$ARTIFACT_EXP" >> "$GITHUB_OUTPUT"
+            ARTIFACT_NAME=$(echo "$ARTIFACT_INFO" | jq ".name")
+            echo "ARTIFACT NAME: $ARTIFACT_NAME"
+            echo "ARTIFACT_NAME=$ARTIFACT_NAME" >> "$GITHUB_OUTPUT"
           fi
           exit 0
 
@@ -96,6 +101,7 @@ jobs:
           HEAD_SHA: ${{ needs.parse-metadata.outputs.HEAD_SHA }}
           ARTIFACT_URL: ${{ needs.parse-metadata.outputs.ARTIFACT_URL }}
           ARTIFACT_EXP: ${{ needs.parse-metadata.outputs.ARTIFACT_EXP }}
+          ARTIFACT_NAME: ${{ needs.parse-metadata.outputs.ARTIFACT_NAME }}
         uses: peter-evans/create-or-update-comment@v4
         with:
           issue-number: ${{ needs.parse-metadata.outputs.PR_NUMBER }}
@@ -112,7 +118,7 @@ jobs:
             |-----------|-------------------------|
             | Commit    | ${{ env.HEAD_SHA }}     |
             | Logs      | ${{ env.JOB_PATH }}     |
-            ${{ env.ARTIFACT_URL && format('| Jar Files  | {0} |', env.ARTIFACT_URL) || '' }}
+            ${{ env.ARTIFACT_URL && format('| Jar Files  | [{0}]({1}) |', env.ARTIFACT_NAME, env.ARTIFACT_URL) || '' }}
             ${{ env.ARTIFACT_EXP && format('| Expires At | {0} |', env.ARTIFACT_EXP) || '' }}
 
             [badge]: https://img.shields.io/badge/${{ format('{0}-{1}', github.event.workflow_run.conclusion, github.event.workflow_run.conclusion == 'success' && '3fb950' || 'f85149') }}?style=for-the-badge&logo=github&label=build
