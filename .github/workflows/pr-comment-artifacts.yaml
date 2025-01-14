@@ -46,7 +46,7 @@ jobs:
           function parse_var {
             name=$1
             echo "Parsing output $name"
-            line=$(cat _build.txt | grep "output:${name}=" | cat)
+            line=$(cat _build.txt | grep -m 1 "output:${name}=" | cat)
             export parsed=${line#*"output:${name}="}
           }
           parse_var PR_NUMBER
