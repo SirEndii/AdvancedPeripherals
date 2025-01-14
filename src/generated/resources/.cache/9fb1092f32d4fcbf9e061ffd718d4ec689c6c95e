@@ -1,7 +1,8 @@
-// 1.21.1	2025-01-13T17:28:09.7101266	Recipes
+// 1.21.1	2025-01-14T19:12:56.350339	Recipes
 f5ba1f7d129c88dca1a13c8deaae2d269644c7fa data/advancedperipherals/advancement/recipes/redstone/block_reader.json
 e172645262ade9fc4a1c999a2c0041711c2eab55 data/advancedperipherals/advancement/recipes/redstone/chat_box.json
 213de9a7e340c5eb9c01d82a72e7b58921c5290a data/advancedperipherals/advancement/recipes/redstone/chunk_controller.json
+90018942364ec1928abbad8597106d888fa640bd data/advancedperipherals/advancement/recipes/redstone/colony_integrator.json
 22a3e69547b1747232ad31eae8421e5e19b99fbe data/advancedperipherals/advancement/recipes/redstone/computer_tool.json
 6ceff500825afce815e8e18973f1ad4d67c1fe12 data/advancedperipherals/advancement/recipes/redstone/energy_detector.json
 a681c8e71de169543d040cb642a73c78c869996a data/advancedperipherals/advancement/recipes/redstone/environment_detector.json
@@ -20,6 +21,7 @@ f218420f4c94524614229bb2d50e5c7f8e6beb28 data/advancedperipherals/advancement/re
 b48e0eed6f4cfbe62c8b7c411e92e3b38ad4e4f9 data/advancedperipherals/recipe/block_reader.json
 c8d06dd085c0477f94d90f3a5f0800c3efc08d02 data/advancedperipherals/recipe/chat_box.json
 8c04e36fa4b88e827a5587990dc4ad94aade2eab data/advancedperipherals/recipe/chunk_controller.json
+3c3b7235fbd6c45d8329ee0057e7ddc76fe4c517 data/advancedperipherals/recipe/colony_integrator.json
 94d7248693fc9c5f4a307aaa72cc51136d54c7fe data/advancedperipherals/recipe/computer_tool.json
 7e16f0709dfe728a5d1c677d3bee4d82bda28895 data/advancedperipherals/recipe/energy_detector.json
 a276eb3b9827c19ced8123f46a69c1a0e767604f data/advancedperipherals/recipe/environment_detector.json

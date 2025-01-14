@@ -6,6 +6,7 @@ import dan200.computercraft.api.upgrades.UpgradeType;
 import de.srendi.advancedperipherals.AdvancedPeripherals;
 import de.srendi.advancedperipherals.common.addons.computercraft.integrations.IntegrationPeripheralProvider;
 import de.srendi.advancedperipherals.common.addons.computercraft.pocket.PocketChatBoxUpgrade;
+import de.srendi.advancedperipherals.common.addons.computercraft.pocket.PocketColonyIntegratorUpgrade;
 import de.srendi.advancedperipherals.common.addons.computercraft.pocket.PocketEnvironmentUpgrade;
 import de.srendi.advancedperipherals.common.addons.computercraft.pocket.PocketGeoScannerUpgrade;
 import de.srendi.advancedperipherals.common.addons.computercraft.pocket.PocketPlayerDetectorUpgrade;
@@ -43,6 +44,7 @@ public class CCRegistration {
     public static final DeferredHolder<UpgradeType<? extends IPocketUpgrade>, UpgradeType<PocketPlayerDetectorUpgrade>> PLAYER_DETECTOR_POCKET = Registration.POCKET_SERIALIZER.register(ID.PLAYER_POCKET.getPath(), () -> UpgradeType.simpleWithCustomItem(PocketPlayerDetectorUpgrade::new));
     public static final DeferredHolder<UpgradeType<? extends IPocketUpgrade>, UpgradeType<PocketEnvironmentUpgrade>> ENVIRONMENT_POCKET = Registration.POCKET_SERIALIZER.register(ID.ENVIRONMENT_POCKET.getPath(), () -> UpgradeType.simpleWithCustomItem(PocketEnvironmentUpgrade::new));
     public static final DeferredHolder<UpgradeType<? extends IPocketUpgrade>, UpgradeType<PocketGeoScannerUpgrade>> GEO_SCANNER_POCKET = Registration.POCKET_SERIALIZER.register(ID.GEOSCANNER_POCKET.getPath(), () -> UpgradeType.simpleWithCustomItem(PocketGeoScannerUpgrade::new));
+    public static final DeferredHolder<UpgradeType<? extends IPocketUpgrade>, UpgradeType<PocketColonyIntegratorUpgrade>> COLONY_POCKET = Registration.POCKET_SERIALIZER.register(ID.COLONY_POCKET.getPath(), () -> UpgradeType.simpleWithCustomItem(PocketColonyIntegratorUpgrade::new));
 
     public static IntegrationPeripheralProvider integrationPeripheralProvider;
 

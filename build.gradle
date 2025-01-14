@@ -233,10 +233,10 @@ dependencies {
 
     // Minecolonies
     // Remove/Comment this section if you want to use runData.
-    //runtimeOnly "com.ldtteam:minecolonies:${minecolonies_version}"
-    //runtimeOnly "com.ldtteam:structurize:${structurize_version}"
-    //runtimeOnly "com.ldtteam:domum-ornamentum:${domumornamentum_version}"
-    //runtimeOnly "com.ldtteam:blockui:${blockui_version}"
+    runtimeOnly "com.ldtteam:minecolonies:${minecolonies_version}"
+    runtimeOnly "com.ldtteam:structurize:${structurize_version}"
+    runtimeOnly "com.ldtteam:domum-ornamentum:${domumornamentum_version}"
+    runtimeOnly "com.ldtteam:blockui:${blockui_version}"
 
     compileOnly "com.ldtteam:minecolonies:${minecolonies_version}"
     compileOnly "com.ldtteam:structurize:${structurize_version}"

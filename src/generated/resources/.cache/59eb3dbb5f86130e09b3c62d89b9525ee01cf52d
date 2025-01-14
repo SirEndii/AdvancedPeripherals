@@ -1,6 +1,7 @@
-// 1.21.1	2025-01-13T17:28:09.7091279	Loot Tables
+// 1.21.1	2025-01-14T18:51:29.8897473	Loot Tables
 9b54955770745d55de988a86cbd08aa9ae23ff86 data/advancedperipherals/loot_table/blocks/block_reader.json
 d4f1bc579f83dc67ce9f94d35926d34b8894c990 data/advancedperipherals/loot_table/blocks/chat_box.json
+9ac96b8e3da827886d8da459a2f146e8ae3ee798 data/advancedperipherals/loot_table/blocks/colony_integrator.json
 6da40a0a9d46855710272fe9d40bb5a7f0219ff2 data/advancedperipherals/loot_table/blocks/energy_detector.json
 85cd3af52c824db96403e6fceea480bceda3a186 data/advancedperipherals/loot_table/blocks/environment_detector.json
 7f607d7476252b89a57eb4c227cc69f4f28995e3 data/advancedperipherals/loot_table/blocks/geo_scanner.json

@@ -9,6 +9,7 @@
     "advancedperipherals:redstone_integrator",
     "advancedperipherals:block_reader",
     "advancedperipherals:geo_scanner",
-    "advancedperipherals:nbt_storage"
+    "advancedperipherals:nbt_storage",
+    "advancedperipherals:colony_integrator"
   ]
 }

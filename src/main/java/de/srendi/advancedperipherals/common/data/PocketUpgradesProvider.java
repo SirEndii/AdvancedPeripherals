@@ -2,6 +2,7 @@ package de.srendi.advancedperipherals.common.data;
 
 import dan200.computercraft.api.pocket.IPocketUpgrade;
 import de.srendi.advancedperipherals.common.addons.computercraft.pocket.PocketChatBoxUpgrade;
+import de.srendi.advancedperipherals.common.addons.computercraft.pocket.PocketColonyIntegratorUpgrade;
 import de.srendi.advancedperipherals.common.addons.computercraft.pocket.PocketEnvironmentUpgrade;
 import de.srendi.advancedperipherals.common.addons.computercraft.pocket.PocketGeoScannerUpgrade;
 import de.srendi.advancedperipherals.common.addons.computercraft.pocket.PocketPlayerDetectorUpgrade;
@@ -19,6 +20,7 @@ public class PocketUpgradesProvider {
         upgrades.register(id(CCRegistration.ID.PLAYER_POCKET), new PocketPlayerDetectorUpgrade(new ItemStack(Blocks.PLAYER_DETECTOR.get())));
         upgrades.register(id(CCRegistration.ID.ENVIRONMENT_POCKET), new PocketEnvironmentUpgrade(new ItemStack(Blocks.ENVIRONMENT_DETECTOR.get())));
         upgrades.register(id(CCRegistration.ID.GEOSCANNER_POCKET), new PocketGeoScannerUpgrade(new ItemStack(Blocks.GEO_SCANNER.get())));
+        upgrades.register(id(CCRegistration.ID.COLONY_POCKET), new PocketColonyIntegratorUpgrade(new ItemStack(Blocks.COLONY_INTEGRATOR.get())));
     }
 
     public static ResourceKey<IPocketUpgrade> id(ResourceLocation id) {

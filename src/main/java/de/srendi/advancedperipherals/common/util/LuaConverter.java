@@ -1,10 +1,11 @@
 package de.srendi.advancedperipherals.common.util;
 
 import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.shared.util.NBTUtil;
 import de.srendi.advancedperipherals.common.addons.computercraft.peripheral.InventoryManagerPeripheral;
 import de.srendi.advancedperipherals.common.util.inventory.ItemUtil;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
@@ -102,11 +103,11 @@ public class LuaConverter {
     public static Map<String, Object> stackToObject(@NotNull ItemStack stack) {
         if (stack.isEmpty()) return new HashMap<>();
         Map<String, Object> map = itemToObject(stack.getItem());
-        DataComponentMap components = stack.copy().getComponents();
+        DataComponentPatch components = stack.copy().getComponentsPatch();
         map.put("count", stack.getCount());
         map.put("displayName", stack.getDisplayName().getString());
         map.put("maxStackSize", stack.getMaxStackSize());
-        //map.put("nbt", NBTUtil.toLua(components.stream().forEach(test -> test.toString())));
+        map.put("nbt", NBTUtil.toLua(DataComponentUtil.toNbt(components)));
         map.put("fingerprint", ItemUtil.getFingerprint(stack));
         return map;
     }

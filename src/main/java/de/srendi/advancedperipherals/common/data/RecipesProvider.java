@@ -1,9 +1,13 @@
 package de.srendi.advancedperipherals.common.data;
 
 import appeng.core.definitions.AEBlocks;
+import com.minecolonies.api.blocks.ModBlocks;
+import com.minecolonies.api.items.ModItems;
 import dan200.computercraft.shared.ModRegistry;
+import de.srendi.advancedperipherals.AdvancedPeripherals;
 import de.srendi.advancedperipherals.common.addons.APAddons;
 import de.srendi.advancedperipherals.common.setup.Blocks;
+import de.srendi.advancedperipherals.common.util.RawValue;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.data.PackOutput;
@@ -12,17 +16,20 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.conditions.IConditionBuilder;
 import net.neoforged.neoforge.common.conditions.ModLoadedCondition;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
 
 public class RecipesProvider extends RecipeProvider implements IConditionBuilder {
 
@@ -65,6 +72,8 @@ public class RecipesProvider extends RecipeProvider implements IConditionBuilder
         ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, Blocks.NBT_STORAGE.get()).define('C', Tags.Items.CHESTS).define('A', CASING).define('R', Tags.Items.STORAGE_BLOCKS_REDSTONE).define('I', Tags.Items.INGOTS_IRON).pattern("ICI").pattern("CAC").pattern("RCR").unlockedBy(HAS_ITEM, has(CASING)).save(recipeOutput);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, Blocks.ME_BRIDGE.get()).define('F', AEBlocks.FLUIX_BLOCK.asItem()).define('A', CASING).define('I', AEBlocks.INTERFACE.asItem()).pattern("FIF").pattern("IAI").pattern("FIF").unlockedBy(HAS_ITEM, has(CASING)).save(recipeOutput.withConditions(new ModLoadedCondition(APAddons.AE2_MODID)));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, Blocks.COLONY_INTEGRATOR.get()).define('O', ItemTags.LOGS).define('A', CASING).define('B', ModItems.buildGoggles).define('S', com.ldtteam.structurize.items.ModItems.buildTool).define('R', ModBlocks.blockRack).pattern("ORO").pattern("BAS").pattern("ORO").unlockedBy(HAS_ITEM, has(CASING)).save(recipeOutput.withConditions(new ModLoadedCondition(APAddons.MINECOLONIES_MODID)));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, de.srendi.advancedperipherals.common.setup.Items.WEAK_AUTOMATA_CORE.get())
                 .define('A', CASING)
