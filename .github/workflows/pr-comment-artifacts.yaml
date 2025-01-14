@@ -72,10 +72,10 @@ jobs:
 
           if [[ "$ARTIFACT_ID" != "" ]]; then
             ARTIFACT_INFO="$(gh api "/repos/$OWNER/$REPO/actions/artifacts/$ARTIFACT_ID")"
-            ARTIFACT_EXP=$(echo "$ARTIFACT_INFO" | jq ".expires_at")
+            ARTIFACT_EXP=$(echo "$ARTIFACT_INFO" | jq -r ".expires_at")
             echo "ARTIFACT EXP: $ARTIFACT_EXP"
             echo "ARTIFACT_EXP=$ARTIFACT_EXP" >> "$GITHUB_OUTPUT"
-            ARTIFACT_NAME=$(echo "$ARTIFACT_INFO" | jq ".name")
+            ARTIFACT_NAME=$(echo "$ARTIFACT_INFO" | jq -r ".name")
             echo "ARTIFACT NAME: $ARTIFACT_NAME"
             echo "ARTIFACT_NAME=$ARTIFACT_NAME" >> "$GITHUB_OUTPUT"
           fi
