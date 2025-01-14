@@ -11,7 +11,7 @@ public class APAddons {
 
     public static final String AE2_MODID = "ae2";
     public static final String CURIOS_MODID = "curios";
-    public static final String REFINEDSTORAGETWO_MODID = "refinedstorage2";
+    public static final String REFINEDSTORAGE_MODID = "refinedstorage";
     public static final String APP_MEKANISTICS_MODID = "appmek";
     public static final String PATCHOULI_MODID = "patchouli";
     public static final String MINECOLONIES_MODID = "minecolonies";
@@ -30,7 +30,7 @@ public class APAddons {
         ModList modList = ModList.get();
         ae2Loaded = modList.isLoaded(AE2_MODID);
         curiosLoaded = modList.isLoaded(CURIOS_MODID);
-        refinedStorageLoaded = modList.isLoaded(REFINEDSTORAGETWO_MODID);
+        refinedStorageLoaded = modList.isLoaded(REFINEDSTORAGE_MODID);
         appMekLoaded = modList.isLoaded(APP_MEKANISTICS_MODID);
         patchouliLoaded = modList.isLoaded(PATCHOULI_MODID);
         minecoloniesLoaded = modList.isLoaded(MINECOLONIES_MODID);
