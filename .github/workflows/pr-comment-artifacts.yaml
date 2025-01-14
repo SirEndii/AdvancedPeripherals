@@ -36,32 +36,37 @@ jobs:
         run: |
           echo "Previous Job ID: $PREVIOUS_JOB_ID"
 
-          gh api "/repos/$OWNER/$REPO/actions/runs/$PREVIOUS_JOB_ID/logs" >logs.zip
-          unzip -p logs.zip '*.txt' >build.txt
+          LOG_URL="/repos/$OWNER/$REPO/actions/runs/$PREVIOUS_JOB_ID/logs"
+          echo "Getting previous logs: $LOG_URL"
+          gh api "$LOG_URL" >_logs.zip
+          echo "Unzipping logs"
+          mkdir _logs && cd _logs
+          unzip ../_logs.zip
+          cd ..
 
+          echo "Parsing logs"
           function parse_var() {
             name=$1
-            line=$(cat build.txt | grep "output:${name}=")
+            line=$(cat _logs/*.txt | grep "output:${name}=")
             export parsed=${line#*"output:${name}="}
           }
           parse_var PR_NUMBER
           PR_NUMBER=$parsed
-          parse_var HEAD_SHA
-          HEAD_SHA=$parsed
-          parse_var ARTIFACT_ID
-          ARTIFACT_ID=$parsed
-          parse_var ARTIFACT_URL
-          ARTIFACT_URL=$parsed
-
           echo "PR Number: $PR_NUMBER"
           echo "PR_NUMBER=$PR_NUMBER" >> "$GITHUB_OUTPUT"
 
+          parse_var HEAD_SHA
+          HEAD_SHA=$parsed
           echo "Head sha: $HEAD_SHA"
           echo "HEAD_SHA=$HEAD_SHA" >> "$GITHUB_OUTPUT"
 
+          parse_var ARTIFACT_ID
+          ARTIFACT_ID=$parsed
           echo "ARTIFACT ID: $ARTIFACT_ID"
           echo "ARTIFACT_ID=$ARTIFACT_ID" >> "$GITHUB_OUTPUT"
 
+          parse_var ARTIFACT_URL
+          ARTIFACT_URL=$parsed
           echo "ARTIFACT URL: $ARTIFACT_URL"
           echo "ARTIFACT_URL=$ARTIFACT_URL" >> "$GITHUB_OUTPUT"
 
@@ -70,6 +75,7 @@ jobs:
             echo "ARTIFACT EXP: $ARTIFACT_EXP"
             echo "ARTIFACT_EXP=$ARTIFACT_EXP" >> "$GITHUB_OUTPUT"
           fi
+          exit 0
 
   comment-success:
     if: ${{ needs.parse-metadata.outputs.PR_NUMBER != '' }}
