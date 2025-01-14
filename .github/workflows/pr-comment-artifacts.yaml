@@ -110,7 +110,7 @@ jobs:
           body: |-
             ## Build Preview
 
-            [![badge]]($JOB_PATH)
+            [![badge]](${{ env.JOB_PATH }})
 
             You can find files attached to the below linked Workflow Run URL (Logs).
 
