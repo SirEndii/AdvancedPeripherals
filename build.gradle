@@ -28,7 +28,7 @@ wrapper {
 
 def isSnapshotVersion = project.hasProperty('teamcityBuild')
 
-version = "${mod_version}" + (isSnapshotVersion ? "-SNAPSHOT" : "")
+version = "${mod_version}" + (isSnapshotVersion ? "-SNAPSHOT" : "") + "${mod_artifact_suffix}"
 group = 'de.srendi.advancedperipherals'
 
 def static getenv(path = ".env") {
