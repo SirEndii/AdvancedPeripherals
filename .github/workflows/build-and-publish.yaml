@@ -1,0 +1,43 @@
+name: Build and Test
+
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+
+jobs:
+  build-and-test:
+    uses: IntelligenceModding/actions/.github/workflows/build-and-test.yaml@master
+    with:
+      build_name: ${{ format('AdvancedPeripherals {0}', github.event_name == 'pull_request' && format('PR {0}', github.event.number) || github.ref) }}
+      pr: ${{ github.event_name == 'pull_request' && github.event.number || '' }}
+      check: ${{ github.event_name != 'push' }}
+
+  publish:
+    if: ${{ github.event_name == 'push' && contains(github.ref, 'release/') }}
+    runs-on: self-hosted
+    needs:
+      - build-and-test
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+      - name: Download Builds
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.build-and-test.outputs.artifact-name }}
+          path: build/libs
+      - name: Patch Changelog
+        run: ./gradlew patchChangelog
+      - name: Github Release
+        run: ./gradlew githubRelease
+      - name: Publish Maven
+        run: ./gradlew publishAllPublicationsToPublicRepository
+      - name: Publish Modrinth
+        run: ./gradlew modrinth
+      - name: Publish CurseForge
+        run: ./gradlew publishCurseForge
