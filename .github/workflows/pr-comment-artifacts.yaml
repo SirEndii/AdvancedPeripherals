@@ -46,12 +46,7 @@ jobs:
           function parse_var {
             name=$1
             echo "Parsing output $name"
-            echo "test cat"
-            cat _build.txt >/dev/null
-            echo "test grep"
-            grep "output:${name}=" </dev/null >/dev/null
-            echo "assigning line"
-            line=$(cat _build.txt | grep "output:${name}=")
+            line=$(cat _build.txt | grep "output:${name}=" | cat)
             export parsed=${line#*"output:${name}="}
           }
           parse_var PR_NUMBER
