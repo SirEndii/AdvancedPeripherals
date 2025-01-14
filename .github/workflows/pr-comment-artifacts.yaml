@@ -40,15 +40,18 @@ jobs:
           echo "Getting previous logs: $LOG_URL"
           gh api "$LOG_URL" >_logs.zip
           echo "Unzipping logs"
-          mkdir _logs && cd _logs
-          unzip ../_logs.zip
-          cd ..
+          unzip -p _logs.zip >_build.txt
 
           echo "Parsing logs"
           function parse_var {
             name=$1
             echo "Parsing output $name"
-            line=$(cat _logs/*.txt | grep "output:${name}=")
+            echo "test cat"
+            cat _build.txt >/dev/null
+            echo "test grep"
+            grep "output:${name}=" </dev/null >/dev/null
+            echo "assigning line"
+            line=$(cat _build.txt | grep "output:${name}=")
             export parsed=${line#*"output:${name}="}
           }
           parse_var PR_NUMBER
