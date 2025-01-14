@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.21.1-0.7.44a] - 2025-01-14
+
+### Added
+- Colony Integrator back to 1.21.1
+
+### Fixed
+- Villager & Wandering trader pocket and turtle trades
+- ME Bridges `getUsedItemStorage` and `getUsedFluidStorage`
+
 ## [1.21.1-0.7.43a] - 2025-01-13
 
 Alpha 1.21.1 release
