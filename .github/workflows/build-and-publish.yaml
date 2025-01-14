@@ -9,10 +9,31 @@ on:
       - synchronize
 
 jobs:
+  generate-artifact-name:
+    runs-on: self-hosted
+    outputs:
+      name: ${{ steps.name.outputs.name }}
+    steps:
+      - name: Generate Name
+        id: name
+        run: |
+          if [[ "${{ github.event_name }}" == 'pull_request' ]]; then
+            suffix="PR ${{ github.event.number }}"
+          else
+            ref="${{ github.ref }}"
+            ref="${ref#ref/heads/}"
+            suffix="${ref//\//-}"
+          fi
+          name="AdvancedPeripherals $suffix"
+          echo "name: $name"
+          echo "name=$name" >> "$GITHUB_OUTPUT"
+
   build-and-test:
+    needs:
+      - generate-artifact-name
     uses: IntelligenceModding/actions/.github/workflows/build-and-test.yaml@master
     with:
-      build_name: ${{ format('AdvancedPeripherals {0}', github.event_name == 'pull_request' && format('PR {0}', github.event.number) || github.ref) }}
+      build_name: ${{ needs.generate-artifact-name.outputs.name }}
       pr: ${{ github.event_name == 'pull_request' && github.event.number || '' }}
       check: ${{ github.event_name != 'push' }}
 
