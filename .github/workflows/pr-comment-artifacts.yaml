@@ -37,7 +37,7 @@ jobs:
           echo "Previous Job ID: $PREVIOUS_JOB_ID"
 
           gh api "/repos/$OWNER/$REPO/actions/runs/$PREVIOUS_JOB_ID/logs" >logs.zip
-          unzip -p logs.zip 'Build/*.txt' >build.txt
+          unzip -p logs.zip '*.txt' >build.txt
 
           function parse_var() {
             name=$1
