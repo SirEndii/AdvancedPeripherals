@@ -17,7 +17,7 @@ permissions:
 
 jobs:
   parse-metadata:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     outputs:
       PR_NUMBER: ${{ steps.metadata.outputs.PR_NUMBER }}
       HEAD_SHA: ${{ steps.metadata.outputs.HEAD_SHA }}
@@ -70,7 +70,7 @@ jobs:
           echo "ARTIFACT_URL=$ARTIFACT_URL" >> "$GITHUB_OUTPUT"
 
           if [[ "$ARTIFACT_ID" != "" ]]; then
-            ARTIFACT_EXP=$(gh api "/repos/$OWNER/$REPO/actions/artifacts/$ARTIFACT_ID" -jq ".expires_at")
+            ARTIFACT_EXP=$(gh api "/repos/$OWNER/$REPO/actions/artifacts/$ARTIFACT_ID" --jq ".expires_at")
             echo "ARTIFACT EXP: $ARTIFACT_EXP"
             echo "ARTIFACT_EXP=$ARTIFACT_EXP" >> "$GITHUB_OUTPUT"
           fi
