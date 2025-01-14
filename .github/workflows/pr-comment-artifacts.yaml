@@ -45,8 +45,9 @@ jobs:
           cd ..
 
           echo "Parsing logs"
-          function parse_var() {
+          function parse_var {
             name=$1
+            echo "Parsing output $name"
             line=$(cat _logs/*.txt | grep "output:${name}=")
             export parsed=${line#*"output:${name}="}
           }
