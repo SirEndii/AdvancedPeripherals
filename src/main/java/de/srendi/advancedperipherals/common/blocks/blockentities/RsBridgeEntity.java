@@ -25,13 +25,14 @@ import java.util.Set;
 public class RsBridgeEntity extends PeripheralBlockEntity<RSBridgePeripheral> implements IPeripheralTileEntity, NetworkNodeContainerProvider {
 
     protected CompoundTag peripheralSettings;
+    private final NetworkNode node;
     private final InWorldNetworkNodeContainer networkNodeContainer;
 
     public RsBridgeEntity(BlockPos pos, BlockState state) {
         super(BlockEntityTypes.RS_BRIDGE.get(), pos, state);
         peripheralSettings = new CompoundTag();
         ConnectionStrategy connectionStrategy = new SimpleConnectionStrategy(pos);
-        NetworkNode node = new SimpleNetworkNode(APConfig.PERIPHERALS_CONFIG.rsConsumption.get());
+        node = new SimpleNetworkNode(APConfig.PERIPHERALS_CONFIG.rsConsumption.get());
         networkNodeContainer = new InWorldNetworkNodeContainerImpl(this, node, "RS Bridge", 1, connectionStrategy, null);
     }
 
@@ -49,6 +50,10 @@ public class RsBridgeEntity extends PeripheralBlockEntity<RSBridgePeripheral> im
     @Override
     public void markSettingsChanged() {
         setChanged();
+    }
+
+    public NetworkNode getNode() {
+        return node;
     }
 
     @NotNull

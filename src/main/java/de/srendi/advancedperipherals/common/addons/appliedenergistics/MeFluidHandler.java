@@ -4,6 +4,7 @@ import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.storage.MEStorage;
+import de.srendi.advancedperipherals.common.addons.computercraft.peripheral.MEBridgePeripheral;
 import de.srendi.advancedperipherals.common.util.Pair;
 import de.srendi.advancedperipherals.common.util.inventory.FluidFilter;
 import de.srendi.advancedperipherals.common.util.inventory.IStorageSystemFluidHandler;
@@ -12,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Used to transfer item between an inventory and the ME system.
- * @see de.srendi.advancedperipherals.common.addons.computercraft.peripheral.MeBridgePeripheral
+ * @see MEBridgePeripheral
  */
 public class MeFluidHandler implements IStorageSystemFluidHandler {
 
