@@ -21,7 +21,7 @@ jobs:
             suffix="PR ${{ github.event.number }}"
           else
             ref="${{ github.ref }}"
-            ref="${ref#ref/heads/}"
+            ref="${ref#refs/heads/}"
             suffix="${ref//\//-}"
           fi
           name="AdvancedPeripherals $suffix"
