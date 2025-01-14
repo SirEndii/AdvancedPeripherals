@@ -8,6 +8,10 @@ on:
       - opened
       - synchronize
 
+concurrency:
+  group: build-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   generate-artifact-name:
     runs-on: self-hosted
@@ -20,6 +24,12 @@ jobs:
           if [[ "${{ github.event_name }}" == 'pull_request' ]]; then
             suffix="PR ${{ github.event.number }}"
           else
+            if [[ "${{ github.event_name }}" == 'push' ]]; then
+              if gh search prs --json isPullRequest --jq '.[].isPullRequest' "${{ github.sha }}" | grep -m 1 true; then
+                echo "name=" >> "$GITHUB_OUTPUT"
+                exit 0
+              fi
+            fi
             ref="${{ github.ref }}"
             ref="${ref#refs/heads/}"
             suffix="${ref//\//-}"
@@ -29,6 +39,7 @@ jobs:
           echo "name=$name" >> "$GITHUB_OUTPUT"
 
   build-and-test:
+    if: ${{ needs.generate-artifact-name.outputs.name != '' }}
     needs:
       - generate-artifact-name
     uses: IntelligenceModding/actions/.github/workflows/build-and-test.yaml@master
