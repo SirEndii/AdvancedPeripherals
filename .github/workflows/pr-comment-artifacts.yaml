@@ -17,7 +17,7 @@ permissions:
 
 jobs:
   parse-metadata:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     outputs:
       PR_NUMBER: ${{ steps.metadata.outputs.PR_NUMBER }}
       HEAD_SHA: ${{ steps.metadata.outputs.HEAD_SHA }}
