@@ -6,7 +6,6 @@ import dan200.computercraft.api.upgrades.UpgradeType;
 import de.srendi.advancedperipherals.common.addons.computercraft.peripheral.ColonyPeripheral;
 import de.srendi.advancedperipherals.common.setup.CCRegistration;
 import de.srendi.advancedperipherals.lib.pocket.BasePocketUpgrade;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 public class PocketColonyIntegratorUpgrade extends BasePocketUpgrade<ColonyPeripheral> {
