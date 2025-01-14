@@ -72,26 +72,28 @@ jobs:
           fi
 
   comment-success:
-    if: ${{ jobs.parse-metadata.outputs.PR_NUMBER != '' }}
+    if: ${{ needs.parse-metadata.outputs.PR_NUMBER != '' }}
     runs-on: ubuntu-latest
+    needs:
+      - parse-metadata
     steps:
       - name: Find Comment
         uses: peter-evans/find-comment@v3
         id: fc
         with:
-          issue-number: ${{ jobs.parse-metadata.outputs.PR_NUMBER }}
+          issue-number: ${{ needs.parse-metadata.outputs.PR_NUMBER }}
           comment-author: 'github-actions[bot]'
           body-includes: '## Build Preview'
 
       - name: Update Comment
         env:
           JOB_PATH: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }}"
-          HEAD_SHA: ${{ jobs.parse-metadata.outputs.HEAD_SHA }}
-          ARTIFACT_URL: ${{ jobs.parse-metadata.outputs.ARTIFACT_URL }}
-          ARTIFACT_EXP: ${{ jobs.parse-metadata.outputs.ARTIFACT_EXP }}
+          HEAD_SHA: ${{ needs.parse-metadata.outputs.HEAD_SHA }}
+          ARTIFACT_URL: ${{ needs.parse-metadata.outputs.ARTIFACT_URL }}
+          ARTIFACT_EXP: ${{ needs.parse-metadata.outputs.ARTIFACT_EXP }}
         uses: peter-evans/create-or-update-comment@v4
         with:
-          issue-number: ${{ jobs.parse-metadata.outputs.PR_NUMBER }}
+          issue-number: ${{ needs.parse-metadata.outputs.PR_NUMBER }}
           comment-id: ${{ steps.fc.outputs.comment-id }}
           edit-mode: replace
           body: |-
