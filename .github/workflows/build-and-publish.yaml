@@ -17,7 +17,7 @@ jobs:
       check: ${{ github.event_name != 'push' }}
 
   publish:
-    if: ${{ github.event_name == 'push' && contains(github.ref, 'release/')) }}
+    if: ${{ github.event_name == 'push' && contains(github.ref, 'release/') }}
     runs-on: self-hosted
     needs:
       - build-and-test
