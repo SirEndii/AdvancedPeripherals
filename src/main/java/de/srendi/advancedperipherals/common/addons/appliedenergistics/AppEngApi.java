@@ -433,7 +433,7 @@ public class AppEngApi {
                 if (stack.getItem() instanceof IBasicCellItem cell) {
                     if (cell.getKeyType().getClass().isAssignableFrom(AEKeyType.items().getClass())) {
 
-                        BasicCellInventory cellInventory =  BasicCellHandler.INSTANCE.getCellInventory(stack, null);
+                        BasicCellInventory cellInventory = BasicCellHandler.INSTANCE.getCellInventory(stack, null);
 
                         if (cellInventory == null)
                             continue;
@@ -476,7 +476,7 @@ public class AppEngApi {
 
                 if (stack.getItem() instanceof IBasicCellItem cell) {
                     if (cell.getKeyType().getClass().isAssignableFrom(AEKeyType.fluids().getClass())) {
-                        BasicCellInventory cellInventory =  BasicCellHandler.INSTANCE.getCellInventory(stack, null);
+                        BasicCellInventory cellInventory = BasicCellHandler.INSTANCE.getCellInventory(stack, null);
 
                         if (cellInventory == null)
                             continue;
