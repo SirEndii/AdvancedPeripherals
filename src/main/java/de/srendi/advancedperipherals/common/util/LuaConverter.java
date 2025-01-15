@@ -76,11 +76,15 @@ public class LuaConverter {
         return data;
     }
 
-    public static Map<String, Object> animalToLua(Animal animal, ItemStack itemInHand, boolean detailed) {
+    public static Map<String, Object> mobToLua(Mob animal, boolean detailed) {
         Map<String, Object> data = livingEntityToLua(animal, detailed);
-        data.put("baby", animal.isBaby());
-        data.put("inLove", animal.isInLove());
         data.put("aggressive", animal.isAggressive());
+        return data;
+    }
+
+    public static Map<String, Object> animalToLua(Animal animal, ItemStack itemInHand, boolean detailed) {
+        Map<String, Object> data = mobToLua(animal, detailed);
+        data.put("inLove", animal.isInLove());
         if (animal instanceof IForgeShearable shareable && !itemInHand.isEmpty()) {
             data.put("shareable", shareable.isShearable(itemInHand, animal.level, animal.blockPosition()));
         }
@@ -121,6 +125,7 @@ public class LuaConverter {
     public static Map<String, Object> completeEntityToLua(Entity entity, ItemStack itemInHand, boolean detailed) {
         if (entity instanceof Player player) return playerToLua(player, detailed);
         if (entity instanceof Animal animal) return animalToLua(animal, itemInHand, detailed);
+        if (entity instanceof Mob mob) return mobToLua(mob, detailed);
         if (entity instanceof LivingEntity livingEntity) return livingEntityToLua(livingEntity, detailed);
         return entityToLua(entity, detailed);
     }
