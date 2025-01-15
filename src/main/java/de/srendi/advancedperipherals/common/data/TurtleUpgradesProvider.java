@@ -28,7 +28,7 @@ public class TurtleUpgradesProvider {
         upgrades.register(id(CCRegistration.ID.PLAYER_TURTLE), new TurtlePlayerDetectorUpgrade(new ItemStack(Blocks.PLAYER_DETECTOR.get())));
         upgrades.register(id(CCRegistration.ID.ENVIRONMENT_TURTLE), new TurtleEnvironmentDetectorUpgrade(new ItemStack(Blocks.ENVIRONMENT_DETECTOR.get())));
         upgrades.register(id(CCRegistration.ID.CHUNKY_TURTLE), new TurtleChunkyUpgrade(new ItemStack(Items.CHUNK_CONTROLLER)));
-        upgrades.register(id(CCRegistration.ID.GEOSCANNER_TURTLE), new TurtleGeoScannerUpgrade(new ItemStack(Blocks.ENVIRONMENT_DETECTOR.get())));
+        upgrades.register(id(CCRegistration.ID.GEOSCANNER_TURTLE), new TurtleGeoScannerUpgrade(new ItemStack(Blocks.GEO_SCANNER.get())));
         upgrades.register(id(CCRegistration.ID.COMPASS_TURTLE), new TurtleCompassUpgrade(new ItemStack(net.minecraft.world.item.Items.COMPASS)));
         upgrades.register(id(CCRegistration.ID.WEAK_AUTOMATA), new WeakAutomata(new ItemStack(Items.WEAK_AUTOMATA_CORE.get())));
         upgrades.register(id(CCRegistration.ID.END_AUTOMATA), new EndAutomata(new ItemStack(Items.END_AUTOMATA_CORE.get())));

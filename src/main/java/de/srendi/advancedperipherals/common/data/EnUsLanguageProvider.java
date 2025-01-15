@@ -83,7 +83,6 @@ public class EnUsLanguageProvider extends LanguageProvider {
 
     private void addPockets() {
         addPocket(CCRegistration.ID.COLONY_POCKET, "Colony");
-        addPocket(CCRegistration.ID.COLONY_POCKET, "Colony");
         addPocket(CCRegistration.ID.CHATTY_POCKET, "Chatty");
         addPocket(CCRegistration.ID.ENVIRONMENT_POCKET, "Environment");
         addPocket(CCRegistration.ID.GEOSCANNER_POCKET, "Geo");
