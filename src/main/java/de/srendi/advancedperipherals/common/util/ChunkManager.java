@@ -69,7 +69,7 @@ public class ChunkManager extends SavedData {
     public static void serverTick(ServerTickEvent.Post event) {
         if (event.hasTime()) {
             tickCounter++;
-            if (tickCounter % (APConfig.PERIPHERALS_CONFIG.chunkLoadValidTime.get() / 2) == 0) {
+            if (tickCounter % (APConfig.PERIPHERALS_CONFIG.chunkLoadValidTime.get() * 20 / 10) == 0) {
                 ChunkManager.get(ServerLifecycleHooks.getCurrentServer().overworld()).cleanup();
             }
         }
