@@ -54,6 +54,13 @@ jobs:
           path: build/libs
       - name: Patch Changelog
         run: ./gradlew patchChangelog
+      - name: Push Changelog Patch
+        run: |
+          git config user.name github-actions && \
+          git config user.email github-actions[bot]@users.noreply.github.com && \
+          git add CHANGELOG.md && \
+          git commit -m 'action: patchChangelog' && \
+          git push
       - name: Github Release
         env:
           GITHUB_KEY: ${{ github.token }}
