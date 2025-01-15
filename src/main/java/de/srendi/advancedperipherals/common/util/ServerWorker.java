@@ -20,7 +20,7 @@ public class ServerWorker {
     }
 
     @SubscribeEvent
-    public static void serverTick(ServerTickEvent.Pre event) {
+    public static void serverTick(ServerTickEvent.Post event) {
         if (event.hasTime()) {
             while (true) {
                 final Runnable runnable = callQueue.poll();

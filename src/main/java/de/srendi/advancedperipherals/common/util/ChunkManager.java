@@ -66,7 +66,7 @@ public class ChunkManager extends SavedData {
     }
 
     @SubscribeEvent
-    public static void serverTick(ServerTickEvent.Pre event) {
+    public static void serverTick(ServerTickEvent.Post event) {
         if (event.hasTime()) {
             tickCounter++;
             if (tickCounter % (APConfig.PERIPHERALS_CONFIG.chunkLoadValidTime.get() / 2) == 0) {
