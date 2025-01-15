@@ -7,7 +7,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-## First official Advanced Peripherals 1.21.1 alpha release to the whole public. Please report any bug to github!
+### First official Advanced Peripherals 1.21.1 alpha release to the whole public. Please report any bug to github!
 
 ### Added
 - Added our new textures!
