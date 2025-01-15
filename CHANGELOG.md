@@ -9,6 +9,9 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## First official Advanced Peripherals 1.21.1 alpha release to the whole public. Please report any bug to github!
 
+### Added
+- Added our new textures!
+
 ### Fixed
 - Fixed that several item export and import related functions would not work with blocks from other mods
 - Fixed that functions with cooldowns which are used for the first time would throw an error
