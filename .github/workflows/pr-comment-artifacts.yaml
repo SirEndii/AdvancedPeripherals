@@ -24,7 +24,6 @@ jobs:
       ARTIFACT_ID: ${{ steps.metadata.outputs.ARTIFACT_ID }}
       ARTIFACT_URL: ${{ steps.metadata.outputs.ARTIFACT_URL }}
       ARTIFACT_EXP: ${{ steps.metadata.outputs.ARTIFACT_EXP }}
-      ARTIFACT_NAME: ${{ steps.metadata.outputs.ARTIFACT_NAME }}
     steps:
       - name: Get Artifact URL & PR Info
         id: metadata
@@ -37,49 +36,40 @@ jobs:
         run: |
           echo "Previous Job ID: $PREVIOUS_JOB_ID"
 
-          LOG_URL="/repos/$OWNER/$REPO/actions/runs/$PREVIOUS_JOB_ID/logs"
-          echo "Getting previous logs: $LOG_URL"
-          gh api "$LOG_URL" >_logs.zip
-          echo "Unzipping logs"
-          unzip -p _logs.zip >_build.txt
+          gh api "/repos/$OWNER/$REPO/actions/runs/$PREVIOUS_JOB_ID/logs" >logs.zip
+          unzip -p logs.zip 'Build/*.txt' >build.txt
 
-          echo "Parsing logs"
-          function parse_var {
+          function parse_var() {
             name=$1
-            echo "Parsing output $name"
-            line=$(cat _build.txt | grep -m 1 "output:${name}=" | cat)
+            line=$(cat build.txt | grep "output:${name}=")
             export parsed=${line#*"output:${name}="}
           }
           parse_var PR_NUMBER
           PR_NUMBER=$parsed
+          parse_var HEAD_SHA
+          HEAD_SHA=$parsed
+          parse_var ARTIFACT_ID
+          ARTIFACT_ID=$parsed
+          parse_var ARTIFACT_URL
+          ARTIFACT_URL=$parsed
+
           echo "PR Number: $PR_NUMBER"
           echo "PR_NUMBER=$PR_NUMBER" >> "$GITHUB_OUTPUT"
 
-          parse_var HEAD_SHA
-          HEAD_SHA=$parsed
           echo "Head sha: $HEAD_SHA"
           echo "HEAD_SHA=$HEAD_SHA" >> "$GITHUB_OUTPUT"
 
-          parse_var ARTIFACT_ID
-          ARTIFACT_ID=$parsed
           echo "ARTIFACT ID: $ARTIFACT_ID"
           echo "ARTIFACT_ID=$ARTIFACT_ID" >> "$GITHUB_OUTPUT"
 
-          parse_var ARTIFACT_URL
-          ARTIFACT_URL=$parsed
           echo "ARTIFACT URL: $ARTIFACT_URL"
           echo "ARTIFACT_URL=$ARTIFACT_URL" >> "$GITHUB_OUTPUT"
 
           if [[ "$ARTIFACT_ID" != "" ]]; then
-            ARTIFACT_INFO="$(gh api "/repos/$OWNER/$REPO/actions/artifacts/$ARTIFACT_ID")"
-            ARTIFACT_EXP=$(echo "$ARTIFACT_INFO" | jq -r ".expires_at")
+            ARTIFACT_EXP=$(gh api "/repos/$OWNER/$REPO/actions/artifacts/$ARTIFACT_ID" -jq ".expires_at")
             echo "ARTIFACT EXP: $ARTIFACT_EXP"
             echo "ARTIFACT_EXP=$ARTIFACT_EXP" >> "$GITHUB_OUTPUT"
-            ARTIFACT_NAME=$(echo "$ARTIFACT_INFO" | jq -r ".name")
-            echo "ARTIFACT NAME: $ARTIFACT_NAME"
-            echo "ARTIFACT_NAME=$ARTIFACT_NAME" >> "$GITHUB_OUTPUT"
           fi
-          exit 0
 
   comment-success:
     if: ${{ needs.parse-metadata.outputs.PR_NUMBER != '' }}
@@ -101,7 +91,6 @@ jobs:
           HEAD_SHA: ${{ needs.parse-metadata.outputs.HEAD_SHA }}
           ARTIFACT_URL: ${{ needs.parse-metadata.outputs.ARTIFACT_URL }}
           ARTIFACT_EXP: ${{ needs.parse-metadata.outputs.ARTIFACT_EXP }}
-          ARTIFACT_NAME: ${{ needs.parse-metadata.outputs.ARTIFACT_NAME }}
         uses: peter-evans/create-or-update-comment@v4
         with:
           issue-number: ${{ needs.parse-metadata.outputs.PR_NUMBER }}
@@ -110,7 +99,7 @@ jobs:
           body: |-
             ## Build Preview
 
-            [![badge]](${{ env.JOB_PATH }})
+            [![badge]]($JOB_PATH)
 
             You can find files attached to the below linked Workflow Run URL (Logs).
 
@@ -118,7 +107,7 @@ jobs:
             |-----------|-------------------------|
             | Commit    | ${{ env.HEAD_SHA }}     |
             | Logs      | ${{ env.JOB_PATH }}     |
-            ${{ env.ARTIFACT_URL && format('| Jar Files  | [{0}]({1}) |', env.ARTIFACT_NAME, env.ARTIFACT_URL) || '' }}
+            ${{ env.ARTIFACT_URL && format('| Jar Files  | {0} |', env.ARTIFACT_URL) || '' }}
             ${{ env.ARTIFACT_EXP && format('| Expires At | {0} |', env.ARTIFACT_EXP) || '' }}
 
             [badge]: https://img.shields.io/badge/${{ format('{0}-{1}', github.event.workflow_run.conclusion, github.event.workflow_run.conclusion == 'success' && '3fb950' || 'f85149') }}?style=for-the-badge&logo=github&label=build
