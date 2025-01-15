@@ -65,17 +65,15 @@ public class ColonyPeripheral extends BasePeripheral<IPeripheralOwner> {
     }
 
     @LuaFunction(mainThread = true)
-    public final boolean isWithin(Map<?, ?> pos) throws LuaException {
+    public final boolean isWithin(Map<?, ?> posTable) throws LuaException {
         IColony colony = getColonyWithoutPermission();
 
         if(colony == null)
             return false;
 
-        if (!(pos.containsKey("x") && pos.containsKey("y") && pos.containsKey("z")))
-            throw new LuaException("Coordinates expected");
-        BlockPos p = new BlockPos(((Number) pos.get("x")).intValue(), ((Number) pos.get("y")).intValue(), ((Number) pos.get("z")).intValue());
+        BlockPos pos = LuaConverter.convertToBlockPos(posTable);
 
-        return colony.isCoordInColony(this.getLevel(), p);
+        return colony.isCoordInColony(this.getLevel(), pos);
     }
 
     @LuaFunction(mainThread = true)
@@ -239,12 +237,10 @@ public class ColonyPeripheral extends BasePeripheral<IPeripheralOwner> {
     }
 
     @LuaFunction(mainThread = true)
-    public final Object getBuilderResources(Map<?, ?> pos) throws LuaException {
+    public final Object getBuilderResources(Map<?, ?> posTable) throws LuaException {
         IColony colony = getColony();
 
-        if (!(pos.containsKey("x") && pos.containsKey("y") && pos.containsKey("z")))
-            throw new LuaException("Coordinates expected");
-        BlockPos blockPos = LuaConverter.convertToBlockPos(pos);
+        BlockPos blockPos = LuaConverter.convertToBlockPos(posTable);
 
         return MineColonies.builderResourcesToObject(colony, blockPos);
     }
@@ -288,8 +284,7 @@ public class ColonyPeripheral extends BasePeripheral<IPeripheralOwner> {
     }
 
     private IColony getColony() throws LuaException {
-        IMinecoloniesAPI api = IMinecoloniesAPI.getInstance();
-        IColony colony = api.getColonyManager().getColonyByPosFromWorld(getLevel(), getPos());
+        IColony colony = getColonyWithoutPermission();
         this.hasPermission = !(owner instanceof PocketPeripheralOwner) || MineColonies.hasAccess(owner.getOwner(), colony);
         if (colony == null || !this.hasPermission)
             throw new LuaException("Here is no colony or you don't have the right permissions");

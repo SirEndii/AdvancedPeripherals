@@ -9,6 +9,7 @@ import com.minecolonies.api.colony.managers.interfaces.IRegisteredStructureManag
 import com.minecolonies.api.colony.permissions.Action;
 import com.minecolonies.api.colony.workorders.IWorkOrder;
 import com.minecolonies.api.entity.citizen.Skill;
+import com.minecolonies.api.entity.citizen.VisibleCitizenStatus;
 import com.minecolonies.api.research.IGlobalResearch;
 import com.minecolonies.api.research.IGlobalResearchTree;
 import com.minecolonies.api.research.ILocalResearch;
@@ -72,7 +73,7 @@ public class MineColonies {
         map.put("children", citizen.getChildren());
         map.put("location", LuaConverter.posToObject(citizen.getLastPosition()));
         map.put("state", citizen.getStatus() == null ? "Idle" : Component.translatable(citizen.getStatus().getTranslationKey()).getString());
-        map.put("age", citizen.isChild() ? "child" : "adult");
+        map.put("isChild", citizen.isChild() ? "child" : "adult");
         map.put("gender", citizen.isFemale() ? "female" : "male");
         map.put("saturation", citizen.getSaturation());
         map.put("happiness", citizen.getCitizenHappinessHandler().getHappiness(citizen.getColony(), citizen));
@@ -80,8 +81,8 @@ public class MineColonies {
         map.put("work", citizen.getWorkBuilding() == null ? null : jobToObject(citizen.getWorkBuilding(), citizen.getJob()));
         map.put("home", citizen.getHomeBuilding() == null ? null : homeToObject(citizen.getHomeBuilding()));
         map.put("betterFood", citizen.needsBetterFood());
-        map.put("isAsleep", map.get("state").toString().toLowerCase().contains("sleeping"));
-        map.put("isIdle", map.get("state").toString().toLowerCase().contains("idle"));
+        map.put("isAsleep", citizen.getStatus().equals(VisibleCitizenStatus.SLEEP));
+        map.put("isIdle", citizen.getStatus().equals(VisibleCitizenStatus.HOUSE));
         citizen.getEntity().ifPresent(entity -> {
             map.put("health", entity.getHealth());
             map.put("maxHealth", entity.getMaxHealth());
@@ -103,7 +104,7 @@ public class MineColonies {
         map.put("id", visitor.getId());
         map.put("name", visitor.getName());
         map.put("location", LuaConverter.posToObject(visitor.getSittingPosition()));
-        map.put("age", visitor.isChild() ? "child" : "adult");
+        map.put("isChild", visitor.isChild() ? "child" : "adult");
         map.put("gender", visitor.isFemale() ? "female" : "male");
         map.put("saturation", visitor.getSaturation());
         map.put("happiness", visitor.getCitizenHappinessHandler().getHappiness(visitor.getColony(), visitor));
@@ -154,11 +155,11 @@ public class MineColonies {
      */
     public static Object skillsToObject(Map<Skill, CitizenSkillHandler.SkillData> skills) {
         Map<String, Object> map = new HashMap<>();
-        for (Skill skill : skills.keySet()) {
+        for (Map.Entry<Skill, CitizenSkillHandler.SkillData> skill : skills.entrySet()) {
             Map<String, Object> skillData = new HashMap<>();
-            skillData.put("level", skills.get(skill).getLevel());
-            skillData.put("xp", skills.get(skill).getExperience());
-            map.put(skill.name(), skillData);
+            skillData.put("level", skill.getValue().getLevel());
+            skillData.put("xp", skill.getValue().getExperience());
+            map.put(skill.getKey().name(), skillData);
         }
 
         return map;
@@ -195,7 +196,7 @@ public class MineColonies {
         map.put("maxLevel", building.getMaxBuildingLevel());
         map.put("name", building.getBuildingDisplayName());
         map.put("built", building.isBuilt());
-        map.put("isWorkingOn", building.hasWorkOrder());
+        map.put("isWorking", building.hasWorkOrder());
         map.put("priority", building.getPickUpPriority());
         map.put("structure", structureData);
         map.put("citizens", citizensData);
@@ -314,7 +315,7 @@ public class MineColonies {
                 map.put("cost", cost);
                 map.put("researchEffects", effects);
                 map.put("status", colonyResearch == null ? ResearchState.NOT_STARTED.toString() : colonyResearch.getState().toString());
-                map.put("neededTime", colonyResearch == null ? 0 : IGlobalResearchTree.getInstance().getBranchData(colonyResearch.getBranch()).getBaseTime(colonyResearch.getDepth()));
+                map.put("requiredTime", colonyResearch == null ? 0 : IGlobalResearchTree.getInstance().getBranchData(colonyResearch.getBranch()).getBaseTime(colonyResearch.getDepth()));
                 map.put("progress", colonyResearch == null ? 0 : colonyResearch.getProgress());
 
                 List<Object> childrenResearch = getResearch(branch, research.getChildren(), colony);
@@ -357,7 +358,7 @@ public class MineColonies {
             map.put("available", resource.getAvailable());
             map.put("delivering", resource.getAmountInDelivery());
             map.put("status", resource.getAvailabilityStatus().toString());
-            map.put("needed", resource.getAmount());
+            map.put("needs", resource.getAmount());
             result.add(map);
         }
 

@@ -24,22 +24,24 @@ public class BlockStatesAndModelsProvider extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        peripheralBlock(Blocks.ENVIRONMENT_DETECTOR.get(), "front");
-        peripheralBlock(Blocks.CHAT_BOX.get(), "front");
-        peripheralBlock(Blocks.PLAYER_DETECTOR.get(), "side", "front");
-        peripheralBlock(Blocks.ME_BRIDGE.get(), "front");
-        peripheralBlock(Blocks.RS_BRIDGE.get(), "front");
-        peripheralBlock(Blocks.ENERGY_DETECTOR.get(), "front", "back");
-        peripheralBlock(Blocks.PERIPHERAL_CASING.get());
-        peripheralBlock(Blocks.INVENTORY_MANAGER.get(), "front");
-        peripheralBlock(Blocks.REDSTONE_INTEGRATOR.get(), "front");
+        // Define blocks with specific sides and orientations
+        peripheralBlock(Blocks.ENVIRONMENT_DETECTOR.get(), "front", "top");
+        peripheralBlock(Blocks.CHAT_BOX.get(), "front", "top");
+        peripheralBlock(Blocks.ME_BRIDGE.get(), "front", "top");
+        peripheralBlock(Blocks.ENERGY_DETECTOR.get(), "front", "back", "top", "east");
+        peripheralBlock(Blocks.INVENTORY_MANAGER.get(), "front", "top");
+        peripheralBlock(Blocks.GEO_SCANNER.get(), "front", "top");
+        peripheralBlock(Blocks.RS_BRIDGE.get(), "front", "top");
+        peripheralBlock(Blocks.COLONY_INTEGRATOR.get(), "front", "top");
+        peripheralBlock(Blocks.NBT_STORAGE.get(), "front", "top");
+
+        // Define blocks with custom model generation
+        peripheralBlock(Blocks.PLAYER_DETECTOR.get(), generateModel(Blocks.PLAYER_DETECTOR.get(), false, "side", "front", "top"));
+        peripheralBlock(Blocks.REDSTONE_INTEGRATOR.get(), generateModel(Blocks.REDSTONE_INTEGRATOR.get(), false, "side", "front", "top", "bottom"));
         peripheralBlock(Blocks.BLOCK_READER.get(), generateModel(Blocks.BLOCK_READER.get(), false, "north", "south", "east", "west", "up", "down"));
-        peripheralBlock(Blocks.GEO_SCANNER.get(), "front");
-        peripheralBlock(Blocks.COLONY_INTEGRATOR.get(), generateModel(Blocks.COLONY_INTEGRATOR.get())
-                .texture("particle", blockTexture(Blocks.COLONY_INTEGRATOR.get()))
-                .texture("up", blockTexture(net.minecraft.world.level.block.Blocks.OAK_LOG, "top"))
-                .texture("down", blockTexture(net.minecraft.world.level.block.Blocks.OAK_LOG, "top")));
-        peripheralBlock(Blocks.NBT_STORAGE.get(), "front");
+
+        // Define a simple block with all sides having the same texture
+        peripheralBlock(Blocks.PERIPHERAL_CASING.get());
     }
 
     private void peripheralBlock(Block block, ModelFile file) {
@@ -84,6 +86,8 @@ public class BlockStatesAndModelsProvider extends BlockStateProvider {
                 side = "north";
                 particleTexture = blockTexture(block, "front");
             }
+            if (side.equals("top")) side = "up";
+            if (side.equals("bottom")) side = "down";
             if (side.equals("back")) side = "south";
             builder.texture(side, blockTexture(block, sideTexture));
 
