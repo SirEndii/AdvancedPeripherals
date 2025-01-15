@@ -237,12 +237,10 @@ public class ColonyPeripheral extends BasePeripheral<IPeripheralOwner> {
     }
 
     @LuaFunction(mainThread = true)
-    public final Object getBuilderResources(Map<?, ?> pos) throws LuaException {
+    public final Object getBuilderResources(Map<?, ?> posTable) throws LuaException {
         IColony colony = getColony();
 
-        if (!(pos.containsKey("x") && pos.containsKey("y") && pos.containsKey("z")))
-            throw new LuaException("Coordinates expected");
-        BlockPos blockPos = LuaConverter.convertToBlockPos(pos);
+        BlockPos blockPos = LuaConverter.convertToBlockPos(posTable);
 
         return MineColonies.builderResourcesToObject(colony, blockPos);
     }
