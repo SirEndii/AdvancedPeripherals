@@ -33,8 +33,8 @@ Read our [Contribution](CONTRIBUTING.md) Guidelines to get started.
 
 ## Translating
 
-All translation is done via **[Crowdin]**, as such we <br>
-will close pull requests related to translations.
+Translations are usually done via **[Crowdin]**. <br>
+But until we fix that system, any translation PRs are welcome!
 
 [![Badge Localized]][Crowdin]
 
