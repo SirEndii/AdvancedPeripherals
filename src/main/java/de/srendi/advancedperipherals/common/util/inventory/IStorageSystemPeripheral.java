@@ -29,13 +29,13 @@ public interface IStorageSystemPeripheral {
 
     MethodResult getFluid(IArguments arguments) throws LuaException;
 
-    MethodResult listItems();
+    MethodResult listItems(IArguments arguments) throws LuaException;
 
-    MethodResult listFluids();
+    MethodResult listFluids(IArguments arguments) throws LuaException;
 
-    MethodResult listCraftableItems();
+    MethodResult listCraftableItems(IArguments arguments) throws LuaException;
 
-    MethodResult listCraftableFluids();
+    MethodResult listCraftableFluids(IArguments arguments) throws LuaException;
 
     MethodResult listCells();
 

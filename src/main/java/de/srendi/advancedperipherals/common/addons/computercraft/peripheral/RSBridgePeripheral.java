@@ -11,11 +11,17 @@ import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import de.srendi.advancedperipherals.common.addons.APAddons;
 import de.srendi.advancedperipherals.common.addons.computercraft.owner.BlockEntityPeripheralOwner;
+import de.srendi.advancedperipherals.common.addons.refinedstorage.RefinedStorageApi;
 import de.srendi.advancedperipherals.common.blocks.blockentities.RsBridgeEntity;
 import de.srendi.advancedperipherals.common.configuration.APConfig;
+import de.srendi.advancedperipherals.common.util.Pair;
 import de.srendi.advancedperipherals.common.util.inventory.IStorageSystemPeripheral;
+import de.srendi.advancedperipherals.common.util.inventory.ItemFilter;
 import de.srendi.advancedperipherals.lib.peripherals.BasePeripheral;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
+import java.util.Set;
 
 public class RSBridgePeripheral extends BasePeripheral<BlockEntityPeripheralOwner<RsBridgeEntity>> implements IStorageSystemPeripheral {
 
@@ -48,7 +54,7 @@ public class RSBridgePeripheral extends BasePeripheral<BlockEntityPeripheralOwne
     }
 
     private boolean isAvailable() {
-        return getNetwork() != null;
+        return true;
     }
 
     @Override
@@ -69,7 +75,22 @@ public class RSBridgePeripheral extends BasePeripheral<BlockEntityPeripheralOwne
     @Override
     @LuaFunction(mainThread = true)
     public MethodResult getItem(IArguments arguments) throws LuaException {
-        return null;
+        if (!isAvailable())
+            return notConnected();
+
+        Pair<ItemFilter, String> filter = ItemFilter.parse(arguments.getTable(0));
+        if (filter.rightPresent())
+            return MethodResult.of(null, filter.getRight());
+
+        ItemFilter parsedFilter = filter.getLeft();
+        if (parsedFilter.isEmpty())
+            return MethodResult.of(null, "EMPTY_FILTER");
+
+        Map<?, ?> resourceProperties = RefinedStorageApi.getItem(getNetwork(), parsedFilter);
+        if (resourceProperties == null)
+            return MethodResult.of(null, "NOT_FOUND");
+
+        return MethodResult.of(resourceProperties);
     }
 
     @Override
@@ -80,25 +101,36 @@ public class RSBridgePeripheral extends BasePeripheral<BlockEntityPeripheralOwne
 
     @Override
     @LuaFunction(mainThread = true)
-    public MethodResult listItems() {
+    public MethodResult listItems(IArguments arguments) throws LuaException {
+        if (!isAvailable())
+            return notConnected();
+
+        Pair<ItemFilter, String> filter = ItemFilter.parse(arguments.optTable(0, Map.of()));
+        if (filter.rightPresent())
+            return MethodResult.of(null, filter.getRight());
+
+        ItemFilter parsedFilter = filter.getLeft();
+
+        Set<Map<?, ?>> resourceProperties = RefinedStorageApi.listItems(getNetwork(), parsedFilter);
+
+        return MethodResult.of(resourceProperties);
+    }
+
+    @Override
+    @LuaFunction(mainThread = true)
+    public MethodResult listFluids(IArguments arguments) {
         return null;
     }
 
     @Override
     @LuaFunction(mainThread = true)
-    public MethodResult listFluids() {
+    public MethodResult listCraftableItems(IArguments arguments) {
         return null;
     }
 
     @Override
     @LuaFunction(mainThread = true)
-    public MethodResult listCraftableItems() {
-        return null;
-    }
-
-    @Override
-    @LuaFunction(mainThread = true)
-    public MethodResult listCraftableFluids() {
+    public MethodResult listCraftableFluids(IArguments arguments) {
         return null;
     }
 
