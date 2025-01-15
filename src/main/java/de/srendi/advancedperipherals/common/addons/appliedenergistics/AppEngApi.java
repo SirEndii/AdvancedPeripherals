@@ -173,16 +173,10 @@ public class AppEngApi {
     }
 
     private static Map<String, Object> getObjectFromItemStack(Pair<Long, AEItemKey> stack, @Nullable ICraftingService craftingService) {
-        Map<String, Object> map = new HashMap<>();
-        String displayName = stack.getRight().getDisplayName().getString();
-        Tag nbt = DataComponentUtil.toNbt(stack.getRight().getReadOnlyStack().getComponentsPatch());
-        long amount = stack.getLeft();
-        map.put("fingerprint", ItemUtil.getFingerprint(stack.getRight().toStack()));
-        map.put("name", ItemUtil.getRegistryKey(stack.getRight().getItem()).toString());
-        map.put("amount", amount);
-        map.put("displayName", displayName);
-        map.put("components", NBTUtil.toLua(nbt));
-        map.put("tags", LuaConverter.tagsToList(() -> stack.getRight().getItem().builtInRegistryHolder().tags()));
+        Map<String, Object> map = LuaConverter.stackToObject(stack.getRight().toStack());
+        long count = stack.getLeft();
+        // We re-set the amount since item stacks can only hold up to 2^31 for the count while ae2 stacks can hold up to 2^63
+        map.put("count", count);
         map.put("isCraftable", craftingService != null && craftingService.isCraftable(stack.getRight()));
 
         return map;
@@ -190,9 +184,9 @@ public class AppEngApi {
 
     private static Map<String, Object> getObjectFromFluidStack(Pair<Long, AEFluidKey> stack, @Nullable ICraftingService craftingService) {
         Map<String, Object> map = new HashMap<>();
-        long amount = stack.getLeft();
+        long count = stack.getLeft();
         map.put("name", stack.getRight().getFluid().builtInRegistryHolder().key().registry().toString());
-        map.put("amount", amount);
+        map.put("count", count);
         map.put("displayName", stack.getRight().getDisplayName().getString());
         map.put("tags", LuaConverter.tagsToList(() -> stack.getRight().getFluid().builtInRegistryHolder().tags()));
         map.put("isCraftable", craftingService != null && craftingService.isCraftable(stack.getRight()));
@@ -202,9 +196,9 @@ public class AppEngApi {
 
     private static Map<String, Object> getObjectFromGasStack(Pair<Long, MekanismKey> stack, @Nullable ICraftingService craftingService) {
         Map<String, Object> map = new HashMap<>();
-        long amount = stack.getLeft();
+        long count = stack.getLeft();
         map.put("name", stack.getRight().getStack().getTypeRegistryName().toString());
-        map.put("amount", amount);
+        map.put("count", count);
         map.put("displayName", stack.getRight().getDisplayName().getString());
         map.put("tags", LuaConverter.tagsToList(() -> stack.getRight().getStack().getTags()));
 
