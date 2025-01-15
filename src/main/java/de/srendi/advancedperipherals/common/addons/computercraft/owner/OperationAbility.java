@@ -65,11 +65,17 @@ public class OperationAbility implements IOwnerAbility, IPeripheralPlugin {
             return (int) Math.max(0, cooldowns.getLong(operationName) - currentTime);
         }
 
-        DataComponentPatch componentPatch = owner.getDataStorage();
+        PatchedDataComponentMap patch = PatchedDataComponentMap.fromPatch(DataComponentMap.EMPTY, owner.getDataStorage());
 
-        if (componentPatch.get(ABILITY_COOLDOWN.get()).isEmpty()) return 0;
-        DataComponentPatch cooldowns = componentPatch.get(ABILITY_COOLDOWN.get()).get();
+        if (!patch.has(ABILITY_COOLDOWN.get())) {
+            patch.set(ABILITY_COOLDOWN.get(), DataComponentPatch.EMPTY);
+            owner.putDataStorage(patch.asPatch());
+        }
+        if (patch.get(ABILITY_COOLDOWN.get()).isEmpty()) return 0;
+
+        DataComponentPatch cooldowns = patch.get(ABILITY_COOLDOWN.get());
         if (cooldowns.get(operation.dataComponentType()).isEmpty()) return 0;
+
         long currentTime = Timestamp.valueOf(LocalDateTime.now()).getTime();
         return (int) Math.max(0, cooldowns.get(operation.dataComponentType()).get() - currentTime);
     }
