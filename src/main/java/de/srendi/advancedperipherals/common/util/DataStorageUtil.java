@@ -67,9 +67,9 @@ public class DataStorageUtil {
         public static void addCycles(IPeripheralOwner owner, int count) {
             PatchedDataComponentMap patch = PatchedDataComponentMap.fromPatch(DataComponentMap.EMPTY, owner.getDataStorage());
             Integer currentCharge = patch.get(ROTATION_CHARGE_SETTING.get());
-            if (currentCharge == null)
+            if (currentCharge == null || currentCharge < 0)
                 currentCharge = 0;
-            patch.set(ROTATION_CHARGE_SETTING.get(), Math.max(0, currentCharge) + count * ROTATION_STEPS);
+            patch.set(ROTATION_CHARGE_SETTING.get(), currentCharge + count * ROTATION_STEPS);
             owner.putDataStorage(patch.asPatch());
         }
 
