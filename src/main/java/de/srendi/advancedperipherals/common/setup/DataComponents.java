@@ -26,7 +26,7 @@ public class DataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> FUEL_CONSUMPTION_RATE = registerInt("fuel_consumption_rate");
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<CompoundTag>> ENTITY_TRANSFER = registerNBT("entity_transfer");
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>> WORLD_DATA_MARK = registerString("world_data_mark");
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<CompoundTag>> POINT_DATA_MARK = registerNBT("point_dat_mark");
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<CompoundTag>> POINT_DATA_MARK = registerNBT("point_data_mark");
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<CompoundTag>> CONSUMED_ENTITY_COMPOUND = registerNBT("consumed_entity_compound");
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> SIMPLE_FREE_OPERATION = registerLong("free_operation_cooldown");
