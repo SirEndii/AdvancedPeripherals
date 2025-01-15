@@ -20,8 +20,6 @@ import static de.srendi.advancedperipherals.common.setup.DataComponents.OWNER;
 
 public class MemoryCardItem extends BaseItem {
 
-    public static final String OWNER_NBT_KEY = "ownerId";
-
     public MemoryCardItem() {
         super(new Properties().stacksTo(1));
     }
