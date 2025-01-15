@@ -103,7 +103,7 @@ public class LuaConverter {
     public static Map<String, Object> stackToObject(@NotNull ItemStack stack) {
         if (stack.isEmpty()) return new HashMap<>();
         Map<String, Object> map = itemToObject(stack.getItem());
-        DataComponentPatch components = stack.copy().getComponentsPatch();
+        DataComponentPatch components = stack.getComponentsPatch();
         map.put("count", stack.getCount());
         map.put("displayName", stack.getDisplayName().getString());
         map.put("maxStackSize", stack.getMaxStackSize());
