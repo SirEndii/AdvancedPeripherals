@@ -5,7 +5,6 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import dan200.computercraft.core.computer.ComputerSide;
-import dan200.computercraft.core.computer.Environment;
 import dan200.computercraft.shared.ModRegistry;
 import dan200.computercraft.shared.command.text.ChatHelpers;
 import dan200.computercraft.shared.command.text.TableBuilder;
@@ -23,13 +22,13 @@ import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
 import java.util.Comparator;
 
 
-@Mod.EventBusSubscriber(modid = AdvancedPeripherals.MOD_ID)
+@EventBusSubscriber(modid = AdvancedPeripherals.MOD_ID)
 public class APCommands {
     public static final String ROOT_LITERAL = "advancedperipherals";
     public static final String FORCELOAD_LITERAL = "forceload";
@@ -89,9 +88,8 @@ public class APCommands {
         TableBuilder table = new TableBuilder("ChunkyTurtles", "Computer", "Position");
 
         ServerComputer[] computers = ServerContext.get(source.getServer()).registry().getComputers().stream().filter((computer) -> {
-            Environment env = computer.getComputer().getEnvironment();
             for (ComputerSide side : ComputerSide.values()) {
-                if (env.getPeripheral(side) instanceof ChunkyPeripheral) {
+                if (computer.getPeripheral(side) instanceof ChunkyPeripheral) {
                     return true;
                 }
             }

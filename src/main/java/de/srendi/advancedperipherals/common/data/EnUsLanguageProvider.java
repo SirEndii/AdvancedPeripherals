@@ -54,12 +54,12 @@ public class EnUsLanguageProvider extends LanguageProvider {
     private void addBlocks() {
         addBlock(Blocks.BLOCK_READER, "Block Reader");
         addBlock(Blocks.CHAT_BOX, "Chat Box");
+        addBlock(Blocks.COLONY_INTEGRATOR, "Colony Integrator");
         addBlock(Blocks.ENERGY_DETECTOR, "Energy Detector");
         addBlock(Blocks.ENVIRONMENT_DETECTOR, "Environment Detector");
         addBlock(Blocks.GEO_SCANNER, "Geo Scanner");
         addBlock(Blocks.INVENTORY_MANAGER, "Inventory Manager");
         addBlock(Blocks.ME_BRIDGE, "ME Bridge");
-        addBlock(Blocks.RS_BRIDGE, "RS Bridge");
         addBlock(Blocks.NBT_STORAGE, "NBT Storage");
         addBlock(Blocks.PERIPHERAL_CASING, "Peripheral Casing");
         addBlock(Blocks.PLAYER_DETECTOR, "Player Detector");
@@ -108,7 +108,6 @@ public class EnUsLanguageProvider extends LanguageProvider {
         addTooltip(Items.CHUNK_CONTROLLER.get(), "&7A crafting ingredient for the Chunky Turtle.");
         addTooltip(Blocks.ENVIRONMENT_DETECTOR.get(), "&7This peripheral interacts with the minecraft world.");
         addTooltip(Blocks.PLAYER_DETECTOR.get(), "&7This peripheral can be used to interact with players, but don't be a stalker.");
-        addTooltip(Blocks.RS_BRIDGE.get(), "&7The RS Bridge interacts with Refined Storage to manage your items.");
         addTooltip(Blocks.ME_BRIDGE.get(), "&7The ME Bridge interacts with Applied Energistics to manage your items.");
         addTooltip(Blocks.CHAT_BOX.get(), "&7Interacts with the ingame chat, can read and write messages.");
         addTooltip(Blocks.PERIPHERAL_CASING.get(), "&7An empty hull without the love it deserves. Used as a crafting ingredient");
@@ -118,6 +117,7 @@ public class EnUsLanguageProvider extends LanguageProvider {
         addTooltip(Blocks.REDSTONE_INTEGRATOR.get(), "&7This block is able to interact with redstone. Works exactly like the redstone api of an computer.");
         addTooltip(Blocks.BLOCK_READER.get(), "&7Reads nbt data of blocks to interact with blocks which do not have computer support.");
         addTooltip(Blocks.GEO_SCANNER.get(), "&7Scans the area around it to find some shiny ores.");
+        addTooltip(Blocks.COLONY_INTEGRATOR.get(), "&7Interacts with Minecolonies to read data about your colony and citizens.");
         addTooltip(Blocks.NBT_STORAGE.get(), "&7Acts like a storage disk. Can store nbt based data.");
         addTooltip(Items.WEAK_AUTOMATA_CORE.get(), "&7Upgrade for turtles, which makes turtles more useful.");
         addTooltip(Items.OVERPOWERED_WEAK_AUTOMATA_CORE.get(), "&7Improved version of the weak automata core, that provides some overpowered uses! Be careful, the upgrade is very fragile.");

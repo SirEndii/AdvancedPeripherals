@@ -16,21 +16,20 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static de.srendi.advancedperipherals.common.setup.DataComponents.CONSUMED_ENTITY_COMPOUND;
+
 public class WeakAutomataCore extends APItem implements IFeedableAutomataCore {
 
     private static final String CONSUMED_ENTITY_COUNT = "consumed_entity_count";
     private static final String CONSUMED_ENTITY_NAME = "consumed_entity_name";
-    private static final String CONSUMER_ENTITY_COMPOUND = "consumed_entity_compound";
     private static final Map<String, WeakAutomataCoreRecord> AUTOMATA_CORE_REGISTRY = new HashMap<>();
 
     static {
@@ -57,15 +56,16 @@ public class WeakAutomataCore extends APItem implements IFeedableAutomataCore {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        super.appendHoverText(stack, worldIn, tooltip, flagIn);
-        CompoundTag tag = stack.getOrCreateTag();
-        CompoundTag consumedData = tag.getCompound(CONSUMER_ENTITY_COMPOUND);
-        consumedData.getAllKeys().forEach(key -> {
-            WeakAutomataCoreRecord record = AUTOMATA_CORE_REGISTRY.get(key);
-            CompoundTag recordData = consumedData.getCompound(key);
-            tooltip.add(EnumColor.buildTextComponent(Component.literal(String.format("Consumed: %d/%d %s", recordData.getInt(CONSUMED_ENTITY_COUNT), record.getRequiredCount(key), recordData.getString(CONSUMED_ENTITY_NAME)))));
-        });
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flagIn) {
+        super.appendHoverText(stack, context, tooltip, flagIn);
+
+        CompoundTag consumedData = stack.get(CONSUMED_ENTITY_COMPOUND.get());
+        if (consumedData != null)
+            consumedData.getAllKeys().forEach(key -> {
+                WeakAutomataCoreRecord record = AUTOMATA_CORE_REGISTRY.get(key);
+                CompoundTag recordData = consumedData.getCompound(key);
+                tooltip.add(EnumColor.buildTextComponent(Component.literal(String.format("Consumed: %d/%d %s", recordData.getInt(CONSUMED_ENTITY_COUNT), record.getRequiredCount(key), recordData.getString(CONSUMED_ENTITY_NAME)))));
+            });
     }
 
     @Override
@@ -76,9 +76,11 @@ public class WeakAutomataCore extends APItem implements IFeedableAutomataCore {
             return InteractionResult.FAIL;
         }
         String entityType = EntityType.getKey(entity.getType()).toString();
+
         if (AUTOMATA_CORE_REGISTRY.containsKey(entityType)) {
-            CompoundTag tag = stack.getOrCreateTag();
-            CompoundTag consumedData = tag.getCompound(CONSUMER_ENTITY_COMPOUND);
+            CompoundTag consumedData = stack.get(CONSUMED_ENTITY_COMPOUND) == null ? new CompoundTag() : stack.get(CONSUMED_ENTITY_COMPOUND);
+            if (consumedData == null)
+                return InteractionResult.PASS;
             WeakAutomataCoreRecord record;
             if (consumedData.isEmpty()) {
                 record = AUTOMATA_CORE_REGISTRY.get(entityType);
@@ -96,7 +98,7 @@ public class WeakAutomataCore extends APItem implements IFeedableAutomataCore {
             if (record.isFinished(consumedData)) {
                 player.setItemInHand(hand, new ItemStack(record.resultSoul));
             }
-            tag.put(CONSUMER_ENTITY_COMPOUND, consumedData);
+            stack.set(CONSUMED_ENTITY_COMPOUND.get(), consumedData);
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;

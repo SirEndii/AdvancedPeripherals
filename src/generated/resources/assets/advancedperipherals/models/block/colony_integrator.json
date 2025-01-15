@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "advancedperipherals:block/colony_integrator",
+    "north": "advancedperipherals:block/colony_integrator_front",
+    "particle": "advancedperipherals:block/colony_integrator_front",
+    "up": "advancedperipherals:block/colony_integrator_top"
+  }
+}

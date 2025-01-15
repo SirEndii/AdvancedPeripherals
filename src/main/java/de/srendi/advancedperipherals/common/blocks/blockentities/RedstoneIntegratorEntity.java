@@ -7,6 +7,7 @@ import de.srendi.advancedperipherals.common.setup.BlockEntityTypes;
 import de.srendi.advancedperipherals.common.util.ServerWorker;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RedStoneWireBlock;
@@ -62,16 +63,16 @@ public class RedstoneIntegratorEntity extends PeripheralBlockEntity<RedstoneInte
     }
 
     @Override
-    public void load(@NotNull CompoundTag compound) {
+    public void loadAdditional(@NotNull CompoundTag compound, @NotNull HolderLookup.Provider provider) {
         for (Direction direction : Direction.values()) {
             setRedstoneOutput(direction, compound.getInt(direction.name() + "Power"));
         }
-        super.load(compound);
+        super.loadAdditional(compound, provider);
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag compound) {
-        super.saveAdditional(compound);
+    public void saveAdditional(@NotNull CompoundTag compound, @NotNull HolderLookup.Provider provider) {
+        super.saveAdditional(compound, provider);
         int i = 0;
         for (Direction direction : Direction.values()) {
             compound.putInt(direction.name() + "Power", power[i]);

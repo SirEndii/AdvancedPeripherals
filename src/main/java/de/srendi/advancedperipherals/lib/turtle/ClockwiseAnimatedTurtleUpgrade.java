@@ -4,41 +4,19 @@ import dan200.computercraft.api.turtle.ITurtleAccess;
 import dan200.computercraft.api.turtle.TurtleSide;
 import de.srendi.advancedperipherals.common.util.DataStorageUtil;
 import de.srendi.advancedperipherals.lib.peripherals.IBasePeripheral;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import static de.srendi.advancedperipherals.common.setup.DataComponents.TURTLE_UPGRADE_STORED_DATA;
+
 public abstract class ClockwiseAnimatedTurtleUpgrade<T extends IBasePeripheral<?>> extends PeripheralTurtleUpgrade<T> {
 
-    public static final String STORED_DATA_TAG = "storedData";
 
     protected ClockwiseAnimatedTurtleUpgrade(ResourceLocation id, ItemStack item) {
         super(id, item);
     }
-
-    /*@NotNull
-    @Override
-    public TransformedModel getModel(@Nullable ITurtleAccess turtle, @NotNull TurtleSide side) {
-        if (getLeftModel() == null) {
-            PoseStack stack = new PoseStack();
-            stack.pushPose();
-            stack.translate(0.0f, 0.5f, 0.5f);
-            if (turtle != null) {
-                int rotationStep = DataStorageUtil.RotationCharge.get(turtle, side);
-                stack.mulPose(Vector3f.XN.rotationDegrees(-10 * rotationStep));
-            }
-            stack.translate(0.0f, -0.5f, -0.5f);
-            stack.mulPose(Vector3f.YN.rotationDegrees(90));
-            if (side == TurtleSide.LEFT) {
-                stack.translate(0, 0, -0.6);
-            } else {
-                stack.translate(0, 0, -1.4);
-            }
-            return TransformedModel.of(getCraftingItem(), new Transformation(stack.last().pose()));
-        }
-        return TransformedModel.of(side == TurtleSide.LEFT ? getLeftModel() : getRightModel());
-    }*/
 
     // Optional callbacks for addons based on AP
     public void chargeConsumingCallback() {
@@ -46,26 +24,27 @@ public abstract class ClockwiseAnimatedTurtleUpgrade<T extends IBasePeripheral<?
     }
 
     @Override
-    public ItemStack getUpgradeItem(CompoundTag upgradeData) {
+    public ItemStack getUpgradeItem(DataComponentPatch upgradeData) {
         if (upgradeData.isEmpty()) return getCraftingItem();
-        var baseItem = getCraftingItem().copy();
-        baseItem.addTagElement(STORED_DATA_TAG, upgradeData);
+        ItemStack baseItem = getCraftingItem().copy();
+        baseItem.applyComponents(upgradeData);
         return baseItem;
     }
 
     @Override
-    public CompoundTag getUpgradeData(ItemStack stack) {
-        var storedData = stack.getTagElement(STORED_DATA_TAG);
+    public DataComponentPatch getUpgradeData(ItemStack stack) {
+        var storedData = stack.get(TURTLE_UPGRADE_STORED_DATA);
         if (storedData == null)
-            return new CompoundTag();
+            return DataComponentPatch.EMPTY;
         return storedData;
     }
 
     @Override
-    public boolean isItemSuitable(ItemStack stack) {
-        if (stack.getTagElement(STORED_DATA_TAG) == null) return super.isItemSuitable(stack);
+    public boolean isItemSuitable(@NotNull ItemStack stack) {
+        if (!stack.has(TURTLE_UPGRADE_STORED_DATA))
+            return super.isItemSuitable(stack);
         var tweakedStack = stack.copy();
-        tweakedStack.getOrCreateTag().remove(STORED_DATA_TAG);
+        tweakedStack.remove(TURTLE_UPGRADE_STORED_DATA);
         return super.isItemSuitable(tweakedStack);
     }
 

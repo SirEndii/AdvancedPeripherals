@@ -3,11 +3,12 @@ package de.srendi.advancedperipherals.common.util.inventory;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.core.apis.TableHelper;
 import de.srendi.advancedperipherals.AdvancedPeripherals;
+import de.srendi.advancedperipherals.common.util.DataComponentUtil;
 import de.srendi.advancedperipherals.common.util.NBTUtil;
 import de.srendi.advancedperipherals.common.util.Pair;
+import net.minecraft.core.component.PatchedDataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -17,11 +18,13 @@ import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.Map;
 
+//TODO tag
 public class FluidFilter {
 
     private Fluid fluid = Fluids.EMPTY;
     private TagKey<Fluid> tag = null;
-    private CompoundTag nbt = null;
+    private Tag componentsAsNbt = null;
+    private PatchedDataComponentMap components;
     private int count = 1000;
     private String fingerprint = "";
 
@@ -37,7 +40,7 @@ public class FluidFilter {
             try {
                 String name = TableHelper.getStringField(item, "name");
                 if (name.startsWith("#")) {
-                    fluidFilter.tag = TagKey.create(Registries.FLUID, new ResourceLocation(name.substring(1)));
+                    fluidFilter.tag = TagKey.create(Registries.FLUID, ResourceLocation.parse(name.substring(1)));
                 } else if ((fluidFilter.fluid = ItemUtil.getRegistryEntry(name, BuiltInRegistries.FLUID)) == null) {
                     return Pair.of(null, "FLUID_NOT_FOUND");
                 }
@@ -45,11 +48,15 @@ public class FluidFilter {
                 return Pair.of(null, "NO_VALID_FLUID");
             }
         }
-        if (item.containsKey("nbt")) {
+        if (item.containsKey("components")) {
             try {
-                fluidFilter.nbt = NBTUtil.fromText(TableHelper.getStringField(item, "nbt"));
+                fluidFilter.componentsAsNbt = NBTUtil.fromText(TableHelper.getStringField(item, "components"));
             } catch (LuaException luaException) {
-                return Pair.of(null, "NO_VALID_NBT");
+                try {
+                    fluidFilter.componentsAsNbt = NBTUtil.fromText(TableHelper.getTableField(item, "components").toString());
+                } catch (LuaException e) {
+                    return Pair.of(null, "NO_VALID_COMPONENTS");
+                }
             }
         }
         if (item.containsKey("fingerprint")) {
@@ -74,7 +81,8 @@ public class FluidFilter {
     public static FluidFilter fromStack(FluidStack stack) {
         FluidFilter filter = empty();
         filter.fluid = stack.getFluid();
-        filter.nbt = stack.hasTag() ? stack.getTag() : null;
+        filter.componentsAsNbt = DataComponentUtil.toNbt(stack.getComponentsPatch());
+        filter.components = stack.getComponents();
         return filter;
     }
 
@@ -83,12 +91,12 @@ public class FluidFilter {
     }
 
     public boolean isEmpty() {
-        return fingerprint.isEmpty() && fluid == Fluids.EMPTY && tag == null && nbt == null;
+        return fingerprint.isEmpty() && fluid == Fluids.EMPTY && tag == null && componentsAsNbt == null;
     }
 
     public FluidStack toFluidStack() {
         var result = new FluidStack(fluid, count);
-        result.setTag(nbt != null ? nbt.copy() : null);
+        result.applyComponents(components);
         return result;
     }
 
@@ -109,7 +117,7 @@ public class FluidFilter {
         if (tag != null && !stack.getFluid().is(tag)) {
             return false;
         }
-        if (nbt != null && !stack.getOrCreateTag().equals(nbt)) {
+        if (componentsAsNbt != null && !DataComponentUtil.toNbt(stack.getComponentsPatch()).equals(componentsAsNbt)) {
             return false;
         }
         return true;
@@ -123,8 +131,8 @@ public class FluidFilter {
         return fluid;
     }
 
-    public Tag getNbt() {
-        return nbt;
+    public Tag getComponentsAsNbt() {
+        return componentsAsNbt;
     }
 
     @Override
@@ -132,7 +140,7 @@ public class FluidFilter {
         return "FluidFilter{" +
                 "fluid=" + FluidUtil.getRegistryKey(fluid) +
                 ", tag=" + tag +
-                ", nbt=" + nbt +
+                ", components=" + componentsAsNbt +
                 ", count=" + count +
                 ", fingerprint='" + fingerprint + '\'' +
                 '}';

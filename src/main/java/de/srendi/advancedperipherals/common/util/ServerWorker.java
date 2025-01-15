@@ -2,13 +2,13 @@ package de.srendi.advancedperipherals.common.util;
 
 import de.srendi.advancedperipherals.AdvancedPeripherals;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.event.TickEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-@Mod.EventBusSubscriber(modid = AdvancedPeripherals.MOD_ID)
+@EventBusSubscriber(modid = AdvancedPeripherals.MOD_ID)
 public class ServerWorker {
 
     private static final Queue<Runnable> callQueue = new ConcurrentLinkedQueue<>();
@@ -20,8 +20,8 @@ public class ServerWorker {
     }
 
     @SubscribeEvent
-    public static void serverTick(TickEvent.ServerTickEvent event) {
-        if (event.phase == TickEvent.Phase.END) {
+    public static void serverTick(ServerTickEvent.Post event) {
+        if (event.hasTime()) {
             while (true) {
                 final Runnable runnable = callQueue.poll();
                 if (runnable == null) {

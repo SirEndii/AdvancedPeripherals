@@ -1,18 +1,16 @@
 package de.srendi.advancedperipherals;
 
-import appeng.api.AECapabilities;
 import dan200.computercraft.api.peripheral.PeripheralCapability;
 import de.srendi.advancedperipherals.common.addons.APAddons;
+import de.srendi.advancedperipherals.common.addons.appliedenergistics.AppEngApi;
 import de.srendi.advancedperipherals.common.blocks.base.ICapabilityProvider;
 import de.srendi.advancedperipherals.common.configuration.APConfig;
-import de.srendi.advancedperipherals.common.setup.BlockEntityTypes;
 import de.srendi.advancedperipherals.common.setup.Registration;
 import de.srendi.advancedperipherals.common.util.ChunkManager;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.apache.logging.log4j.Level;
@@ -31,10 +29,10 @@ public class AdvancedPeripherals {
 
     public AdvancedPeripherals(IEventBus modBus) {
         LOGGER.info("AdvancedPeripherals says hello!");
+        APAddons.setup();
 
         APConfig.register(ModLoadingContext.get());
 
-        modBus.addListener(this::commonSetup);
         modBus.addListener(this::registerCapabilities);
         modBus.addListener(ChunkManager::registerTicketController);
 
@@ -52,11 +50,7 @@ public class AdvancedPeripherals {
     }
 
     public static ResourceLocation getRL(String resource) {
-        return new ResourceLocation(MOD_ID, resource);
-    }
-
-    public void commonSetup(FMLCommonSetupEvent event) {
-        APAddons.commonSetup();
+        return ResourceLocation.fromNamespaceAndPath(MOD_ID, resource);
     }
 
     public void registerCapabilities(RegisterCapabilitiesEvent event) {
@@ -100,9 +94,6 @@ public class AdvancedPeripherals {
         });
 
         if (APAddons.ae2Loaded)
-            event.registerBlockEntity(
-                    AECapabilities.IN_WORLD_GRID_NODE_HOST,
-                    BlockEntityTypes.ME_BRIDGE.get(),
-                    (blockEntity, side) -> blockEntity);
+            AppEngApi.registerCapabilities(event);
     }
 }

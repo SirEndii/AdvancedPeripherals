@@ -23,6 +23,7 @@ import de.srendi.advancedperipherals.lib.peripherals.BasePeripheral;
 import de.srendi.advancedperipherals.lib.peripherals.IPeripheralFunction;
 import de.srendi.advancedperipherals.network.APNetworking;
 import de.srendi.advancedperipherals.network.toclient.ToastToClientPacket;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
@@ -74,7 +75,7 @@ public class ChatBoxPeripheral extends BasePeripheral<IPeripheralOwner> {
         if (!prefix.isEmpty()) {
             MutableComponent formattablePrefix;
             try {
-                formattablePrefix = MutableComponent.Serializer.fromJson(prefix);
+                formattablePrefix = MutableComponent.Serializer.fromJson(prefix, RegistryAccess.EMPTY);
                 prefixComponent = formattablePrefix;
             } catch (JsonSyntaxException exception) {
                 AdvancedPeripherals.debug("Non json prefix, using plain text instead.");
@@ -113,7 +114,7 @@ public class ChatBoxPeripheral extends BasePeripheral<IPeripheralOwner> {
             int maxRange = APConfig.PERIPHERALS_CONFIG.chatBoxMaxRange.get();
             int range = arguments.optInt(4, -1);
             ResourceKey<Level> dimension = getLevel().dimension();
-            MutableComponent component = Component.Serializer.fromJson(message);
+            MutableComponent component = Component.Serializer.fromJson(message, RegistryAccess.EMPTY);
             if (component == null)
                 return MethodResult.of(null, "incorrect json");
 
@@ -172,7 +173,7 @@ public class ChatBoxPeripheral extends BasePeripheral<IPeripheralOwner> {
             if (player == null)
                 return MethodResult.of(null, "incorrect player name/uuid");
 
-            MutableComponent component = Component.Serializer.fromJson(message);
+            MutableComponent component = Component.Serializer.fromJson(message, RegistryAccess.EMPTY);
             if (component == null)
                 return MethodResult.of(null, "incorrect json");
 
@@ -207,11 +208,11 @@ public class ChatBoxPeripheral extends BasePeripheral<IPeripheralOwner> {
             if (player == null)
                 return MethodResult.of(null, "incorrect player name/uuid");
 
-            MutableComponent messageComponent = Component.Serializer.fromJson(message);
+            MutableComponent messageComponent = Component.Serializer.fromJson(message, RegistryAccess.EMPTY);
             if (messageComponent == null)
                 return MethodResult.of(null, "incorrect json for message");
 
-            MutableComponent titleComponent = Component.Serializer.fromJson(title);
+            MutableComponent titleComponent = Component.Serializer.fromJson(title, RegistryAccess.EMPTY);
             if (titleComponent == null)
                 return MethodResult.of(null, "incorrect json for title");
 

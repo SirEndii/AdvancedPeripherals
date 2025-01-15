@@ -4,26 +4,23 @@ import com.google.common.collect.EvictingQueue;
 import com.mojang.brigadier.context.CommandContextBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.srendi.advancedperipherals.AdvancedPeripherals;
-import de.srendi.advancedperipherals.common.addons.APAddons;
 import de.srendi.advancedperipherals.common.configuration.APConfig;
 import de.srendi.advancedperipherals.common.util.Pair;
-import de.srendi.advancedperipherals.common.util.inventory.ItemUtil;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.MessageArgument;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.CommandEvent;
 import net.neoforged.neoforge.event.ServerChatEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 
 import java.util.function.Consumer;
 
-@Mod.EventBusSubscriber(modid = AdvancedPeripherals.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@EventBusSubscriber(modid = AdvancedPeripherals.MOD_ID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.GAME)
 public class Events {
 
     private static final String PLAYED_BEFORE = "ap_played_before";
@@ -41,15 +38,14 @@ public class Events {
         // We could switch to the advancement way to give new players the book. However, that would not allow us to create
         // a config option for that. So we will stick with the custom solution here.
         // See https://vazkiimods.github.io/Patchouli/docs/patchouli-basics/giving-new
-        if (APConfig.WORLD_CONFIG.givePlayerBookOnJoin.get() && APAddons.patchouliLoaded) {
+        //TODO
+        /*if (APConfig.WORLD_CONFIG.givePlayerBookOnJoin.get() && APAddons.patchouliLoaded) {
             if (!hasPlayedBefore(player)) {
-                ItemStack book = new ItemStack(ItemUtil.getRegistryEntry("patchouli:guide_book", BuiltInRegistries.ITEM));
-                CompoundTag nbt = new CompoundTag();
-                nbt.putString("patchouli:book", "advancedperipherals:manual");
-                book.setTag(nbt);
+                PatchouliAPI.IPatchouliAPI patchouli = new PatchouliAPIImpl();
+                ItemStack book = patchouli.getBookStack(AdvancedPeripherals.getRL("manual"));
                 player.addItem(book);
             }
-        }
+        }*/
 
         putPlayerMessage(Pair.of(getLastPlayerMessageID(), new PlayerMessageObject("playerJoin", player.getName().getString(), player.level().dimension().location().toString(), "")));
     }

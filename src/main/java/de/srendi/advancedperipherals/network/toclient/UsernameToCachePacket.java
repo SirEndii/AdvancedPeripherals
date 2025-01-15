@@ -4,15 +4,18 @@ import de.srendi.advancedperipherals.AdvancedPeripherals;
 import de.srendi.advancedperipherals.client.ClientUUIDCache;
 import de.srendi.advancedperipherals.network.IAPPacket;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
 public class UsernameToCachePacket implements IAPPacket {
+    public static final StreamCodec<RegistryFriendlyByteBuf, UsernameToCachePacket> CODEC = StreamCodec.of((buffer, value) -> value.write(buffer), UsernameToCachePacket::decode);
 
-    public static final ResourceLocation ID = AdvancedPeripherals.getRL("usernametocache");
+    public static final Type<UsernameToCachePacket> TYPE = new Type<>(AdvancedPeripherals.getRL("usernametocache"));
 
     public UUID uuid;
     public String username;
@@ -31,7 +34,6 @@ public class UsernameToCachePacket implements IAPPacket {
         ClientUUIDCache.putUsername(uuid, username);
     }
 
-    @Override
     public void write(FriendlyByteBuf buffer) {
         buffer.writeUUID(uuid);
         buffer.writeUtf(username);
@@ -39,7 +41,7 @@ public class UsernameToCachePacket implements IAPPacket {
 
     @NotNull
     @Override
-    public ResourceLocation id() {
-        return ID;
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

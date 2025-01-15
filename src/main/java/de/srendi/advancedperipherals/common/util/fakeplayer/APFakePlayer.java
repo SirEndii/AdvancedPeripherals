@@ -19,6 +19,7 @@ import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -37,10 +38,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.bus.api.Event;
 import net.neoforged.neoforge.common.CommonHooks;
-import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.util.FakePlayer;
+import net.neoforged.neoforge.common.util.TriState;
 import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import org.apache.commons.lang3.StringUtils;
@@ -242,8 +242,8 @@ public class APFakePlayer extends FakePlayer {
             if (event.isCanceled()) {
                 return event.getCancellationResult();
             }
-            boolean usedItem = event.getUseItem() != Event.Result.DENY;
-            boolean usedOnBlock = event.getUseBlock() != Event.Result.DENY;
+            boolean usedItem = event.getUseItem() != TriState.FALSE;
+            boolean usedOnBlock = event.getUseBlock() != TriState.FALSE;
             if (usedItem) {
                 InteractionResult result = stack.onItemUseFirst(new UseOnContext(level(), this, InteractionHand.MAIN_HAND, stack, blockHit));
                 if (result != InteractionResult.PASS) {
@@ -292,7 +292,7 @@ public class APFakePlayer extends FakePlayer {
 
     @NotNull
     public HitResult findHit(boolean skipEntity, boolean skipBlock, @Nullable Predicate<Entity> entityFilter) {
-        AttributeInstance reachAttribute = getAttribute(NeoForgeMod.BLOCK_REACH.value());
+        AttributeInstance reachAttribute = getAttribute(Attributes.BLOCK_INTERACTION_RANGE);
         if (reachAttribute == null)
             throw new IllegalArgumentException("How did this happened?");
 

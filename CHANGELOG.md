@@ -6,6 +6,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## First official Advanced Peripherals 1.21.1 alpha release to the whole public. Please report any bug to github!
+
+### Added
+- Added our new textures!
+
+### Fixed
+- Fixed that several item export and import related functions would not work with blocks from other mods
+- Fixed that functions with cooldowns which are used for the first time would throw an error
+
+## [1.21.1-0.7.44a] - 2025-01-14
+
+### Added
+- Colony Integrator back to 1.21.1
+
+### Fixed
+- Villager & Wandering trader pocket and turtle trades
+- ME Bridges `getUsedItemStorage` and `getUsedFluidStorage`
+
+## [1.21.1-0.7.43a] - 2025-01-13
+
+Alpha 1.21.1 release
+The only thing that's missing is the colony integrator - we will add that soon.
+Please report any bugs to github!
+
 ## [1.20.4-0.7.43a] - 2024-12-27
 
 First official Advanced Peripherals 1.20.4 alpha release. Please report any bug to github!

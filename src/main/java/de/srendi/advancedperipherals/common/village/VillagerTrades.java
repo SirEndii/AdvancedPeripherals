@@ -7,15 +7,15 @@ import de.srendi.advancedperipherals.common.setup.Blocks;
 import de.srendi.advancedperipherals.common.setup.CCRegistration;
 import de.srendi.advancedperipherals.common.setup.Items;
 import de.srendi.advancedperipherals.common.setup.Villagers;
-import de.srendi.advancedperipherals.common.util.inventory.ItemUtil;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
 import net.neoforged.neoforge.event.village.WandererTradesEvent;
 
 import static de.srendi.advancedperipherals.common.village.VillagerTrade.TradeBuilder;
 
-@Mod.EventBusSubscriber(modid = AdvancedPeripherals.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@EventBusSubscriber(modid = AdvancedPeripherals.MOD_ID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.GAME)
 public class VillagerTrades {
 
     @SubscribeEvent
@@ -55,15 +55,17 @@ public class VillagerTrades {
             TradeBuilder.createTrade(event, ModRegistry.Blocks.COMPUTER_ADVANCED.get(), VillagerTrade.Type.ITEM_FOR_EMERALD, 3, 2)
                     .setXp(4)
                     .build();
-
-            TradeBuilder.createTrade(event, ItemUtil.makeTurtle(ItemUtil.TURTLE_NORMAL, CCRegistration.ID.ENVIRONMENT_TURTLE.toString()), VillagerTrade.Type.ITEM_FOR_EMERALD, 4, 3)
+            TradeBuilder.createTrade(event, VillagerTrade.Type.ITEM_FOR_EMERALD, 4, 3)
+                    .withTurtleUpgrade(false, CCRegistration.ID.ENVIRONMENT_TURTLE)
                     .setMaxUses(4)
                     .setXp(5)
                     .build();
-            TradeBuilder.createTrade(event, ItemUtil.makePocket(ItemUtil.POCKET_ADVANCED, CCRegistration.ID.PLAYER_POCKET.toString()), VillagerTrade.Type.ITEM_FOR_EMERALD, 4, 3)
+            TradeBuilder.createTrade(event, VillagerTrade.Type.ITEM_FOR_EMERALD, 4, 3)
+                    .withPocketUpgrade(true, CCRegistration.ID.PLAYER_POCKET)
                     .setMaxUses(4)
                     .setXp(7)
                     .build();
+
             TradeBuilder.createTrade(event, Items.CHUNK_CONTROLLER.get(), VillagerTrade.Type.EMERALD_FOR_ITEM, 5, 3)
                     .setMaxUses(6)
                     .setXp(8)
@@ -87,7 +89,8 @@ public class VillagerTrades {
             TradeBuilder.createTrade(event, Items.MEMORY_CARD.get(), VillagerTrade.Type.EMERALD_FOR_ITEM, 2, 4)
                     .setXp(4)
                     .build();
-            TradeBuilder.createTrade(event, ItemUtil.makeTurtle(ItemUtil.TURTLE_ADVANCED, CCRegistration.ID.CHUNKY_TURTLE.toString()), VillagerTrade.Type.ITEM_FOR_EMERALD, 8, 4)
+            TradeBuilder.createTrade(event, VillagerTrade.Type.ITEM_FOR_EMERALD, 8, 4)
+                    .withTurtleUpgrade(true, CCRegistration.ID.CHUNKY_TURTLE)
                     .setXp(7)
                     .build();
             TradeBuilder.createTrade(event, Items.CHUNK_CONTROLLER.get(), VillagerTrade.Type.ITEM_FOR_EMERALD, 6, 4)

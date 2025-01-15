@@ -7,6 +7,7 @@ import de.srendi.advancedperipherals.common.setup.BlockEntityTypes;
 import de.srendi.advancedperipherals.common.util.EnergyStorageProxy;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.JigsawBlock;
@@ -57,9 +58,15 @@ public class EnergyDetectorEntity extends PeripheralBlockEntity<EnergyDetectorPe
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag compound) {
-        super.saveAdditional(compound);
-        compound.putInt("rateLimit", storageProxy.getMaxTransferRate());
+    protected void saveAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+        tag.putInt("transferRate", transferRate);
+        super.saveAdditional(tag, provider);
+    }
+
+    @Override
+    protected void loadAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+        transferRate = tag.getInt("transferRate");
+        super.loadAdditional(tag, provider);
     }
 
     @Override
@@ -69,12 +76,6 @@ public class EnergyDetectorEntity extends PeripheralBlockEntity<EnergyDetectorPe
             transferRate = storageProxy.getTransferredInThisTick();
             storageProxy.resetTransferedInThisTick();
         }
-    }
-
-    @Override
-    public void deserializeNBT(CompoundTag nbt) {
-        storageProxy.setMaxTransferRate(nbt.getInt("rateLimit"));
-        super.deserializeNBT(nbt);
     }
 
     public void invalidateStorages() {

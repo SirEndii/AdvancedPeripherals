@@ -1,55 +1,58 @@
 package de.srendi.advancedperipherals;
 
+import dan200.computercraft.api.pocket.IPocketUpgrade;
+import dan200.computercraft.api.turtle.ITurtleUpgrade;
+import dan200.computercraft.api.upgrades.UpgradeBase;
+import dan200.computercraft.api.upgrades.UpgradeData;
+import dan200.computercraft.shared.ModRegistry;
+import dan200.computercraft.shared.pocket.items.PocketComputerItem;
+import dan200.computercraft.shared.turtle.items.TurtleItem;
+import dan200.computercraft.shared.util.DataComponentUtil;
 import de.srendi.advancedperipherals.common.setup.Blocks;
-import de.srendi.advancedperipherals.common.setup.CCRegistration;
 import de.srendi.advancedperipherals.common.setup.Registration;
-import de.srendi.advancedperipherals.common.util.inventory.ItemUtil;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
-import java.util.Collection;
-import java.util.Set;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 public class APCreativeTab {
 
     public static void populateCreativeTabBuilder(CreativeModeTab.Builder builder) {
         builder.displayItems((set, out) -> {
             Registration.ITEMS.getEntries().stream().map(DeferredHolder::get).forEach(out::accept);
-            out.acceptAll(pocketUpgrade(CCRegistration.ID.COLONY_POCKET));
-            out.acceptAll(pocketUpgrade(CCRegistration.ID.CHATTY_POCKET));
-            out.acceptAll(pocketUpgrade(CCRegistration.ID.PLAYER_POCKET));
-            out.acceptAll(pocketUpgrade(CCRegistration.ID.ENVIRONMENT_POCKET));
-            out.acceptAll(pocketUpgrade(CCRegistration.ID.GEOSCANNER_POCKET));
 
-            out.acceptAll(turtleUpgrade(CCRegistration.ID.CHATTY_TURTLE));
-            out.acceptAll(turtleUpgrade(CCRegistration.ID.CHUNKY_TURTLE));
-            out.acceptAll(turtleUpgrade(CCRegistration.ID.COMPASS_TURTLE));
-            out.acceptAll(turtleUpgrade(CCRegistration.ID.PLAYER_TURTLE));
-            out.acceptAll(turtleUpgrade(CCRegistration.ID.ENVIRONMENT_TURTLE));
-            out.acceptAll(turtleUpgrade(CCRegistration.ID.GEOSCANNER_TURTLE));
-
-            out.acceptAll(turtleUpgrade(CCRegistration.ID.WEAK_AUTOMATA));
-            out.acceptAll(turtleUpgrade(CCRegistration.ID.OP_WEAK_AUTOMATA));
-            out.acceptAll(turtleUpgrade(CCRegistration.ID.HUSBANDRY_AUTOMATA));
-            out.acceptAll(turtleUpgrade(CCRegistration.ID.OP_HUSBANDRY_AUTOMATA));
-            out.acceptAll(turtleUpgrade(CCRegistration.ID.END_AUTOMATA));
-            out.acceptAll(turtleUpgrade(CCRegistration.ID.OP_END_AUTOMATA));
+            addTurtle(out, ModRegistry.Items.TURTLE_NORMAL.get(), set.holders());
+            addTurtle(out, ModRegistry.Items.TURTLE_ADVANCED.get(), set.holders());
+            addPocket(out, ModRegistry.Items.POCKET_COMPUTER_NORMAL.get(), set.holders());
+            addPocket(out, ModRegistry.Items.POCKET_COMPUTER_ADVANCED.get(), set.holders());
         });
         builder.icon(() -> new ItemStack(Blocks.CHAT_BOX.get()));
         builder.title(Component.translatable("advancedperipherals.name"));
     }
 
-    private static Collection<ItemStack> pocketUpgrade(ResourceLocation pocketId) {
-        return Set.of(ItemUtil.makePocket(ItemUtil.POCKET_NORMAL, pocketId.toString()),
-                ItemUtil.makePocket(ItemUtil.POCKET_ADVANCED, pocketId.toString()));
+    // Friendly stolen from CC:Tweaked ModRegistry.class
+    private static boolean isOurUpgrade(Holder.Reference<? extends UpgradeBase> upgrade) {
+        String namespace = upgrade.key().location().getNamespace();
+        return namespace.equals(AdvancedPeripherals.MOD_ID);
     }
 
-    private static Collection<ItemStack> turtleUpgrade(ResourceLocation pocketId) {
-        return Set.of(ItemUtil.makeTurtle(ItemUtil.TURTLE_NORMAL, pocketId.toString()),
-                ItemUtil.makeTurtle(ItemUtil.TURTLE_ADVANCED, pocketId.toString()));
+    private static void addTurtle(CreativeModeTab.Output out, TurtleItem turtle, HolderLookup.Provider registries) {
+        out.accept(new ItemStack(turtle));
+        Stream<ItemStack> filteredItemStacks = registries.lookupOrThrow(ITurtleUpgrade.REGISTRY).listElements().filter(APCreativeTab::isOurUpgrade).map((x) -> DataComponentUtil.createStack(turtle, ModRegistry.DataComponents.RIGHT_TURTLE_UPGRADE.get(), UpgradeData.ofDefault(x)));
+        Objects.requireNonNull(out);
+        filteredItemStacks.forEach(out::accept);
+    }
+
+    private static void addPocket(CreativeModeTab.Output out, PocketComputerItem pocket, HolderLookup.Provider registries) {
+        out.accept(new ItemStack(pocket));
+        Stream<ItemStack> filteredItemStacks = registries.lookupOrThrow(IPocketUpgrade.REGISTRY).listElements().filter(APCreativeTab::isOurUpgrade).map((x) -> DataComponentUtil.createStack(pocket, ModRegistry.DataComponents.POCKET_UPGRADE.get(), UpgradeData.ofDefault(x)));
+        Objects.requireNonNull(out);
+        filteredItemStacks.forEach(out::accept);
     }
 
 }

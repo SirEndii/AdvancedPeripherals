@@ -8,6 +8,7 @@ import de.srendi.advancedperipherals.common.items.MemoryCardItem;
 import de.srendi.advancedperipherals.common.setup.BlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -21,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-import static de.srendi.advancedperipherals.common.items.MemoryCardItem.OWNER_NBT_KEY;
+import static de.srendi.advancedperipherals.common.setup.DataComponents.OWNER;
 
 public class InventoryManagerEntity extends PeripheralBlockEntity<InventoryManagerPeripheral> implements IInventoryBlock<InventoryManagerContainer> {
 
@@ -55,9 +56,9 @@ public class InventoryManagerEntity extends PeripheralBlockEntity<InventoryManag
     @Override
     public void setItem(int index, @NotNull ItemStack stack) {
         if (stack.getItem() instanceof MemoryCardItem) {
-            if (stack.hasTag() && stack.getTag().contains(OWNER_NBT_KEY)) {
-                this.owner = stack.getTag().getUUID(OWNER_NBT_KEY);
-                stack.getTag().remove(OWNER_NBT_KEY);
+            if (stack.has(OWNER)) {
+                this.owner = stack.get(OWNER);
+                stack.remove(OWNER);
             } else if (stack != this.getItem(index)) {
                 // Only clear owner when the new card item is not the current item
                 this.owner = null;
@@ -75,18 +76,16 @@ public class InventoryManagerEntity extends PeripheralBlockEntity<InventoryManag
     }
 
     @Override
-    public void load(CompoundTag data) {
+    public void loadAdditional(CompoundTag data, @NotNull HolderLookup.Provider provider) {
         if (data.contains("ownerId")) {
             this.owner = data.getUUID("ownerId");
         }
-        super.load(data);
-        // Fresh the memory card for backward compatibility
-        this.setItem(0, this.getItem(0));
+        super.loadAdditional(data, provider);
     }
 
     @Override
-    public void saveAdditional(CompoundTag data) {
-        super.saveAdditional(data);
+    public void saveAdditional(@NotNull CompoundTag data, @NotNull HolderLookup.Provider provider) {
+        super.saveAdditional(data, provider);
         if (this.owner != null) {
             data.putUUID("ownerId", this.owner);
         }
@@ -96,7 +95,6 @@ public class InventoryManagerEntity extends PeripheralBlockEntity<InventoryManag
         if (this.owner == null) {
             return null;
         }
-        Player player = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(this.owner);
-        return player;
+        return ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(this.owner);
     }
 }

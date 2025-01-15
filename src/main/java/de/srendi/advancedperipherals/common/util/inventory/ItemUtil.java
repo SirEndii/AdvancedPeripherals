@@ -4,7 +4,6 @@ import dan200.computercraft.shared.ModRegistry;
 import de.srendi.advancedperipherals.AdvancedPeripherals;
 import de.srendi.advancedperipherals.common.util.StringUtil;
 import net.minecraft.ResourceLocationException;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -33,7 +32,7 @@ public class ItemUtil {
     public static <T> T getRegistryEntry(String name, Registry<T> forgeRegistry) {
         ResourceLocation location;
         try {
-            location = new ResourceLocation(name);
+            location = ResourceLocation.parse(name);
         } catch (ResourceLocationException ex) {
             location = null;
         }
@@ -53,7 +52,7 @@ public class ItemUtil {
      * @return A generated MD5 hash from the item stack
      */
     public static String getFingerprint(ItemStack stack) {
-        String fingerprint = stack.getOrCreateTag() + getRegistryKey(stack).toString() + stack.getDisplayName().getString();
+        String fingerprint = stack.getComponents() + getRegistryKey(stack).toString() + stack.getDisplayName().getString();
         try {
             byte[] bytesOfHash = fingerprint.getBytes(StandardCharsets.UTF_8);
             MessageDigest md = MessageDigest.getInstance("MD5");
@@ -65,18 +64,6 @@ public class ItemUtil {
         return "";
     }
 
-    public static ItemStack makeTurtle(Item turtle, String upgrade) {
-        ItemStack stack = new ItemStack(turtle);
-        stack.getOrCreateTag().putString("RightUpgrade", upgrade);
-        return stack;
-    }
-
-    public static ItemStack makePocket(Item turtle, String upgrade) {
-        ItemStack stack = new ItemStack(turtle);
-        stack.getOrCreateTag().putString("Upgrade", upgrade);
-        return stack;
-    }
-
     //Gathers all items in handler and returns them
     public static List<ItemStack> getItemsFromItemHandler(IItemHandler handler) {
         List<ItemStack> items = new ArrayList<>(handler.getSlots());
@@ -85,17 +72,6 @@ public class ItemUtil {
         }
 
         return items;
-    }
-
-    public static void addComputerItemToTab(ResourceLocation turtleID, ResourceLocation pocketID, NonNullList<ItemStack> items) {
-        if (turtleID != null) {
-            items.add(makeTurtle(TURTLE_ADVANCED, turtleID.toString()));
-            items.add(makeTurtle(TURTLE_NORMAL, turtleID.toString()));
-        }
-        if (pocketID != null) {
-            items.add(makePocket(POCKET_ADVANCED, pocketID.toString()));
-            items.add(makePocket(POCKET_NORMAL, pocketID.toString()));
-        }
     }
 
     public static ResourceLocation getRegistryKey(Item item) {

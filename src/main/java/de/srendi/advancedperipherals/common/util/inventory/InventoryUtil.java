@@ -5,11 +5,13 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import de.srendi.advancedperipherals.common.addons.computercraft.owner.IPeripheralOwner;
 import de.srendi.advancedperipherals.common.util.CoordUtil;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -25,11 +27,18 @@ public class InventoryUtil {
     private InventoryUtil() {
     }
 
-    public static IItemHandler extractHandler(@Nullable Object object) {
+    public static IItemHandler extractHandler(@Nullable Object object, @Nullable Level level, @Nullable BlockPos pos, @Nullable Direction direction) {
         if (object instanceof IItemHandler itemHandler)
             return itemHandler;
         if (object instanceof Container container)
             return new InvWrapper(container);
+        if (object instanceof BlockEntity blockEntity && level == null && pos == null) {
+            pos = blockEntity.getBlockPos();
+            level = blockEntity.getLevel();
+        }
+        if (level != null && pos != null) {
+            return level.getCapability(Capabilities.ItemHandler.BLOCK, pos, direction != null ? direction : Direction.NORTH);
+        }
         return null;
     }
 
@@ -141,7 +150,7 @@ public class InventoryUtil {
         if (location == null)
             return null;
 
-        return extractHandler(location.getTarget());
+        return extractHandler(location.getTarget(), null, null, null);
     }
 
     @Nullable
@@ -153,6 +162,6 @@ public class InventoryUtil {
         if (target == null)
             return null;
 
-        return extractHandler(target);
+        return extractHandler(target, level, target.getBlockPos(), relativeDirection.getOpposite());
     }
 }
