@@ -473,32 +473,21 @@ public class RefinedStorage {
     }
 
     public static Map<String, Object> parseItemStack(@Nullable ItemStack itemStack, INetwork network) {
-        if (itemStack == null)
+        if (itemStack == null || itemStack.isEmpty())
             return Collections.emptyMap();
 
-        Map<String, Object> map = LuaConverter.itemToObject(itemStack.getItem());
-        CompoundTag nbt = itemStack.getTag();
-        map.put("fingerprint", ItemUtil.getFingerprint(itemStack));
-        map.put("amount", itemStack.getCount());
-        map.put("displayName", itemStack.getDisplayName().getString());
+        Map<String, Object> map = LuaConverter.itemStackToObject(itemStack);
         map.put("isCraftable", isItemCraftable(network, itemStack));
-        map.put("nbtHash", NBTUtil.getNBTHash(nbt));
-        map.put("nbt", NBTUtil.toLua(nbt));
 
         return map;
     }
 
     public static Map<String, Object> parseFluidStack(@Nullable FluidStack fluidStack, INetwork network) {
-        if (fluidStack == null)
+        if (fluidStack == null || fluidStack.isEmpty())
             return Collections.emptyMap();
 
-        Map<String, Object> map = LuaConverter.fluidToObject(fluidStack.getFluid());
-        CompoundTag nbt = fluidStack.getTag();
-        map.put("amount", fluidStack.getAmount());
-        map.put("displayName", fluidStack.getDisplayName().getString());
+        Map<String, Object> map = LuaConverter.fluidStackToObject(fluidStack);
         map.put("isCraftable", isFluidCraftable(network, fluidStack));
-        map.put("nbtHash", NBTUtil.getNBTHash(nbt));
-        map.put("nbt", NBTUtil.toLua(nbt));
         return map;
     }
 

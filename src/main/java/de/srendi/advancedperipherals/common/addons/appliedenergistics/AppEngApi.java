@@ -20,6 +20,7 @@ import appeng.items.storage.BasicStorageCell;
 import appeng.me.cells.BasicCellHandler;
 import appeng.me.cells.BasicCellInventory;
 import appeng.parts.storagebus.StorageBusPart;
+import cc.tweaked.internal.cobalt.compiler.LuaC;
 import com.the9grounds.aeadditions.item.storage.StorageCell;
 import com.the9grounds.aeadditions.item.storage.SuperStorageCell;
 import dan200.computercraft.shared.util.NBTUtil;
@@ -332,34 +333,16 @@ public class AppEngApi {
     }
 
     private static Map<String, Object> parseItemStack(Pair<Long, AEItemKey> stack, @Nullable ICraftingService craftingService) {
-        Map<String, Object> map = new HashMap<>();
-        String displayName = stack.getRight().getDisplayName().getString();
-        CompoundTag nbt = stack.getRight().toTag();
-        long amount = stack.getLeft();
-        map.put("fingerprint", ItemUtil.getFingerprint(stack.getRight().toStack()));
-        map.put("name", ItemUtil.getRegistryKey(stack.getRight().getItem()).toString());
-        map.put("amount", amount);
-        map.put("displayName", displayName);
-        map.put("nbt", NBTUtil.toLua(nbt));
-        map.put("nbtHash", NBTUtil.getNBTHash(nbt));
-        map.put("tags", LuaConverter.tagsToList(() -> stack.getRight().getItem().builtInRegistryHolder().tags()));
+        Map<String, Object> map = LuaConverter.itemStackToObject(stack.getRight().toStack());
         map.put("isCraftable", craftingService != null && craftingService.isCraftable(stack.getRight()));
-
+        map.put("count", stack.getLeft());
         return map;
     }
 
     private static Map<String, Object> parseFluidStack(Pair<Long, AEFluidKey> stack, @Nullable ICraftingService craftingService) {
-        Map<String, Object> map = new HashMap<>();
-        CompoundTag nbt = stack.getRight().toTag();
-        long amount = stack.getLeft();
-        map.put("name", ForgeRegistries.FLUIDS.getKey(stack.getRight().getFluid()).toString());
-        map.put("amount", amount);
-        map.put("nbt", NBTUtil.toLua(nbt));
-        map.put("nbtHash", NBTUtil.getNBTHash(nbt));
-        map.put("displayName", stack.getRight().getDisplayName().getString());
-        map.put("tags", LuaConverter.tagsToList(() -> stack.getRight().getFluid().builtInRegistryHolder().tags()));
+        Map<String, Object> map = LuaConverter.fluidStackToObject(stack.getRight().toStack(1));
+        map.put("count", stack.getLeft());
         map.put("isCraftable", craftingService != null && craftingService.isCraftable(stack.getRight()));
-
         return map;
     }
 
