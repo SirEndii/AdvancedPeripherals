@@ -22,7 +22,11 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Basically just a {@link dan200.computercraft.shared.pocket.core.PocketServerComputer} but with some changes
@@ -110,10 +114,6 @@ public class SmartGlassesComputer extends ServerComputer implements IPocketAcces
 
     public void setItemHandler(@Nullable SmartGlassesItemHandler itemHandler) {
         this.itemHandler = itemHandler;
-    }
-
-    public SmartGlassesItemHandler getItemHandler() {
-        return this.itemHandler;
     }
 
     public void markDirty() {
@@ -217,14 +217,6 @@ public class SmartGlassesComputer extends ServerComputer implements IPocketAcces
         return modules;
     }
 
-    @Override
-    protected void onTerminalChanged() {
-        super.onTerminalChanged();
-
-        /*if (entity instanceof ServerPlayer player && entity.isAlive()) {
-            // Broadcast the terminal to the current player.
-        }*/
-    }
 
     @Override
     protected void onRemoved() {

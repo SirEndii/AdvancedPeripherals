@@ -2,7 +2,6 @@ package de.srendi.advancedperipherals.common.network;
 
 import de.srendi.advancedperipherals.AdvancedPeripherals;
 import de.srendi.advancedperipherals.common.network.base.IPacket;
-import de.srendi.advancedperipherals.common.network.toclient.DistanceDetectorSyncPacket;
 import de.srendi.advancedperipherals.common.network.toclient.RenderableObjectBulkSyncPacket;
 import de.srendi.advancedperipherals.common.network.toclient.RenderableObjectClearPacket;
 import de.srendi.advancedperipherals.common.network.toclient.RenderableObjectDeletePacket;
@@ -39,7 +38,6 @@ public class APNetworking {
     private static int index = 0;
 
     public static void init() {
-        registerServerToClient(DistanceDetectorSyncPacket.class, DistanceDetectorSyncPacket::decode);
         registerServerToClient(SaddleTurtleInfoPacket.class, SaddleTurtleInfoPacket::decode);
         registerServerToClient(ToastToClientPacket.class, ToastToClientPacket::decode);
         registerServerToClient(RenderableObjectSyncPacket.class, RenderableObjectSyncPacket::decode);

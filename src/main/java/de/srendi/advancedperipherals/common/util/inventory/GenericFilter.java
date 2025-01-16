@@ -2,6 +2,7 @@ package de.srendi.advancedperipherals.common.util.inventory;
 
 import appeng.api.stacks.GenericStack;
 import de.srendi.advancedperipherals.common.util.Pair;
+import de.srendi.advancedperipherals.common.util.RegistryUtil;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Map;
@@ -37,9 +38,9 @@ public abstract class GenericFilter<T> {
         String name = rawFilter.get("name").toString();
 
         // Let's check in which registry this thing is
-        if (ItemUtil.getRegistryEntry(name, ForgeRegistries.ITEMS) != null) {
+        if (RegistryUtil.getRegistryEntry(name, ForgeRegistries.ITEMS) != null) {
             return ItemFilter.parse(rawFilter);
-        } else if (ItemUtil.getRegistryEntry(name, ForgeRegistries.FLUIDS) != null) {
+        } else if (RegistryUtil.getRegistryEntry(name, ForgeRegistries.FLUIDS) != null) {
             return FluidFilter.parse(rawFilter);
         } else {
             // If the name is in neither of the registries, we will just return an empty filter

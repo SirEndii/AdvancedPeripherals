@@ -1,49 +1,36 @@
-package de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects;
+package de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects.three_dim;
 
 import dan200.computercraft.api.lua.IArguments;
 import dan200.computercraft.api.lua.LuaException;
 import de.srendi.advancedperipherals.AdvancedPeripherals;
 import de.srendi.advancedperipherals.client.smartglasses.objects.IObjectRenderer;
-import de.srendi.advancedperipherals.client.smartglasses.objects.ItemRenderer;
+import de.srendi.advancedperipherals.client.smartglasses.objects.threedim.BoxRenderer;
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.OverlayModule;
-import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.propertytypes.StringProperty;
 import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.UUID;
 
-public class ItemObject extends RenderableObject {
-    public static final int TYPE_ID = 3;
+public class BoxObject extends ThreeDimensionalObject {
+    public static final int TYPE_ID = 4;
 
-    private final IObjectRenderer renderer = new ItemRenderer();
+    private final IObjectRenderer renderer = new BoxRenderer();
 
-    @StringProperty
-    public String item = "minecraft:air";
-
-    public ItemObject(OverlayModule module, IArguments arguments) throws LuaException {
+    public BoxObject(OverlayModule module, IArguments arguments) throws LuaException {
         super(module, arguments);
         reflectivelyMapProperties(arguments);
     }
 
-    public ItemObject(UUID player) {
+    public BoxObject(UUID player) {
         super(player);
-    }
-
-    public void setItem(String item) {
-        this.item = item;
-    }
-
-    public String getItem() {
-        return item;
     }
 
     @Override
     public void encode(FriendlyByteBuf buffer) {
         buffer.writeInt(TYPE_ID);
         super.encode(buffer);
-        buffer.writeUtf(item);
     }
 
-    public static ItemObject decode(FriendlyByteBuf buffer) {
+    public static BoxObject decode(FriendlyByteBuf buffer) {
         int objectId = buffer.readInt();
         boolean hasValidUUID = buffer.readBoolean();
         if (!hasValidUUID) {
@@ -54,21 +41,33 @@ public class ItemObject extends RenderableObject {
         int color = buffer.readInt();
         float opacity = buffer.readFloat();
 
-        int x = buffer.readInt();
-        int y = buffer.readInt();
-        int maxX = buffer.readInt();
-        int maxY = buffer.readInt();
-        String item = buffer.readUtf();
+        float x = buffer.readFloat();
+        float y = buffer.readFloat();
+        float z = buffer.readFloat();
+        float maxX = buffer.readFloat();
+        float maxY = buffer.readFloat();
+        float maxZ = buffer.readFloat();
+        boolean disableDepthTest = buffer.readBoolean();
+        boolean disableCulling = buffer.readBoolean();
+        float xRot = buffer.readFloat();
+        float yRot = buffer.readFloat();
+        float zRot = buffer.readFloat();
 
-        ItemObject clientObject = new ItemObject(player);
+        BoxObject clientObject = new BoxObject(player);
         clientObject.setId(objectId);
         clientObject.color = color;
         clientObject.opacity = opacity;
         clientObject.x = x;
         clientObject.y = y;
+        clientObject.z = z;
         clientObject.maxX = maxX;
         clientObject.maxY = maxY;
-        clientObject.item = item;
+        clientObject.maxZ = maxZ;
+        clientObject.disableDepthTest = disableDepthTest;
+        clientObject.disableCulling = disableCulling;
+        clientObject.xRot = xRot;
+        clientObject.yRot = yRot;
+        clientObject.zRot = zRot;
 
         return clientObject;
     }
@@ -76,18 +75,5 @@ public class ItemObject extends RenderableObject {
     @Override
     public IObjectRenderer getRenderObject() {
         return renderer;
-    }
-
-    @Override
-    public String toString() {
-        return "ItemObject{" +
-                "item='" + item + '\'' +
-                ", opacity=" + opacity +
-                ", color=" + color +
-                ", x=" + x +
-                ", y=" + y +
-                ", maxX=" + maxX +
-                ", maxY=" + maxY +
-                '}';
     }
 }

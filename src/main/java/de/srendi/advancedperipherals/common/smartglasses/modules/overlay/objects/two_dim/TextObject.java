@@ -1,11 +1,11 @@
-package de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects;
+package de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects.two_dim;
 
 import dan200.computercraft.api.lua.IArguments;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.LuaFunction;
 import de.srendi.advancedperipherals.AdvancedPeripherals;
 import de.srendi.advancedperipherals.client.smartglasses.objects.IObjectRenderer;
-import de.srendi.advancedperipherals.client.smartglasses.objects.TextRenderer;
+import de.srendi.advancedperipherals.client.smartglasses.objects.twodim.TextRenderer;
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.OverlayModule;
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.propertytypes.BooleanProperty;
 import de.srendi.advancedperipherals.common.smartglasses.modules.overlay.propertytypes.FloatingNumberProperty;
@@ -95,10 +95,12 @@ public class TextObject extends RenderableObject {
         int color = buffer.readInt();
         float opacity = buffer.readFloat();
 
-        int x = buffer.readInt();
-        int y = buffer.readInt();
-        int sizeX = buffer.readInt();
-        int sizeY = buffer.readInt();
+        float x = buffer.readFloat();
+        float y = buffer.readFloat();
+        float z = buffer.readFloat();
+        float maxX = buffer.readFloat();
+        float maxY = buffer.readFloat();
+        float maxZ = buffer.readFloat();
         String content = buffer.readUtf();
         float fontSize = buffer.readFloat();
         boolean shadow = buffer.readBoolean();
@@ -109,8 +111,10 @@ public class TextObject extends RenderableObject {
         clientObject.opacity = opacity;
         clientObject.x = x;
         clientObject.y = y;
-        clientObject.maxX = sizeX;
-        clientObject.maxY = sizeY;
+        clientObject.z = z;
+        clientObject.maxX = maxX;
+        clientObject.maxY = maxY;
+        clientObject.maxZ = maxZ;
         clientObject.content = content;
         clientObject.fontSize = fontSize;
         clientObject.shadow = shadow;

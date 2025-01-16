@@ -16,7 +16,8 @@ public enum SingleOperation implements IPeripheralOperation<SingleOperationConte
     WARP(1000, DistancePolicy.IGNORED, CountPolicy.MULTIPLY, 1, DistancePolicy.SQRT, CountPolicy.MULTIPLY),
     ACCURE_PLACE(1000, DistancePolicy.IGNORED, CountPolicy.MULTIPLY, 1, DistancePolicy.LINEAR, CountPolicy.MULTIPLY),
     PREPARE_PORTAL(3_000, 600),
-    ACTIVE_PORTAL(60_000, 1);
+    ACTIVE_PORTAL(60_000, 1),
+    MOUNT_SHIP(1000, 1);
 
     private final int defaultCooldown;
     private final DistancePolicy distanceCooldownPolicy;

@@ -18,9 +18,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +56,7 @@ public class AutomataEntityHandPlugin extends AutomataCorePlugin {
             if (automataCore.hasAttribute(AutomataCorePeripheral.ATTR_STORING_TOOL_DURABILITY))
                 selectedTool.setDamageValue(previousDamageValue);
 
-            return MethodResult.of(true, result.toString());
+            return MethodResult.of(result.consumesAction(), result.toString());
         });
     }
 

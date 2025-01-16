@@ -24,6 +24,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
@@ -60,13 +61,12 @@ public class GeoScannerPeripheral extends BasePeripheral<IPeripheralOwner> {
         this(new PocketPeripheralOwner(pocket));
     }
 
-    private static List<Map<String, ?>> scan(Level level, BlockPos center, int radius) {
-        List<Map<String, ?>> result = new ArrayList<>();
+    private static List<Map<String, Object>> scan(List<Map<String, Object>> result, Level level, Vec3 center, int radius) {
         ScanUtils.relativeTraverseBlocks(level, center, radius, (state, pos) -> {
             HashMap<String, Object> data = new HashMap<>(6);
-            data.put("x", pos.getX());
-            data.put("y", pos.getY());
-            data.put("z", pos.getZ());
+            data.put("x", pos.x);
+            data.put("y", pos.y);
+            data.put("z", pos.z);
 
             Block block = state.getBlock();
             ResourceLocation name = ForgeRegistries.BLOCKS.getKey(block);
@@ -103,7 +103,7 @@ public class GeoScannerPeripheral extends BasePeripheral<IPeripheralOwner> {
     public final MethodResult chunkAnalyze() throws LuaException {
         return withOperation(SCAN_BLOCKS, SCAN_BLOCKS.free(), null, ignored -> {
             Level level = getLevel();
-            LevelChunk chunk = level.getChunkAt(getPos());
+            LevelChunk chunk = level.getChunkAt(getWorldBlockPos());
             ChunkPos chunkPos = chunk.getPos();
             HashMap<String, Integer> data = new HashMap<>();
             for (int x = chunkPos.getMinBlockX(); x <= chunkPos.getMaxBlockX(); x++) {
@@ -131,6 +131,18 @@ public class GeoScannerPeripheral extends BasePeripheral<IPeripheralOwner> {
                 return MethodResult.of(null, "Radius is exceed max value");
             }
             return null;
-        }, context -> MethodResult.of(scan(getLevel(), getPos(), context.getRadius())), null);
+        }, context -> {
+            List<Map<String, Object>> result = new ArrayList<>();
+            scan(result, getLevel(), getCenterPos(), context.getRadius());
+            if (isOnShip()) {
+                int i = result.size();
+                scan(result, getLevel(), getWorldPos(), context.getRadius());
+                for (; i < result.size(); i++) {
+                    Map<String, Object> data = result.get(i);
+                    data.put("notOnShip", true);
+                }
+            }
+            return MethodResult.of(result);
+        }, null);
     }
 }

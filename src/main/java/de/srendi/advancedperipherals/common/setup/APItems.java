@@ -1,7 +1,11 @@
 package de.srendi.advancedperipherals.common.setup;
 
 import de.srendi.advancedperipherals.common.configuration.APConfig;
-import de.srendi.advancedperipherals.common.items.*;
+import de.srendi.advancedperipherals.common.items.APItem;
+import de.srendi.advancedperipherals.common.items.MemoryCardItem;
+import de.srendi.advancedperipherals.common.items.SmartGlassesInterfaceItem;
+import de.srendi.advancedperipherals.common.items.SmartGlassesItem;
+import de.srendi.advancedperipherals.common.items.WeakAutomataCore;
 import de.srendi.advancedperipherals.common.items.base.SmartGlassesMaterials;
 import de.srendi.advancedperipherals.common.smartglasses.modules.hotkey.HotkeyModuleItem;
 import de.srendi.advancedperipherals.common.smartglasses.modules.nightvision.NightVisionModuleItem;

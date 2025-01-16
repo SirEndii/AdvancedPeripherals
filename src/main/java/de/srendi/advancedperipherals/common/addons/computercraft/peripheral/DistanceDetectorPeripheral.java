@@ -1,5 +1,7 @@
 package de.srendi.advancedperipherals.common.addons.computercraft.peripheral;
 
+import dan200.computercraft.api.lua.IArguments;
+import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.LuaFunction;
 import de.srendi.advancedperipherals.common.addons.computercraft.owner.BlockEntityPeripheralOwner;
 import de.srendi.advancedperipherals.common.blocks.blockentities.DistanceDetectorEntity;
@@ -40,22 +42,38 @@ public class DistanceDetectorPeripheral extends BasePeripheral<BlockEntityPeriph
     }
 
     @LuaFunction
-    public final void setDetectionMode(int mode) {
-        if (mode > 2) mode = 2;
-        if (mode < 0) mode = 0;
-        getPeripheralOwner().tileEntity.setDetectionType(DetectionType.values()[mode]);
+    public final void setDetectionMode(IArguments args) throws LuaException {
+        Object mode = args.get(0);
+        if (mode == null) {
+            throw new LuaException("arg #1 must provide a mode name or an index between [0, 2]");
+        }
+        DetectionType detectionType;
+        if (mode instanceof Number modeInd) {
+            int index = Math.min(Math.max(modeInd.intValue(), 0), 2);
+            detectionType = DetectionType.values()[index];
+        } else if (mode instanceof String modeStr) {
+            detectionType = switch (modeStr.toUpperCase()) {
+                case "BLOCK" -> DetectionType.BLOCK;
+                case "ENTITY" -> DetectionType.ENTITY;
+                case "BOTH" -> DetectionType.BOTH;
+                default -> throw new LuaException("Unknown detection mode '" + mode + "'");
+            };
+        } else {
+            throw new LuaException("arg #1 must be a string or a number");
+        }
+        getPeripheralOwner().tileEntity.setDetectionType(detectionType);
     }
 
     @LuaFunction
     public final boolean detectsEntities() {
         DetectionType detectionType = getPeripheralOwner().tileEntity.getDetectionType();
-        return detectionType == DetectionType.ENTITIES || detectionType == DetectionType.BOTH;
+        return detectionType.detectEntity();
     }
 
     @LuaFunction
     public final boolean detectsBlocks() {
         DetectionType detectionType = getPeripheralOwner().tileEntity.getDetectionType();
-        return detectionType == DetectionType.BLOCK || detectionType == DetectionType.BOTH;
+        return detectionType.detectBlock();
     }
 
     @LuaFunction
@@ -66,12 +84,12 @@ public class DistanceDetectorPeripheral extends BasePeripheral<BlockEntityPeriph
 
     @LuaFunction
     public final double getDistance() {
-        return getPeripheralOwner().tileEntity.getCurrentDistance() - 1;
+        return getPeripheralOwner().tileEntity.getCurrentDistance();
     }
 
-    @LuaFunction
+    @LuaFunction(mainThread = true)
     public final double calculateDistance() {
-        return getPeripheralOwner().tileEntity.calculateDistance() - 1;
+        return getPeripheralOwner().tileEntity.calculateAndUpdateDistance();
     }
 
     @LuaFunction
@@ -86,18 +104,33 @@ public class DistanceDetectorPeripheral extends BasePeripheral<BlockEntityPeriph
 
     @LuaFunction
     public final void setMaxRange(double maxDistance) {
-        getPeripheralOwner().tileEntity.setMaxRange(Math.max(0, Math.min(APConfig.PERIPHERALS_CONFIG.distanceDetectorRange.get(), maxDistance)));
+        getPeripheralOwner().tileEntity.setMaxRange((float) maxDistance);
     }
 
     @LuaFunction
     public final double getMaxRange() {
-        return getPeripheralOwner().tileEntity.getMaxDistance();
+        return getPeripheralOwner().tileEntity.getMaxRange();
     }
 
     public enum DetectionType {
-        BLOCK,
-        ENTITIES,
-        BOTH
+        BLOCK(true, false),
+        ENTITY(false, true),
+        BOTH(true, true);
+
+        private final boolean block, entity;
+
+        DetectionType(boolean block, boolean entity) {
+            this.block = block;
+            this.entity = entity;
+        }
+
+        public boolean detectBlock() {
+            return this.block;
+        }
+
+        public boolean detectEntity() {
+            return this.entity;
+        }
     }
 
 }

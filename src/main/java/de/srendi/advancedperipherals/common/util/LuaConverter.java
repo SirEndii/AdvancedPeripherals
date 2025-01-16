@@ -20,12 +20,19 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.IForgeShearable;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Quaterniondc;
+import org.joml.Vector3d;
+import org.joml.Vector3dc;
+import org.joml.primitives.AABBic;
+import org.valkyrienskies.core.api.ships.ServerShip;
+import org.valkyrienskies.core.api.ships.properties.ShipInertiaData;
+import org.valkyrienskies.core.api.ships.properties.ShipTransform;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -121,15 +128,27 @@ public class LuaConverter {
         return completeEntityWithPositionToLua(entity, pos, false);
     }
 
+    public static Map<String, Object> completeEntityWithPositionToLua(Entity entity, Vec3 pos) {
+        return completeEntityWithPositionToLua(entity, pos, false);
+    }
+
     public static Map<String, Object> completeEntityWithPositionToLua(Entity entity, BlockPos pos, boolean detailed) {
         return completeEntityWithPositionToLua(entity, ItemStack.EMPTY, pos, detailed);
     }
 
+    public static Map<String, Object> completeEntityWithPositionToLua(Entity entity, Vec3 pos, boolean detailed) {
+        return completeEntityWithPositionToLua(entity, ItemStack.EMPTY, pos, detailed);
+    }
+
     public static Map<String, Object> completeEntityWithPositionToLua(Entity entity, ItemStack itemInHand, BlockPos pos, boolean detailed) {
+        return completeEntityWithPositionToLua(entity, itemInHand, Vec3.atCenterOf(pos), detailed);
+    }
+
+    public static Map<String, Object> completeEntityWithPositionToLua(Entity entity, ItemStack itemInHand, Vec3 pos, boolean detailed) {
         Map<String, Object> data = completeEntityToLua(entity, itemInHand, detailed);
-        data.put("x", entity.getX() - pos.getX());
-        data.put("y", entity.getY() - pos.getY());
-        data.put("z", entity.getZ() - pos.getZ());
+        data.put("x", entity.getX() - pos.x);
+        data.put("y", entity.getY() - pos.y);
+        data.put("z", entity.getZ() - pos.z);
         return data;
     }
 
@@ -176,6 +195,7 @@ public class LuaConverter {
         map.put("displayName", stack.getDisplayName().getString());
         map.put("maxStackSize", stack.getMaxStackSize());
         map.put("nbt", NBTUtil.toLua(nbt));
+        map.put("nbtHash", NBTUtil.getNBTHash(nbt));
         map.put("fingerprint", ItemUtil.getFingerprint(stack));
         return map;
     }
@@ -190,6 +210,7 @@ public class LuaConverter {
         map.put("count", stack.getAmount());
         map.put("displayName", stack.getDisplayName().getString());
         map.put("nbt", NBTUtil.toLua(nbt));
+        map.put("nbtHash", NBTUtil.getNBTHash(nbt));
         map.put("fingerprint", FluidUtil.getFingerprint(stack));
         return map;
     }
@@ -269,6 +290,64 @@ public class LuaConverter {
         map.put("name", effect.getDescriptionId());
         map.put("duration", effect.getDuration());
         map.put("amplifier", effect.getAmplifier());
+        return map;
+    }
+
+    public static Map<String, Object> shipToObject(ServerShip ship) {
+        return shipToObject(ship, null);
+    }
+
+    public static Map<String, Object> shipToObject(ServerShip ship, Vec3 pos) {
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("id", ship.getId());
+        map.put("slug", ship.getSlug());
+
+        ShipTransform tf = ship.getTransform();
+
+        Vector3dc shipPos = tf.getShipPositionInShipCoordinates();
+        if (pos != null) {
+            Vector3dc worldPos = tf.getShipPositionInWorldCoordinates();
+            map.put("x", worldPos.x() - pos.x);
+            map.put("y", worldPos.y() - pos.y);
+            map.put("z", worldPos.z() - pos.z);
+        }
+        Quaterniondc rot = tf.getShipToWorldRotation();
+        final double rotX = rot.x(), rotY = rot.y(), rotZ = rot.z(), rotW = rot.w();
+        map.put("rotate", Map.of("x", rotX, "y", rotY, "z", rotZ, "w", rotW));
+        // Not really correct?
+        // map.put("pitch", Math.toDegrees(Math.asin(-2 * (rotX * rotZ - rotW * rotY))));
+        // map.put("roll", Math.toDegrees(Math.atan2(2 * (rotX * rotY + rotW * rotZ), rotW * rotW + rotX * rotX - rotY * rotY - rotZ * rotZ)));
+        // map.put("yaw", Math.toDegrees(Math.atan2(2 * (rotY * rotZ + rotW * rotX), rotW * rotW - rotX * rotX - rotY * rotY + rotZ * rotZ)));
+
+        AABBic box = ship.getShipAABB();
+        if (box != null) {
+            map.put("size", Map.of("x", box.maxX() - box.minX(), "y", box.maxY() - box.minY(), "z", box.maxZ() - box.minZ()));
+            map.put("corner", Map.of("x", shipPos.x() - box.minX(), "y", shipPos.y() - box.minY(), "z", shipPos.z() - box.minZ()));
+        }
+        Vector3dc omega = ship.getOmega();
+        map.put("omega", Map.of("x", omega.x(), "y", omega.y(), "z", omega.z()));
+        Vector3dc velocity = ship.getVelocity();
+        map.put("isStatic", ship.isStatic());
+        map.put("velocity", Map.of("x", velocity.x(), "y", velocity.y(), "z", velocity.z()));
+
+        ShipInertiaData data = ship.getInertiaData();
+        map.put("mass", data.getMass());
+        Vector3d com = tf.getShipToWorld().transformPosition(data.getCenterOfMassInShipSpace(), new Vector3d());
+        if (pos != null) {
+            map.put("centerOfMass", Map.of("x", com.x - pos.x, "y", com.y - pos.y, "z", com.z - pos.z));
+        }
+        return map;
+    }
+
+    public static Map<String, Object> shipToObjectOnShip(ServerShip ship, Vec3 pos) {
+        Map<String, Object> map = shipToObject(ship);
+        Vector3dc shipPos = ship.getTransform().getShipPositionInShipCoordinates();
+        map.put("x", shipPos.x() - pos.x);
+        map.put("y", shipPos.y() - pos.y);
+        map.put("z", shipPos.z() - pos.z);
+        Vector3dc com = ship.getInertiaData().getCenterOfMassInShipSpace();
+        map.put("centerOfMass", Map.of("x", com.x() - pos.x, "y", com.y() - pos.y, "z", com.z() - pos.z));
         return map;
     }
 }

@@ -8,6 +8,7 @@ import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IDynamicPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import de.srendi.advancedperipherals.common.addons.APAddons;
 import de.srendi.advancedperipherals.common.addons.computercraft.owner.IPeripheralOwner;
 import de.srendi.advancedperipherals.common.addons.computercraft.owner.OperationAbility;
 import de.srendi.advancedperipherals.common.addons.computercraft.owner.PeripheralOwnerAbility;
@@ -15,8 +16,11 @@ import de.srendi.advancedperipherals.common.util.CoordUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3d;
+import org.valkyrienskies.core.api.ships.Ship;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -127,12 +131,37 @@ public abstract class BasePeripheral<O extends IPeripheralOwner> implements IBas
         return getPeripheralConfiguration();
     }
 
-    protected BlockPos getPos() {
+    public BlockPos getPos() {
         return owner.getPos();
     }
 
-    protected Level getLevel() {
+    public Vec3 getCenterPos() {
+        return owner.getCenterPos();
+    }
+
+    public Level getLevel() {
         return owner.getLevel();
+    }
+
+    public boolean isOnShip() {
+        return APAddons.vs2Loaded && APAddons.isBlockOnShip(owner.getLevel(), owner.getPos());
+    }
+
+    public Vec3 getWorldPos() {
+        Vec3 pos = this.getCenterPos();
+        if (!APAddons.vs2Loaded) {
+            return pos;
+        }
+        Ship ship = APAddons.getVS2Ship(owner.getLevel(), owner.getPos());
+        if (ship == null) {
+            return pos;
+        }
+        Vector3d newPos = ship.getShipToWorld().transformPosition(new Vector3d(pos.x, pos.y, pos.z));
+        return new Vec3(newPos.x, newPos.y, newPos.z);
+    }
+
+    public final BlockPos getWorldBlockPos() {
+        return new BlockPos(this.getWorldPos());
     }
 
     protected Direction validateSide(String direction) throws LuaException {

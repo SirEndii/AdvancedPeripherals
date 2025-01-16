@@ -1,4 +1,4 @@
-package de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects;
+package de.srendi.advancedperipherals.common.smartglasses.modules.overlay.objects.two_dim;
 
 import dan200.computercraft.api.lua.IArguments;
 import dan200.computercraft.api.lua.LuaException;
@@ -21,17 +21,23 @@ public class RenderableObject extends OverlayObject {
     @FixedPointNumberProperty(min = 0, max = 0xFFFFFF)
     public int color = 0xFFFFFF;
 
-    @FixedPointNumberProperty(min = -32767, max = 32767)
-    public int x = 0;
+    @FloatingNumberProperty(min = -32767, max = 32767)
+    public float x = 0;
 
-    @FixedPointNumberProperty(min = -32767, max = 32767)
-    public int y = 0;
+    @FloatingNumberProperty(min = -32767, max = 32767)
+    public float y = 0;
 
-    @FixedPointNumberProperty(min = -32767, max = 32767)
-    public int maxX = 0;
+    @FloatingNumberProperty(min = -32767, max = 32767)
+    public float z = 0;
 
-    @FixedPointNumberProperty(min = -32767, max = 32767)
-    public int maxY = 0;
+    @FloatingNumberProperty(min = -32767, max = 32767)
+    public float maxX = 0;
+
+    @FloatingNumberProperty(min = -32767, max = 32767)
+    public float maxY = 0;
+
+    @FloatingNumberProperty(min = -32767, max = 32767)
+    public float maxZ = 0;
 
     public RenderableObject(OverlayModule module, IArguments arguments) throws LuaException {
         super(module, arguments);
@@ -65,47 +71,69 @@ public class RenderableObject extends OverlayObject {
     }
 
     @LuaFunction
-    public final void setMaxX(int maxX) {
-        this.maxX = maxX;
+    public final void setMaxX(double maxX) {
+        this.maxX = (float) maxX;
         getModule().update(this);
     }
 
     @LuaFunction
-    public final int getMaxX() {
+    public final double getMaxX() {
         return maxX;
     }
 
     @LuaFunction
-    public final void setMaxY(int maxY) {
-        this.maxY = maxY;
+    public final void setMaxY(double maxY) {
+        this.maxY = (float) maxY;
         getModule().update(this);
     }
 
     @LuaFunction
-    public final int getMaxY() {
+    public final double getMaxY() {
         return maxY;
     }
 
     @LuaFunction
-    public final void setX(int x) {
-        this.x = x;
+    public final void setMaxZ(double maxZ) {
+        this.maxZ = (float) maxZ;
         getModule().update(this);
     }
 
     @LuaFunction
-    public final int getX() {
+    public final double getMaxZ() {
+        return maxZ;
+    }
+
+    @LuaFunction
+    public final void setX(double x) {
+        this.x = (float) x;
+        getModule().update(this);
+    }
+
+    @LuaFunction
+    public final double getX() {
         return x;
     }
 
     @LuaFunction
-    public final void setY(int y) {
-        this.y = y;
+    public final void setY(double y) {
+        this.y = (float) y;
         getModule().update(this);
     }
 
     @LuaFunction
-    public final int getY() {
+    public final double getY() {
         return y;
+    }
+
+    @LuaFunction
+    public final void setZ(double z) {
+        this.z = (float) z;
+        getModule().update(this);
+    }
+
+    @LuaFunction
+    public final float getZ() {
+        return z;
     }
 
     @Override
@@ -114,10 +142,12 @@ public class RenderableObject extends OverlayObject {
         buffer.writeInt(color);
         buffer.writeFloat(opacity);
 
-        buffer.writeInt(x);
-        buffer.writeInt(y);
-        buffer.writeInt(maxX);
-        buffer.writeInt(maxY);
+        buffer.writeFloat(x);
+        buffer.writeFloat(y);
+        buffer.writeFloat(z);
+        buffer.writeFloat(maxX);
+        buffer.writeFloat(maxY);
+        buffer.writeFloat(maxZ);
     }
 
     public IObjectRenderer getRenderObject() {
@@ -131,8 +161,10 @@ public class RenderableObject extends OverlayObject {
                 ", color=" + color +
                 ", x=" + x +
                 ", y=" + y +
+                ", z=" + z +
                 ", sizeX=" + maxX +
                 ", sizeY=" + maxY +
+                ", sizeZ=" + maxZ +
                 '}';
     }
 }
