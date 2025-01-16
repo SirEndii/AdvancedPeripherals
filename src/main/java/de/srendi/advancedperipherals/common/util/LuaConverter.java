@@ -196,6 +196,7 @@ public class LuaConverter {
         map.put("displayName", stack.getDisplayName().getString());
         map.put("maxStackSize", stack.getMaxStackSize());
         map.put("nbt", NBTUtil.toLua(nbt));
+        map.put("nbtHash", NBTUtil.getNBTHash(nbt));
         map.put("fingerprint", ItemUtil.getFingerprint(stack));
         return map;
     }
@@ -210,6 +211,7 @@ public class LuaConverter {
         map.put("count", stack.getAmount());
         map.put("displayName", stack.getDisplayName().getString());
         map.put("nbt", NBTUtil.toLua(nbt));
+        map.put("nbtHash", NBTUtil.getNBTHash(nbt));
         map.put("fingerprint", FluidUtil.getFingerprint(stack));
         return map;
     }

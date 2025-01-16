@@ -482,7 +482,8 @@ public class RefinedStorage {
         map.put("amount", itemStack.getCount());
         map.put("displayName", itemStack.getDisplayName().getString());
         map.put("isCraftable", isItemCraftable(network, itemStack));
-        map.put("nbt", nbt == null ? null : NBTUtil.toLua(nbt));
+        map.put("nbtHash", NBTUtil.getNBTHash(nbt));
+        map.put("nbt", NBTUtil.toLua(nbt));
 
         return map;
     }
@@ -492,10 +493,12 @@ public class RefinedStorage {
             return Collections.emptyMap();
 
         Map<String, Object> map = LuaConverter.fluidToObject(fluidStack.getFluid());
+        CompoundTag nbt = fluidStack.getTag();
         map.put("amount", fluidStack.getAmount());
         map.put("displayName", fluidStack.getDisplayName().getString());
         map.put("isCraftable", isFluidCraftable(network, fluidStack));
-
+        map.put("nbtHash", NBTUtil.getNBTHash(nbt));
+        map.put("nbt", NBTUtil.toLua(nbt));
         return map;
     }
 

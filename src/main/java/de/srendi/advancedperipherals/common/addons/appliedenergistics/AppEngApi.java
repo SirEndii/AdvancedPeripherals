@@ -341,6 +341,7 @@ public class AppEngApi {
         map.put("amount", amount);
         map.put("displayName", displayName);
         map.put("nbt", NBTUtil.toLua(nbt));
+        map.put("nbtHash", NBTUtil.getNBTHash(nbt));
         map.put("tags", LuaConverter.tagsToList(() -> stack.getRight().getItem().builtInRegistryHolder().tags()));
         map.put("isCraftable", craftingService != null && craftingService.isCraftable(stack.getRight()));
 
@@ -349,9 +350,12 @@ public class AppEngApi {
 
     private static Map<String, Object> parseFluidStack(Pair<Long, AEFluidKey> stack, @Nullable ICraftingService craftingService) {
         Map<String, Object> map = new HashMap<>();
+        CompoundTag nbt = stack.getRight().toTag();
         long amount = stack.getLeft();
         map.put("name", ForgeRegistries.FLUIDS.getKey(stack.getRight().getFluid()).toString());
         map.put("amount", amount);
+        map.put("nbt", NBTUtil.toLua(nbt));
+        map.put("nbtHash", NBTUtil.getNBTHash(nbt));
         map.put("displayName", stack.getRight().getDisplayName().getString());
         map.put("tags", LuaConverter.tagsToList(() -> stack.getRight().getFluid().builtInRegistryHolder().tags()));
         map.put("isCraftable", craftingService != null && craftingService.isCraftable(stack.getRight()));
