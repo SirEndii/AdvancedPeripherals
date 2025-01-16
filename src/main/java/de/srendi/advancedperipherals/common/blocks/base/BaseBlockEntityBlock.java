@@ -45,7 +45,9 @@ public abstract class BaseBlockEntityBlock extends BaseBlock implements EntityBl
     public InteractionResult use(@NotNull BlockState state, Level levelIn, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand handIn, @NotNull BlockHitResult hit) {
         if (levelIn.isClientSide) return InteractionResult.SUCCESS;
         BlockEntity tileEntity = levelIn.getBlockEntity(pos);
-        if (tileEntity != null && !(tileEntity instanceof IInventoryBlock)) return InteractionResult.PASS;
+        if (tileEntity != null && !(tileEntity instanceof IInventoryMenuBlock<?>))
+            return InteractionResult.PASS;
+
         MenuProvider namedContainerProvider = this.getMenuProvider(state, levelIn, pos);
         if (namedContainerProvider != null) {
             if (!(player instanceof ServerPlayer serverPlayerEntity)) return InteractionResult.PASS;
@@ -85,8 +87,6 @@ public abstract class BaseBlockEntityBlock extends BaseBlock implements EntityBl
         };
     }
 
-
-    @Deprecated
     @Nullable
     @Override
     public MenuProvider getMenuProvider(@NotNull BlockState pState, Level pLevel, @NotNull BlockPos pPos) {

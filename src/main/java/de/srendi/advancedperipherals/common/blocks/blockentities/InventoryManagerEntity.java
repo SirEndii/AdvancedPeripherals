@@ -1,7 +1,7 @@
 package de.srendi.advancedperipherals.common.blocks.blockentities;
 
 import de.srendi.advancedperipherals.common.addons.computercraft.peripheral.InventoryManagerPeripheral;
-import de.srendi.advancedperipherals.common.blocks.base.IInventoryBlock;
+import de.srendi.advancedperipherals.common.blocks.base.IInventoryMenuBlock;
 import de.srendi.advancedperipherals.common.blocks.base.PeripheralBlockEntity;
 import de.srendi.advancedperipherals.common.container.InventoryManagerContainer;
 import de.srendi.advancedperipherals.common.items.MemoryCardItem;
@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 
-public class InventoryManagerEntity extends PeripheralBlockEntity<InventoryManagerPeripheral> implements IInventoryBlock<InventoryManagerContainer> {
+public class InventoryManagerEntity extends PeripheralBlockEntity<InventoryManagerPeripheral> implements IInventoryMenuBlock<InventoryManagerContainer> {
 
     private UUID owner = null;
 
@@ -75,7 +75,7 @@ public class InventoryManagerEntity extends PeripheralBlockEntity<InventoryManag
     }
 
     @Override
-    public void load(CompoundTag data) {
+    public void load(@NotNull CompoundTag data) {
         if (data.contains("ownerId")) {
             this.owner = data.getUUID("ownerId");
         }
@@ -85,7 +85,7 @@ public class InventoryManagerEntity extends PeripheralBlockEntity<InventoryManag
     }
 
     @Override
-    public void saveAdditional(CompoundTag data) {
+    public void saveAdditional(@NotNull CompoundTag data) {
         super.saveAdditional(data);
         if (this.owner != null) {
             data.putUUID("ownerId", this.owner);
