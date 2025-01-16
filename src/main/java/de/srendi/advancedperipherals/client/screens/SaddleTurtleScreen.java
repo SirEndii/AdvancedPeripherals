@@ -124,7 +124,7 @@ public class SaddleTurtleScreen extends GuiComponent implements IGuiOverlay {
         Minecraft minecraft = Minecraft.getInstance();
         Component name = Component.translatable("block.computercraft.turtle_normal.upgraded", Component.translatable("turtle.advancedperipherals.saddle_turtle"));
         // TODO: get and render turtle's label if exists
-        Component text = Component.translatable("text.advancedperipherals.saddle_turtle_dismount_hint",
+        Component text = Component.translatable("text.advancedperipherals.saddle_turtle.dismount_hint",
             name, minecraft.options.keyShift.getTranslatedKeyMessage(), minecraft.options.keyInventory.getTranslatedKeyMessage());
         float top = 10;
         float x = (float)(this.screenWidth / 2 - textWidth(text) / 2);
