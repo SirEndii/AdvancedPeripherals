@@ -2,6 +2,7 @@ package de.srendi.advancedperipherals.common.setup;
 
 import de.srendi.advancedperipherals.common.configuration.APConfig;
 import de.srendi.advancedperipherals.common.items.APItem;
+import de.srendi.advancedperipherals.common.items.KeyboardItem;
 import de.srendi.advancedperipherals.common.items.MemoryCardItem;
 import de.srendi.advancedperipherals.common.items.SmartGlassesInterfaceItem;
 import de.srendi.advancedperipherals.common.items.SmartGlassesItem;
