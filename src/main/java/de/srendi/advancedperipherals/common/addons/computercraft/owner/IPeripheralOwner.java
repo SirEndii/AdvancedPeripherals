@@ -74,6 +74,6 @@ public interface IPeripheralOwner {
     <T extends IPeripheral> T getConnectedPeripheral(Class<T> type);
 
     default boolean hasConnectedPeripheral(Class<? extends IPeripheral> type) {
-        return getConnectedPeripheral(type) == null;
+        return getConnectedPeripheral(type) != null;
     }
 }
