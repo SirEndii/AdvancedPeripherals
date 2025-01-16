@@ -4,6 +4,7 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.turtle.ITurtleAccess;
 import dan200.computercraft.api.turtle.TurtleSide;
+import de.srendi.advancedperipherals.AdvancedPeripherals;
 import de.srendi.advancedperipherals.common.addons.computercraft.operations.SingleOperation;
 import de.srendi.advancedperipherals.common.addons.computercraft.operations.SingleOperationContext;
 import de.srendi.advancedperipherals.common.addons.computercraft.owner.TurtlePeripheralOwner;
@@ -17,11 +18,9 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class AutomataCorePeripheral extends BasePeripheral<TurtlePeripheralOwner> {
-
-    public static final String ATTR_STORING_TOOL_DURABILITY = "storingToolDurability";
-
     private final IAutomataCoreTier tier;
     private final Map<String, Boolean> attributes = new HashMap<>();
+    protected boolean destroyed = false;
 
     protected AutomataCorePeripheral(String type, ITurtleAccess turtle, TurtleSide side, IAutomataCoreTier tier) {
         super(type, new TurtlePeripheralOwner(turtle, side));
@@ -83,5 +82,26 @@ public abstract class AutomataCorePeripheral extends BasePeripheral<TurtlePeriph
 
     public Direction validateSide(String direction) throws LuaException {
         return super.validateSide(direction);
+    }
+
+    public boolean isDestroyed() {
+        return this.destroyed;
+    }
+
+    public boolean canOverpowerAction() {
+        return false;
+    }
+
+    public abstract double getBreakChance();
+
+    public boolean afterOverpowerAction() {
+        if (isDestroyed() || !canOverpowerAction()) {
+            return false;
+        }
+        if (AdvancedPeripherals.RANDOM.nextDouble() <= getBreakChance()) {
+            this.destroyed = true;
+            owner.destroyUpgrade();
+        }
+        return true;
     }
 }

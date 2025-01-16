@@ -22,31 +22,31 @@ public class HitResultUtil {
     /**
      * This method is used to get the hit result of an entity from the start position of a block
      *
-     * @param to                the target position/max position
-     * @param from              the source position like a block
-     * @param level             the level
-     * @param ignoreTransparent if transparent blocks should be ignored
+     * @param to          the target position/max position
+     * @param from        the source position like a block
+     * @param level       the level
+     * @param shapeGetter the block collision shape getter
      * @return the hit result. {@link BlockHitResult#miss(Vec3, Direction, BlockPos)} if nothing found
      */
     @NotNull
-    public static HitResult getHitResult(Vec3 to, Vec3 from, Level level, boolean ignoreTransparent) {
-        return getHitResult(to, from, level, ignoreTransparent, null);
+    public static HitResult getHitResult(Vec3 to, Vec3 from, Level level, ClipContext.ShapeGetter shapeGetter) {
+        return getHitResult(to, from, level, shapeGetter, null);
     }
 
     /**
      * This method is used to get the hit result of an entity from the start position of a block
      *
-     * @param to                the target position/max position
-     * @param from              the source position like a block
-     * @param level             the level
-     * @param ignoreTransparent if transparent blocks should be ignored
-     * @param source            the source Entity/BlockPos that will be ignored
+     * @param to          the target position/max position
+     * @param from        the source position like a block
+     * @param level       the level
+     * @param shapeGetter the block collision shape getter
+     * @param source      the source Entity/BlockPos that will be ignored
      * @return the hit result. {@link BlockHitResult#miss(Vec3, Direction, BlockPos)} if nothing found
      */
     @NotNull
-    public static HitResult getHitResult(Vec3 to, Vec3 from, Level level, boolean ignoreTransparent, Object source) {
+    public static HitResult getHitResult(Vec3 to, Vec3 from, Level level, ClipContext.ShapeGetter shapeGetter, Object source) {
         EntityHitResult entityResult = getEntityHitResult(to, from, level, source instanceof Entity ? (Entity) source : null);
-        BlockHitResult blockResult = getBlockHitResult(to, from, level, ignoreTransparent, source instanceof BlockPos ? (BlockPos) source : null);
+        BlockHitResult blockResult = getBlockHitResult(to, from, level, shapeGetter, source instanceof BlockPos ? (BlockPos) source : null);
 
         if (entityResult.getType() == HitResult.Type.MISS) {
             if (blockResult.getType() == HitResult.Type.MISS) {
@@ -120,30 +120,30 @@ public class HitResultUtil {
     /**
      * This method is used to get the hit result of a block from the start position of a block
      *
-     * @param to               the target position/max position
-     * @param from             the source position
-     * @param level            the world
-     * @param ignoreNoOccluded if true, the method will ignore blocks which are not occluding like glass
+     * @param to          the target position/max position
+     * @param from        the source position
+     * @param level       the world
+     * @param shapeGetter the block collision shape getter
      * @return the block hit result. {@link BlockHitResult#miss(Vec3, Direction, BlockPos)} if nothing found
      */
     @NotNull
-    public static BlockHitResult getBlockHitResult(Vec3 to, Vec3 from, Level level, boolean ignoreNoOccluded) {
-        return getBlockHitResult(to, from, level, ignoreNoOccluded, null);
+    public static BlockHitResult getBlockHitResult(Vec3 to, Vec3 from, Level level, ClipContext.ShapeGetter shapeGetter) {
+        return getBlockHitResult(to, from, level, shapeGetter, null);
     }
 
     /**
      * This method is used to get the hit result of a block from the start position of a block
      *
-     * @param to               the target position/max position
-     * @param from             the source position
-     * @param level            the world
-     * @param ignoreNoOccluded if true, the method will ignore blocks which are not occluding like glass
-     * @param source           the source BlockPos that will be ignored
+     * @param to          the target position/max position
+     * @param from        the source position
+     * @param level       the world
+     * @param shapeGetter the block collision shape getter
+     * @param source      the source BlockPos that will be ignored
      * @return the block hit result. {@link BlockHitResult#miss(Vec3, Direction, BlockPos)} if nothing found
      */
     @NotNull
-    public static BlockHitResult getBlockHitResult(Vec3 to, Vec3 from, Level level, boolean ignoreNoOccluded, BlockPos source) {
-        return level.clip(new AdvancedClipContext(from, to, ignoreNoOccluded ? IgnoreNoOccludedContext.INSTANCE : ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null, source));
+    public static BlockHitResult getBlockHitResult(Vec3 to, Vec3 from, Level level, ClipContext.ShapeGetter shapeGetter, BlockPos source) {
+        return level.clip(new AdvancedClipContext(from, to, shapeGetter, ClipContext.Fluid.NONE, null, source));
     }
 
     public static class EmptyEntityHitResult extends EntityHitResult {
@@ -166,7 +166,7 @@ public class HitResultUtil {
     /**
      * A shape getter which ignores blocks which are not occluding like glass
      */
-    private static class IgnoreNoOccludedContext implements ClipContext.ShapeGetter {
+    public static class IgnoreNoOccludedContext implements ClipContext.ShapeGetter {
         public static final IgnoreNoOccludedContext INSTANCE = new IgnoreNoOccludedContext();
 
         private IgnoreNoOccludedContext() {}

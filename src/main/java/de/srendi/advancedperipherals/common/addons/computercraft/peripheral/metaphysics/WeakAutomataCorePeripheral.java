@@ -44,4 +44,9 @@ public class WeakAutomataCorePeripheral extends AutomataCorePeripheral {
     public boolean isEnabled() {
         return APConfig.METAPHYSICS_CONFIG.enableWeakAutomataCore.get();
     }
+
+    @Override
+    public double getBreakChance() {
+        return APConfig.METAPHYSICS_CONFIG.overpoweredAutomataBreakChance.get();
+    }
 }

@@ -20,7 +20,6 @@ import org.joml.Vector3d;
 import org.valkyrienskies.core.api.ships.Ship;
 
 import java.util.WeakHashMap;
-import java.util.function.Function;
 
 public final class FakePlayerProviderTurtle {
 
@@ -55,8 +54,8 @@ public final class FakePlayerProviderTurtle {
                 direction = new Vec3(newDir.x, newDir.y, newDir.z);
             }
         }
+        player.setPosRaw(position.x, position.y, position.z);
         player.lookAt(EntityAnchorArgument.Anchor.FEET, position.add(direction));
-        player.moveTo(position.x, position.y, position.z, player.getYRot(), player.getXRot());
 
         // Player inventory
         Inventory playerInventory = player.getInventory();
@@ -115,7 +114,7 @@ public final class FakePlayerProviderTurtle {
         }
     }
 
-    public static <T> T withPlayer(ITurtleAccess turtle, Function<APFakePlayer, T> function) {
+    public static <T> T withPlayer(ITurtleAccess turtle, APFakePlayer.Action<T> function) {
         APFakePlayer player = getPlayer(turtle, turtle.getOwningPlayer());
         load(player, turtle);
         T result = function.apply(player);

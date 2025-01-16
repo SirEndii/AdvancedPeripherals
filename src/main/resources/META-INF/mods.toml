@@ -29,7 +29,7 @@ side = "BOTH"
 modId = "computercraft"
 mandatory = true
 versionRange = "[${cc_version},)"
-ordering = "NONE"
+ordering = "AFTER"
 side = "BOTH"
 [[dependencies.${mod_id}]]
 modId = "curios"

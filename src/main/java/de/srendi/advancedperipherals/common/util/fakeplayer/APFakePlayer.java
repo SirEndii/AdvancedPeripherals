@@ -24,6 +24,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -43,7 +44,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class APFakePlayer extends FakePlayer {
@@ -108,11 +108,11 @@ public class APFakePlayer extends FakePlayer {
         return 0;
     }
 
-    public static <T> Function<APFakePlayer, T> wrapActionWithRot(float yaw, float pitch, Function<APFakePlayer, T> action) {
+    public static <T> Action<T> wrapActionWithRot(float yaw, float pitch, Action<T> action) {
         return player -> player.<T>doActionWithRot(yaw, pitch, action);
     }
 
-    public <T> T doActionWithRot(float yaw, float pitch, Function<APFakePlayer, T> action) {
+    public <T> T doActionWithRot(float yaw, float pitch, Action<T> action) {
         final float yRot = this.getYRot(), xRot = this.getXRot();
         this.setRot(yRot + yaw, xRot + pitch);
         try {
@@ -122,11 +122,11 @@ public class APFakePlayer extends FakePlayer {
         }
     }
 
-    public static <T> Function<APFakePlayer, T> wrapActionWithShiftKey(boolean shift, Function<APFakePlayer, T> action) {
+    public static <T> Action<T> wrapActionWithShiftKey(boolean shift, Action<T> action) {
         return player -> player.<T>doActionWithShiftKey(shift, action);
     }
 
-    public <T> T doActionWithShiftKey(boolean shift, Function<APFakePlayer, T> action) {
+    public <T> T doActionWithShiftKey(boolean shift, Action<T> action) {
         boolean old = this.isShiftKeyDown();
         this.setShiftKeyDown(shift);
         try {
@@ -290,7 +290,7 @@ public class APFakePlayer extends FakePlayer {
             Direction traceDirection = Direction.getNearest(look.x, look.y, look.z);
             blockHit = BlockHitResult.miss(target, traceDirection, new BlockPos(target));
         } else {
-            blockHit = HitResultUtil.getBlockHitResult(target, origin, level, false, this.source);
+            blockHit = HitResultUtil.getBlockHitResult(target, origin, level, ClipContext.Block.OUTLINE, this.source);
         }
 
         if (skipEntity) {
@@ -348,5 +348,10 @@ public class APFakePlayer extends FakePlayer {
             return new EntityHitResult(closestEntity, closestVec);
         }
         return blockHit;
+    }
+
+    @FunctionalInterface
+    public interface Action<T> {
+        T apply(APFakePlayer player);
     }
 }
