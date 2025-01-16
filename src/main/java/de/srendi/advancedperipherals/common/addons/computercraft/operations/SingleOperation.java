@@ -10,6 +10,7 @@ import java.util.function.UnaryOperator;
 public enum SingleOperation implements IPeripheralOperation<SingleOperationContext> {
     DIG(1000, 1),
     USE_ON_BLOCK(5000, 1),
+    UPDATE_BLOCK(500, 1),
     SUCK(1000, 1),
     USE_ON_ANIMAL(2500, 10),
     CAPTURE_ANIMAL(50_000, 100),

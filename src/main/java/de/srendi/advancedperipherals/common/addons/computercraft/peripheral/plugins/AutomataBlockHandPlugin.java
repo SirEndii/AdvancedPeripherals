@@ -41,9 +41,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.Map;
 
-import static de.srendi.advancedperipherals.common.addons.computercraft.operations.SingleOperation.DIG;
-import static de.srendi.advancedperipherals.common.addons.computercraft.operations.SingleOperation.USE_ON_BLOCK;
 import static de.srendi.advancedperipherals.common.addons.computercraft.operations.SingleOperation.ACCURE_PLACE;
+import static de.srendi.advancedperipherals.common.addons.computercraft.operations.SingleOperation.DIG;
+import static de.srendi.advancedperipherals.common.addons.computercraft.operations.SingleOperation.UPDATE_BLOCK;
+import static de.srendi.advancedperipherals.common.addons.computercraft.operations.SingleOperation.USE_ON_BLOCK;
 
 public class AutomataBlockHandPlugin extends AutomataCorePlugin {
 
@@ -113,7 +114,7 @@ public class AutomataBlockHandPlugin extends AutomataCorePlugin {
         Map<?, ?> opts = arguments.count() > 0 ? arguments.getTable(0) : Collections.emptyMap();
         float yaw = opts != null ? (float) TableHelper.optNumberField(opts, "yaw", 0) : 0;
         float pitch = opts != null ? (float) TableHelper.optNumberField(opts, "pitch", 0) : 0;
-        return automataCore.withOperation(USE_ON_BLOCK, context -> {
+        return automataCore.withOperation(UPDATE_BLOCK, context -> {
             TurtlePeripheralOwner owner = automataCore.getPeripheralOwner();
             ItemStack selectedTool = owner.getToolInMainHand();
             int previousDamageValue = selectedTool.getDamageValue();
