@@ -15,10 +15,8 @@ import de.srendi.advancedperipherals.lib.peripherals.IPeripheralTileEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
@@ -56,6 +54,11 @@ public class RsBridgeEntity extends PeripheralBlockEntity<RSBridgePeripheral> im
         return node;
     }
 
+    public void clearRemoved() {
+        super.clearRemoved();
+        initialize(this.level, null);
+    }
+
     @NotNull
     @Override
     public Set<InWorldNetworkNodeContainer> getContainers() {
@@ -69,20 +72,5 @@ public class RsBridgeEntity extends PeripheralBlockEntity<RSBridgePeripheral> im
     @Override
     public boolean canBuild(@NotNull ServerPlayer serverPlayer) {
         return true;
-    }
-
-    @Override
-    public void update(@Nullable Level level) {
-        NetworkNodeContainerProvider.super.update(level);
-    }
-
-    @Override
-    public void initialize(@Nullable Level level, @Nullable Runnable callback) {
-        NetworkNodeContainerProvider.super.initialize(level, callback);
-    }
-
-    @Override
-    public void remove(@Nullable Level level) {
-        NetworkNodeContainerProvider.super.remove(level);
     }
 }
