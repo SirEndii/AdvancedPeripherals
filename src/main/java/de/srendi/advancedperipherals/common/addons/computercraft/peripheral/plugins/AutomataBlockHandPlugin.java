@@ -102,7 +102,7 @@ public class AutomataBlockHandPlugin extends AutomataCorePlugin {
      * @param options A table contains where to find the block and how to update the block
      *   yaw: relative yaw
      *   pitch: relative pitch
-     * 
+     *
      *   text: the text going to write if the target is a sign.
      */
     @LuaFunction(mainThread = true)
