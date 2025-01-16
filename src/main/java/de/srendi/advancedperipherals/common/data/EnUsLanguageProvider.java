@@ -43,18 +43,19 @@ public class EnUsLanguageProvider extends LanguageProvider {
     private void addItems() {
         addItem(APItems.CHUNK_CONTROLLER, "Chunk Controller");
         addItem(APItems.COMPUTER_TOOL, "Computer Tool");
-        addItem(APItems.END_AUTOMATA_CORE, "End Automata Core");
         addItem(APItems.HOTKEY_MODULE, "Hotkey Module");
-        addItem(APItems.HUSBANDRY_AUTOMATA_CORE, "Husbandry Automata Core");
         addItem(APItems.MEMORY_CARD, "Memory Card");
         addItem(APItems.NIGHT_VISION_MODULE, "Night Vision Module");
         addItem(APItems.OVERLAY_MODULE, "Overlay Module");
-        addItem(APItems.OVERPOWERED_END_AUTOMATA_CORE, "Overpowered End Automata Core");
-        addItem(APItems.OVERPOWERED_HUSBANDRY_AUTOMATA_CORE, "Overpowered Husbandry Automata Core");
-        addItem(APItems.OVERPOWERED_WEAK_AUTOMATA_CORE, "Overpowered Weak Automata Core");
         addItem(APItems.SMART_GLASSES, "Smart Glasses");
         addItem(APItems.SMART_GLASSES_INTERFACE, "Smart Glasses Interface");
         addItem(APItems.SMART_GLASSES_NETHERITE, "Netherite reinforced Smart Glasses");
+
+        addItem(APItems.END_AUTOMATA_CORE, "End Automata Core");
+        addItem(APItems.HUSBANDRY_AUTOMATA_CORE, "Husbandry Automata Core");
+        addItem(APItems.OVERPOWERED_END_AUTOMATA_CORE, "Overpowered End Automata Core");
+        addItem(APItems.OVERPOWERED_HUSBANDRY_AUTOMATA_CORE, "Overpowered Husbandry Automata Core");
+        addItem(APItems.OVERPOWERED_WEAK_AUTOMATA_CORE, "Overpowered Weak Automata Core");
         addItem(APItems.WEAK_AUTOMATA_CORE, "Weak Automata Core");
     }
 
@@ -81,16 +82,17 @@ public class EnUsLanguageProvider extends LanguageProvider {
         addTurtle(CCRegistration.ID.CHATTY_TURTLE, "Chatty");
         addTurtle(CCRegistration.ID.CHUNKY_TURTLE, "Chunky");
         addTurtle(CCRegistration.ID.COMPASS_TURTLE, "Compass");
-        addTurtle(CCRegistration.ID.END_AUTOMATA, "End automata");
         addTurtle(CCRegistration.ID.ENVIRONMENT_TURTLE, "Environment");
         addTurtle(CCRegistration.ID.GEOSCANNER_TURTLE, "Geo");
-        addTurtle(CCRegistration.ID.HUSBANDRY_AUTOMATA, "Husbandry automata");
-        addTurtle(CCRegistration.ID.OP_END_AUTOMATA, "Overpowered end automata");
-        addTurtle(CCRegistration.ID.OP_HUSBANDRY_AUTOMATA, "Overpowered husbandry automata");
-        addTurtle(CCRegistration.ID.OP_WEAK_AUTOMATA, "Overpowered weak automata");
         addTurtle(CCRegistration.ID.PLAYER_TURTLE, "Player Detector");
         addTurtle(CCRegistration.ID.SADDLE_TURTLE, "Saddle");
-        addTurtle(CCRegistration.ID.WEAK_AUTOMATA, "Weak automata");
+
+        addTurtle(CCRegistration.ID.END_AUTOMATA, "End Automata");
+        addTurtle(CCRegistration.ID.HUSBANDRY_AUTOMATA, "Husbandry Automata");
+        addTurtle(CCRegistration.ID.OP_END_AUTOMATA, "Overpowered End Automata");
+        addTurtle(CCRegistration.ID.OP_HUSBANDRY_AUTOMATA, "Overpowered Husbandry Automata");
+        addTurtle(CCRegistration.ID.OP_WEAK_AUTOMATA, "Overpowered Weak Automata");
+        addTurtle(CCRegistration.ID.WEAK_AUTOMATA, "Weak Automata");
     }
 
     private void addPockets() {
@@ -108,10 +110,10 @@ public class EnUsLanguageProvider extends LanguageProvider {
         addAdvancement("nbt_toolkit", "No secrets", "Collect a NBT storage and block reader. Now, all the world's secrets are open to you!");
         addAdvancement("sense_toolkit", "The truth can't hide forever", "Collect a geo scanner and environmental detector. There are no limits for observability!");
 
-        addAdvancement("end_automata_core", "End automata core", "If you can code gps-free position location with this, you're a powerful human being");
-        addAdvancement("husbandry_automata_core", "Husbandry automata core", "Is this core gluten-free?");
-        addAdvancement("overpowered_automata_core", "Overpowered automata core", "Can you handle so much power?");
-        addAdvancement("weak_automata_core", "First automata core", "Does the afterlife exist in minecraft?");
+        addAdvancement("end_automata_core", "End Automata Core", "If you can code gps-free position location with this, you're a powerful human being");
+        addAdvancement("husbandry_automata_core", "Husbandry Automata Core", "Is this core gluten-free?");
+        addAdvancement("overpowered_automata_core", "Overpowered Automata Core", "Can you handle so much power?");
+        addAdvancement("weak_automata_core", "First Automata Core", "Does the afterlife exist in minecraft?");
     }
 
     private void addTooltips() {
