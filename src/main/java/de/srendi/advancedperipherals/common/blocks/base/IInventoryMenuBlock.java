@@ -8,10 +8,9 @@ import net.minecraft.world.level.Level;
 
 /**
  * Used to assign an inventory storage to a block entity with a proper container
-
- * @param <T>
+ * @param <T> the container for that block entity
  */
-public interface IInventoryMenuBlock<T extends BaseContainer>  extends IInventoryBlock {
+public interface IInventoryMenuBlock<T extends BaseContainer> extends IInventoryBlock {
 
     Component getDisplayName();
 

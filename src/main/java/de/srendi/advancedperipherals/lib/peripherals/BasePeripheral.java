@@ -17,11 +17,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Vector3d;
-import org.valkyrienskies.core.api.ships.Ship;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3d;
+import org.valkyrienskies.core.api.ships.Ship;
 
 import java.util.ArrayList;
 import java.util.Collections;
