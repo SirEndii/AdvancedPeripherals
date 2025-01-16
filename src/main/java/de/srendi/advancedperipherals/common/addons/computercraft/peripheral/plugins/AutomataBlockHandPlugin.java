@@ -95,8 +95,21 @@ public class AutomataBlockHandPlugin extends AutomataCorePlugin {
         });
     }
 
+    /**
+     * updateBlock method let turtle update specific block's status.
+     * It require a compass to be equipped to perform actions.
+     *
+     * @param options A table contains where to find the block and how to update the block
+     *   yaw: relative yaw
+     *   pitch: relative pitch
+     * 
+     *   text: the text going to write if the target is a sign.
+     */
     @LuaFunction(mainThread = true)
     public final MethodResult updateBlock(@NotNull IArguments arguments) throws LuaException {
+        if (!automataCore.getPeripheralOwner().hasConnectedPeripheral(CompassPeripheral.class)) {
+            return MethodResult.of(false, "COMPASS_NOT_EQUIPPED");
+        }
         Map<?, ?> opts = arguments.count() > 0 ? arguments.getTable(0) : Collections.emptyMap();
         float yaw = opts != null ? (float) TableHelper.optNumberField(opts, "yaw", 0) : 0;
         float pitch = opts != null ? (float) TableHelper.optNumberField(opts, "pitch", 0) : 0;
@@ -138,7 +151,7 @@ public class AutomataBlockHandPlugin extends AutomataCorePlugin {
 
     /**
      * placeBlock method will let turtle place a block with more details when compass has equipped.
-     * It should not able to place fluids / use any item, because compass do not recognize them.
+     * It should not able to place fluids / use any item, because compass does not recognize them.
      *
      * @param options A table contains how to place the block:
      *   x: the x offset relative to the turtle. Default 0
