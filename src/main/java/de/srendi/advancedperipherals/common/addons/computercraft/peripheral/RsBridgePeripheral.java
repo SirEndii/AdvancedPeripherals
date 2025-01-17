@@ -625,7 +625,7 @@ public class RsBridgePeripheral extends BasePeripheral<BlockEntityPeripheralOwne
 
     @Override
     @LuaFunction(mainThread = true)
-    public MethodResult getCraftingTasks() {
+    public MethodResult getCraftingJobs() {
         if (!isAvailable())
             return notConnected();
 
@@ -634,7 +634,7 @@ public class RsBridgePeripheral extends BasePeripheral<BlockEntityPeripheralOwne
 
     @Override
     @LuaFunction(mainThread = true)
-    public MethodResult cancelCraftingTasks(IArguments arguments) throws LuaException {
+    public MethodResult cancelCraftingJobs(IArguments arguments) throws LuaException {
         if (!isAvailable())
             return notConnected();
 

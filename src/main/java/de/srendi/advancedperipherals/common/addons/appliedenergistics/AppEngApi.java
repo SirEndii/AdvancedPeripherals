@@ -402,7 +402,7 @@ public class AppEngApi {
 
     public static Map<String, Object> parseCraftingJob(CraftingJobStatus job, @Nullable ICraftingCPU cpu) {
         Map<String, Object> map = new HashMap<>();
-        map.put("storage", parseGenericStack(job.crafting()));
+        map.put("requestedItem", parseGenericStack(job.crafting()));
         map.put("elapsedTimeNanos", job.elapsedTimeNanos());
         map.put("totalItem", job.totalItems());
         map.put("progress", job.progress());

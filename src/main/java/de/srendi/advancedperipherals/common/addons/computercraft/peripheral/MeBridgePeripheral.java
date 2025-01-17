@@ -628,7 +628,7 @@ public class MeBridgePeripheral extends BasePeripheral<BlockEntityPeripheralOwne
 
     @Override
     @LuaFunction(mainThread = true)
-    public MethodResult getCraftingTasks() {
+    public MethodResult getCraftingJobs() {
         if (!isAvailable())
             return notConnected();
 
@@ -645,7 +645,7 @@ public class MeBridgePeripheral extends BasePeripheral<BlockEntityPeripheralOwne
 
     @Override
     @LuaFunction(mainThread = true)
-    public MethodResult cancelCraftingTasks(IArguments arguments) {
+    public MethodResult cancelCraftingJobs(IArguments arguments) {
         if (!isAvailable())
             return notConnected();
 
