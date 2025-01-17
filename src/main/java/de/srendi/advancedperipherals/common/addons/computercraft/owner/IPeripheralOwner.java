@@ -1,5 +1,6 @@
 package de.srendi.advancedperipherals.common.addons.computercraft.owner;
 
+import dan200.computercraft.api.peripheral.IPeripheral;
 import de.srendi.advancedperipherals.common.util.fakeplayer.APFakePlayer;
 import de.srendi.advancedperipherals.lib.peripherals.IPeripheralOperation;
 import net.minecraft.core.BlockPos;
@@ -14,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
-import java.util.function.Function;
 
 public interface IPeripheralOwner {
 
@@ -39,7 +39,7 @@ public interface IPeripheralOwner {
 
     void markDataStorageDirty();
 
-    <T> T withPlayer(Function<APFakePlayer, T> function);
+    <T> T withPlayer(APFakePlayer.Action<T> function);
 
     ItemStack getToolInMainHand();
 
@@ -69,5 +69,11 @@ public interface IPeripheralOwner {
         attachAbility(PeripheralOwnerAbility.OPERATION, operationAbility);
         for (IPeripheralOperation<?> operation : operations)
             operationAbility.registerOperation(operation);
+    }
+
+    <T extends IPeripheral> T getConnectedPeripheral(Class<T> type);
+
+    default boolean hasConnectedPeripheral(Class<? extends IPeripheral> type) {
+        return getConnectedPeripheral(type) != null;
     }
 }

@@ -13,6 +13,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -43,11 +44,15 @@ import java.util.stream.Stream;
 
 public class LuaConverter {
 
-    public static Map<String, Object> entityToLua(Entity entity, boolean detailed) {
+    public static Map<String, Object> entityToLua(Entity entity) {
         Map<String, Object> data = new HashMap<>();
         data.put("id", entity.getId());
         data.put("uuid", entity.getStringUUID());
+        if (entity.hasCustomName())
+            data.put("customName", entity.getCustomName().getString());
         EntityType<?> type = entity.getType();
+        data.put("displayName", type.getDescription().getString());
+        data.put("name", type.builtInRegistryHolder().key().location().toString());
         data.put("type", type.getDescriptionId());
         data.put("category", type.getCategory());
         data.put("canBurn", entity.fireImmune());
@@ -60,7 +65,7 @@ public class LuaConverter {
     }
 
     public static Map<String, Object> livingEntityToLua(LivingEntity entity, boolean detailed) {
-        Map<String, Object> data = entityToLua(entity, detailed);
+        Map<String, Object> data = entityToLua(entity);
         data.put("baby", entity.isBaby());
         data.put("health", entity.getHealth());
         data.put("maxHealth", entity.getMaxHealth());
@@ -75,11 +80,15 @@ public class LuaConverter {
         return data;
     }
 
-    public static Map<String, Object> animalToLua(Animal animal, ItemStack itemInHand, boolean detailed) {
+    public static Map<String, Object> mobToLua(Mob animal, boolean detailed) {
         Map<String, Object> data = livingEntityToLua(animal, detailed);
-        data.put("baby", animal.isBaby());
-        data.put("inLove", animal.isInLove());
         data.put("aggressive", animal.isAggressive());
+        return data;
+    }
+
+    public static Map<String, Object> animalToLua(Animal animal, ItemStack itemInHand, boolean detailed) {
+        Map<String, Object> data = mobToLua(animal, detailed);
+        data.put("inLove", animal.isInLove());
         if (animal instanceof IForgeShearable shareable && !itemInHand.isEmpty()) {
             data.put("shareable", shareable.isShearable(itemInHand, animal.level, animal.blockPosition()));
         }
@@ -120,8 +129,9 @@ public class LuaConverter {
     public static Map<String, Object> completeEntityToLua(Entity entity, ItemStack itemInHand, boolean detailed) {
         if (entity instanceof Player player) return playerToLua(player, detailed);
         if (entity instanceof Animal animal) return animalToLua(animal, itemInHand, detailed);
+        if (entity instanceof Mob mob) return mobToLua(mob, detailed);
         if (entity instanceof LivingEntity livingEntity) return livingEntityToLua(livingEntity, detailed);
-        return entityToLua(entity, detailed);
+        return entityToLua(entity);
     }
 
     public static Map<String, Object> completeEntityWithPositionToLua(Entity entity, BlockPos pos) {

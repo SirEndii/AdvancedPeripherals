@@ -11,6 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -228,8 +229,8 @@ public class DistanceDetectorEntity extends PeripheralBlockEntity<DistanceDetect
         Level level = this.getLevel();
         return switch (this.detectionType) {
             case ENTITY -> HitResultUtil.getEntityHitResult(to, from, level);
-            case BLOCK -> HitResultUtil.getBlockHitResult(to, from, level, this.ignoreTransparent, this.getBlockPos());
-            case BOTH -> HitResultUtil.getHitResult(to, from, level, this.ignoreTransparent, this.getBlockPos());
+            case BLOCK -> HitResultUtil.getBlockHitResult(to, from, level, this.ignoreTransparent ? HitResultUtil.IgnoreNoOccludedContext.INSTANCE : ClipContext.Block.COLLIDER, this.getBlockPos());
+            case BOTH -> HitResultUtil.getHitResult(to, from, level, this.ignoreTransparent ? HitResultUtil.IgnoreNoOccludedContext.INSTANCE : ClipContext.Block.COLLIDER, this.getBlockPos());
         };
     }
 }

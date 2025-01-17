@@ -1,8 +1,11 @@
 package de.srendi.advancedperipherals.common.smartglasses.modules;
 
+import dan200.computercraft.api.peripheral.IPeripheral;
+import dan200.computercraft.core.computer.ComputerSide;
 import de.srendi.advancedperipherals.common.addons.computercraft.owner.BasePeripheralOwner;
 import de.srendi.advancedperipherals.common.smartglasses.SmartGlassesComputer;
 import de.srendi.advancedperipherals.common.util.fakeplayer.APFakePlayer;
+import de.srendi.advancedperipherals.lib.peripherals.IBasePeripheral;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.FrontAndTop;
@@ -15,7 +18,7 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Function;
+import java.util.stream.Stream;
 
 public class ModulePeripheralOwner extends BasePeripheralOwner {
 
@@ -82,7 +85,7 @@ public class ModulePeripheralOwner extends BasePeripheralOwner {
     }
 
     @Override
-    public <T> T withPlayer(Function<APFakePlayer, T> function) {
+    public <T> T withPlayer(APFakePlayer.Action<T> function) {
         throw new NotImplementedException();
     }
 
@@ -111,4 +114,18 @@ public class ModulePeripheralOwner extends BasePeripheralOwner {
         return false;
     }
 
+    @Override
+    public <T extends IPeripheral> T getConnectedPeripheral(Class<T> type) {
+        IPeripheral foundPeripheral = Stream.of(ComputerSide.values())
+            .map(side -> computer.getPeripheral(side))
+            .filter(peripheral -> {
+                if (peripheral == null || type.isInstance(peripheral)) {
+                    return false;
+                }
+                return peripheral instanceof IBasePeripheral basePeripheral ? basePeripheral.isEnabled() : true;
+            })
+            .findFirst()
+            .orElse(null);
+        return (T) foundPeripheral;
+    }
 }

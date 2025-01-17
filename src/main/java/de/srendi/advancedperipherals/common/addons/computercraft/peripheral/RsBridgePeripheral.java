@@ -119,6 +119,11 @@ public class RsBridgePeripheral extends BasePeripheral<BlockEntityPeripheralOwne
     }
 
     @Override
+    public MethodResult listCraftableChemicals() {
+        return null;
+    }
+
+    @Override
     @LuaFunction(mainThread = true)
     public final MethodResult listCells() {
         if (!isAvailable())
@@ -305,6 +310,11 @@ public class RsBridgePeripheral extends BasePeripheral<BlockEntityPeripheralOwne
             return notConnected();
 
         return MethodResult.of(RefinedStorage.listFluids(getNetwork()));
+    }
+
+    @Override
+    public MethodResult listChemicals() {
+        return null;
     }
 
     @Override
@@ -502,6 +512,16 @@ public class RsBridgePeripheral extends BasePeripheral<BlockEntityPeripheralOwne
     }
 
     @Override
+    public MethodResult importChemical(IComputerAccess computer, IArguments arguments) throws LuaException {
+        return null;
+    }
+
+    @Override
+    public MethodResult exportchemical(IComputerAccess computer, IArguments arguments) throws LuaException {
+        return null;
+    }
+
+    @Override
     @LuaFunction(mainThread = true)
     public final MethodResult importFluid(IComputerAccess computer, IArguments arguments) throws LuaException {
         if (!isAvailable())
@@ -546,6 +566,11 @@ public class RsBridgePeripheral extends BasePeripheral<BlockEntityPeripheralOwne
             return MethodResult.of(null, filter.getRight());
 
         return MethodResult.of(RefinedStorage.parseFluidStack(RefinedStorage.findFluidFromFilter(getNetwork(), getNetwork().getCraftingManager(), filter.getLeft()), getNetwork()));
+    }
+
+    @Override
+    public MethodResult getChemical(IArguments arguments) throws LuaException {
+        return null;
     }
 
     @Override
@@ -594,8 +619,13 @@ public class RsBridgePeripheral extends BasePeripheral<BlockEntityPeripheralOwne
     }
 
     @Override
+    public MethodResult craftChemical(IComputerAccess computer, IArguments arguments) throws LuaException {
+        return null;
+    }
+
+    @Override
     @LuaFunction(mainThread = true)
-    public MethodResult getCraftingTasks() {
+    public MethodResult getCraftingJobs() {
         if (!isAvailable())
             return notConnected();
 
@@ -604,7 +634,7 @@ public class RsBridgePeripheral extends BasePeripheral<BlockEntityPeripheralOwne
 
     @Override
     @LuaFunction(mainThread = true)
-    public MethodResult cancelCraftingTasks(IArguments arguments) throws LuaException {
+    public MethodResult cancelCraftingJobs(IArguments arguments) throws LuaException {
         if (!isAvailable())
             return notConnected();
 
@@ -693,6 +723,16 @@ public class RsBridgePeripheral extends BasePeripheral<BlockEntityPeripheralOwne
                 return MethodResult.of(true);
         }
         return MethodResult.of(false);
+    }
+
+    @Override
+    public MethodResult isChemicalCraftable(IArguments arguments) throws LuaException {
+        return null;
+    }
+
+    @Override
+    public MethodResult isChemicalCrafting(IArguments arguments) throws LuaException {
+        return null;
     }
 
     @Override

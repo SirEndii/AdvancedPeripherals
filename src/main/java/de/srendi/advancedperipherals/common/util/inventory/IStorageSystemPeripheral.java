@@ -25,13 +25,19 @@ public interface IStorageSystemPeripheral {
 
     MethodResult getFluid(IArguments arguments) throws LuaException;
 
+    MethodResult getChemical(IArguments arguments) throws LuaException;
+
     MethodResult listItems();
 
     MethodResult listFluids();
 
+    MethodResult listChemicals();
+
     MethodResult listCraftableItems();
 
     MethodResult listCraftableFluids();
+
+    MethodResult listCraftableChemicals();
 
     MethodResult listCells();
 
@@ -44,6 +50,10 @@ public interface IStorageSystemPeripheral {
     MethodResult importFluid(IComputerAccess computer, IArguments arguments) throws LuaException;
 
     MethodResult exportFluid(IComputerAccess computer, IArguments arguments) throws LuaException;
+
+    MethodResult importChemical(IComputerAccess computer, IArguments arguments) throws LuaException;
+
+    MethodResult exportchemical(IComputerAccess computer, IArguments arguments) throws LuaException;
 
     MethodResult getFilteredPatterns(IArguments arguments) throws LuaException;
 
@@ -95,11 +105,13 @@ public interface IStorageSystemPeripheral {
 
     MethodResult craftItem(IComputerAccess computer, IArguments arguments) throws LuaException;
 
-    MethodResult getCraftingTasks();
+    MethodResult getCraftingJobs();
 
-    MethodResult cancelCraftingTasks(IArguments arguments) throws LuaException;
+    MethodResult cancelCraftingJobs(IArguments arguments) throws LuaException;
 
     MethodResult craftFluid(IComputerAccess computer, IArguments arguments) throws LuaException;
+
+    MethodResult craftChemical(IComputerAccess computer, IArguments arguments) throws LuaException;
 
     MethodResult isItemCraftable(IArguments arguments) throws LuaException;
 
@@ -108,5 +120,9 @@ public interface IStorageSystemPeripheral {
     MethodResult isFluidCraftable(IArguments arguments) throws LuaException;
 
     MethodResult isFluidCrafting(IArguments arguments) throws LuaException;
+
+    MethodResult isChemicalCraftable(IArguments arguments) throws LuaException;
+
+    MethodResult isChemicalCrafting(IArguments arguments) throws LuaException;
 
 }

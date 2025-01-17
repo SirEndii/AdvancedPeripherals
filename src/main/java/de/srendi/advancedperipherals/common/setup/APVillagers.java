@@ -12,7 +12,7 @@ public class APVillagers {
 
     public static final RegistryObject<PoiType> COMPUTER_SCIENTIST_POI = APRegistration.POI_TYPES.register("computer_scientist", () -> new PoiType(ImmutableSet.copyOf(Registry.ModBlocks.COMPUTER_ADVANCED.get().getStateDefinition().getPossibleStates()), 1, 1));
 
-    public static final RegistryObject<VillagerProfession> COMPUTER_SCIENTIST = APRegistration.VILLAGER_PROFESSIONS.register("computer_scientist", () -> new VillagerProfession(AdvancedPeripherals.MOD_ID + ":computer_scientist", holder -> holder.is(COMPUTER_SCIENTIST_POI.getKey()), holder -> holder.is(COMPUTER_SCIENTIST_POI.getKey()), ImmutableSet.of(), ImmutableSet.of(Registry.ModBlocks.COMPUTER_ADVANCED.get()), SoundEvents.VILLAGER_WORK_TOOLSMITH));
+    public static final RegistryObject<VillagerProfession> COMPUTER_SCIENTIST = APRegistration.VILLAGER_PROFESSIONS.register("computer_scientist", () -> new VillagerProfession(AdvancedPeripherals.getRL("computer_scientist").toString(), holder -> holder.is(COMPUTER_SCIENTIST_POI.getKey()), holder -> holder.is(COMPUTER_SCIENTIST_POI.getKey()), ImmutableSet.of(), ImmutableSet.of(Registry.ModBlocks.COMPUTER_ADVANCED.get()), SoundEvents.VILLAGER_WORK_TOOLSMITH));
 
     protected static void register() {
     }
