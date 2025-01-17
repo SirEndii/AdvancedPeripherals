@@ -53,7 +53,7 @@ public class APFakePlayer extends FakePlayer {
     Highly inspired by https://github.com/SquidDev-CC/plethora/blob/minecraft-1.12/src/main/java/org/squiddev/plethora/gameplay/PlethoraFakePlayer.java
     */
     public static final GameProfile PROFILE = new GameProfile(UUID.fromString("6e483f02-30db-4454-b612-3a167614b276"), "[" + AdvancedPeripherals.MOD_ID + "]");
-    private static final Predicate<Entity> collidablePredicate = EntitySelector.NO_SPECTATORS;
+    private static final Predicate<Entity> DEFAULT_ENTITY_FILTER = EntitySelector.NO_SPECTATORS.and(LivingEntity.class::isInstance).and((entity) -> !entity.isPassenger());
 
     private BlockPos source = null;
     private BlockPos digPosition = null;
@@ -300,11 +300,11 @@ public class APFakePlayer extends FakePlayer {
     }
 
     public HitResult findHit(boolean skipEntity, boolean skipBlock) {
-        return findHit(skipEntity, skipBlock, null);
+        return findHit(skipEntity, skipBlock, DEFAULT_ENTITY_FILTER);
     }
 
     @NotNull
-    public HitResult findHit(boolean skipEntity, boolean skipBlock, @Nullable Predicate<Entity> entityFilter) {
+    public HitResult findHit(boolean skipEntity, boolean skipBlock, @NotNull Predicate<Entity> entityFilter) {
         double range = this.getReachRange();
         Vec3 origin = new Vec3(this.getX(), this.getY(), this.getZ());
         Vec3 look = this.getLookAngle();
@@ -322,12 +322,8 @@ public class APFakePlayer extends FakePlayer {
             return blockHit;
         }
 
-        Predicate<Entity> entitySelector = collidablePredicate.and(LivingEntity.class::isInstance).and((entity) -> !entity.isPassenger());
-        if (entityFilter != null) {
-            // TODO: maybe let entityFilter returns the priority of the entity, instead of only returns the closest one.
-            entitySelector.and(entityFilter);
-        }
-        EntityHitResult entityHit = HitResultUtil.getEntityHitResult(origin, target, level, this, entitySelector);
+        // TODO: maybe let entityFilter returns the priority of the entity, instead of only returns the closest one.
+        EntityHitResult entityHit = HitResultUtil.getEntityHitResult(origin, target, level, this, entityFilter);
         if (entityHit.getType() == HitResult.Type.ENTITY) {
             return entityHit;
         }

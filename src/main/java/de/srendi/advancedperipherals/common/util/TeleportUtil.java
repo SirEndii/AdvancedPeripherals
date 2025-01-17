@@ -31,7 +31,9 @@ public final class TeleportUtil {
         }
         for (Entity p : passengers) {
             Entity newPassenger = teleportToWithPassengers(p, newLevel, p.position().subtract(oldPos).add(newPos));
-            newPassenger.startRiding(newEntity, true);
+            if (newPassenger != null) {
+                newPassenger.startRiding(newEntity, true);
+            }
         }
         return newEntity;
     }

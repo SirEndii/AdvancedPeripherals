@@ -20,6 +20,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.HasCustomInventoryScreen;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -87,7 +88,7 @@ public class TurtleSeatEntity extends Entity implements HasCustomInventoryScreen
 
     public Vec3 getTurtlePos() {
         BlockPos pos = this.turtle.getPosition();
-        return new Vec3(pos.getX() + 0.5, pos.getY() + 0.4, pos.getZ() + 0.5);
+        return Vec3.atCenterOf(pos);
     }
 
     @Override
@@ -132,13 +133,18 @@ public class TurtleSeatEntity extends Entity implements HasCustomInventoryScreen
     }
 
     @Override
+    public Vec3 getDismountLocationForPassenger(LivingEntity entity) {
+        return this.getTurtlePos().add(0, 0.4, 0);
+    }
+
+    @Override
     public Entity getControllingPassenger() {
         return null; // this.getFirstPassenger();
     }
 
     @Override
     public double getPassengersRidingOffset() {
-        return 0.15;
+        return 0.05;
     }
 
     @Override

@@ -45,6 +45,11 @@ public class SaddleTurtleScreen extends GuiComponent implements IGuiOverlay {
         return getFont().width(text);
     }
 
+    public static boolean isPlayerControllingTurtle() {
+        LocalPlayer player = Minecraft.getInstance().player;
+        return player != null && player.getVehicle() instanceof TurtleSeatEntity;
+    }
+
     public static boolean isPlayerMountedOnTurtle() {
         LocalPlayer player = Minecraft.getInstance().player;
         return player != null && player.getRootVehicle() instanceof TurtleSeatEntity;
@@ -143,6 +148,8 @@ public class SaddleTurtleScreen extends GuiComponent implements IGuiOverlay {
         if (this.shouldRenderFuelBar()) {
             this.renderFuelBar(poseStack);
         }
-        this.renderDismountHint(poseStack);
+        if (isPlayerControllingTurtle()) {
+            this.renderDismountHint(poseStack);
+        }
     }
 }

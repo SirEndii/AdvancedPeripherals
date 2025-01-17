@@ -23,7 +23,7 @@ public class APEntities {
             .build("turtle_ender_pearl"));
     public static final RegistryObject<EntityType<TurtleSeatEntity>> TURTLE_SEAT = APRegistration.ENTITIES.register("turtle_seat",
         () -> EntityType.Builder.<TurtleSeatEntity>of(TurtleSeatEntity::new, MobCategory.MISC)
-            .sized(0.8F, 0.4F)
+            .sized(0.8F, 0.8F)
             .clientTrackingRange(4)
             .updateInterval(1)
             .fireImmune()

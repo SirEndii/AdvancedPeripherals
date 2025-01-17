@@ -21,8 +21,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
@@ -170,7 +173,9 @@ public class SaddlePeripheral extends BasePeripheral<TurtlePeripheralOwner> {
             return MethodResult.of(null, "Another entity is riding");
         }
         return withOperation(SADDLE_CAPTURE, null, null, context -> {
-            Predicate<Entity> suitableEntity = Entity::isAlive;
+            Predicate<Entity> suitableEntity = EntitySelector.NO_SPECTATORS
+                .and((entity) -> entity instanceof LivingEntity || entity instanceof AbstractMinecart || entity instanceof Boat)
+                .and((entity) -> !entity.isPassenger());
             if (!APConfig.PERIPHERALS_CONFIG.allowSaddleTurtleCapturePlayer.get()) {
                 suitableEntity = suitableEntity.and((entity) -> !(entity instanceof Player));
             }
@@ -183,7 +188,7 @@ public class SaddlePeripheral extends BasePeripheral<TurtlePeripheralOwner> {
                     return MethodResult.of(null, "Nothing found");
                 }
             }
-            LivingEntity entity = (LivingEntity) ((EntityHitResult) entityHit).getEntity();
+            Entity entity = ((EntityHitResult) entityHit).getEntity();
             if (!sitDown(entity)) {
                 return MethodResult.of(null, "Entity cannot sit");
             }
