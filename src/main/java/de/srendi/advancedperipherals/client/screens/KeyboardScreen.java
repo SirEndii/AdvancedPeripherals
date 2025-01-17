@@ -43,7 +43,7 @@ public class KeyboardScreen extends BaseScreen<KeyboardContainer> {
             scale = 1f;
 
         poseStack.scale(scale, scale, 1);
-        String text = "Press ESC to close the Keyboard Screen.";
+        Component text = Component.translatable("text.advancedperipherals.keyboard.close");
         float textX = (screenWidth / 2f - minecraft.font.width(text) * scale / 2f) / scale;
         minecraft.font.drawShadow(poseStack, text, textX, 1, 0xFFFFFF);
     }

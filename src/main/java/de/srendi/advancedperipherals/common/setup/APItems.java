@@ -2,6 +2,7 @@ package de.srendi.advancedperipherals.common.setup;
 
 import de.srendi.advancedperipherals.common.configuration.APConfig;
 import de.srendi.advancedperipherals.common.items.APItem;
+import de.srendi.advancedperipherals.common.items.KeyboardItem;
 import de.srendi.advancedperipherals.common.items.MemoryCardItem;
 import de.srendi.advancedperipherals.common.items.SmartGlassesInterfaceItem;
 import de.srendi.advancedperipherals.common.items.SmartGlassesItem;
@@ -20,6 +21,7 @@ public class APItems {
     public static final RegistryObject<Item> END_AUTOMATA_CORE = APRegistration.ITEMS.register("end_automata_core", () -> new APItem(new Item.Properties().stacksTo(1), APConfig.METAPHYSICS_CONFIG.enableEndAutomataCore));
     public static final RegistryObject<HotkeyModuleItem> HOTKEY_MODULE = APRegistration.ITEMS.register("hotkey_module", HotkeyModuleItem::new);
     public static final RegistryObject<Item> HUSBANDRY_AUTOMATA_CORE = APRegistration.ITEMS.register("husbandry_automata_core", () -> new APItem(new Item.Properties().stacksTo(1), APConfig.METAPHYSICS_CONFIG.enableHusbandryAutomataCore));
+    public static final RegistryObject<KeyboardItem> KEYBOARD = APRegistration.ITEMS.register("keyboard", KeyboardItem::new);
     public static final RegistryObject<Item> MEMORY_CARD = APRegistration.ITEMS.register("memory_card", MemoryCardItem::new);
     public static final RegistryObject<NightVisionModuleItem> NIGHT_VISION_MODULE = APRegistration.ITEMS.register("nightvision_module", NightVisionModuleItem::new);
     public static final RegistryObject<OverlayGlassesItem> OVERLAY_MODULE = APRegistration.ITEMS.register("overlay_module", OverlayGlassesItem::new);

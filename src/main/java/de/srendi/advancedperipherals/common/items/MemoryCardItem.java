@@ -31,7 +31,7 @@ public class MemoryCardItem extends BaseItem {
         super.appendHoverText(stack, levelIn, tooltip, flagIn);
         CompoundTag data = stack.getOrCreateTag();
         if (data.contains("ownerId")) {
-            tooltip.add(EnumColor.buildTextComponent(Component.translatable("item.advancedperipherals.tooltip.binding.boundto", data.getString("ownerId"))));
+            tooltip.add(EnumColor.buildTextComponent(Component.translatable("item.advancedperipherals.tooltip.binding.bound_to", data.getString("ownerId"))));
         }
     }
 
