@@ -54,7 +54,7 @@ public class AutomataBlockHandPlugin extends AutomataCorePlugin {
 
     @Override
     public @Nullable IPeripheralOperation<?>[] getOperations() {
-        return new IPeripheralOperation[]{DIG, USE_ON_BLOCK};
+        return new IPeripheralOperation[]{DIG, USE_ON_BLOCK, ACCURE_PLACE, UPDATE_BLOCK};
     }
 
     @LuaFunction(mainThread = true)
