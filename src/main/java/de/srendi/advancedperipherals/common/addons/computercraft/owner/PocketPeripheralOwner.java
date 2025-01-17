@@ -1,9 +1,11 @@
 package de.srendi.advancedperipherals.common.addons.computercraft.owner;
 
+import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.pocket.IPocketAccess;
 import de.srendi.advancedperipherals.common.configuration.APConfig;
 import de.srendi.advancedperipherals.common.util.DataStorageUtil;
 import de.srendi.advancedperipherals.common.util.fakeplayer.APFakePlayer;
+import de.srendi.advancedperipherals.lib.peripherals.IBasePeripheral;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.FrontAndTop;
@@ -12,10 +14,10 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
+import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Function;
 
 public class PocketPeripheralOwner extends BasePeripheralOwner {
     private final IPocketAccess pocket;
@@ -47,6 +49,14 @@ public class PocketPeripheralOwner extends BasePeripheralOwner {
         Entity owner = pocket.getEntity();
         if (owner == null) return new BlockPos(0, 0, 0);
         return owner.blockPosition();
+    }
+
+    @NotNull
+    @Override
+    public Vec3 getCenterPos() {
+        Entity owner = pocket.getEntity();
+        if (owner == null) return new Vec3(0, 0, 0);
+        return owner.position();
     }
 
     @NotNull
@@ -87,8 +97,8 @@ public class PocketPeripheralOwner extends BasePeripheralOwner {
     }
 
     @Override
-    public <T> T withPlayer(Function<APFakePlayer, T> function) {
-        throw new RuntimeException("Not implemented yet");
+    public <T> T withPlayer(APFakePlayer.Action<T> function) {
+        throw new NotImplementedException();
     }
 
     @Override
@@ -98,13 +108,12 @@ public class PocketPeripheralOwner extends BasePeripheralOwner {
 
     @Override
     public ItemStack storeItem(ItemStack stored) {
-        // Tricks with inventory needed
-        throw new RuntimeException("Not implemented yet");
+        throw new NotImplementedException();
     }
 
     @Override
     public void destroyUpgrade() {
-        throw new RuntimeException("Not implemented yet");
+        throw new NotImplementedException();
     }
 
     @Override
@@ -115,5 +124,19 @@ public class PocketPeripheralOwner extends BasePeripheralOwner {
     @Override
     public boolean move(@NotNull Level level, @NotNull BlockPos pos) {
         return false;
+    }
+
+    @Override
+    public <T extends IPeripheral> T getConnectedPeripheral(Class<T> type) {
+        IPeripheral foundPeripheral = pocket.getUpgrades().values().stream()
+            .filter(peripheral -> {
+                if (peripheral == null || type.isInstance(peripheral)) {
+                    return false;
+                }
+                return peripheral instanceof IBasePeripheral basePeripheral ? basePeripheral.isEnabled() : true;
+            })
+            .findFirst()
+            .orElse(null);
+        return (T) foundPeripheral;
     }
 }

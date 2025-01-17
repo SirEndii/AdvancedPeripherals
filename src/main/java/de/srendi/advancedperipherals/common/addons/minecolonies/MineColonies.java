@@ -9,7 +9,11 @@ import com.minecolonies.api.colony.managers.interfaces.IRegisteredStructureManag
 import com.minecolonies.api.colony.permissions.Action;
 import com.minecolonies.api.colony.workorders.IWorkOrder;
 import com.minecolonies.api.entity.citizen.Skill;
-import com.minecolonies.api.research.*;
+import com.minecolonies.api.research.IGlobalResearch;
+import com.minecolonies.api.research.IGlobalResearchTree;
+import com.minecolonies.api.research.ILocalResearch;
+import com.minecolonies.api.research.ILocalResearchTree;
+import com.minecolonies.api.research.IResearchRequirement;
 import com.minecolonies.api.research.costs.IResearchCost;
 import com.minecolonies.api.research.effects.IResearchEffect;
 import com.minecolonies.api.research.util.ResearchState;
@@ -107,7 +111,7 @@ public class MineColonies {
         map.put("saturation", visitor.getSaturation());
         map.put("happiness", visitor.getCitizenHappinessHandler().getHappiness(visitor.getColony(), visitor));
         map.put("skills", skillsToObject(visitor.getCitizenSkillHandler().getSkills()));
-        map.put("recruitCost", LuaConverter.stackToObject(visitor.getRecruitCost()));
+        map.put("recruitCost", LuaConverter.itemStackToObject(visitor.getRecruitCost()));
 
         return map;
     }
@@ -349,7 +353,7 @@ public class MineColonies {
             Map<String, Object> map = new HashMap<>();
             ItemStack stack = resource.getItemStack().copy();
 
-            map.put("item", LuaConverter.stackToObject(stack));
+            map.put("item", LuaConverter.itemStackToObject(stack));
             map.put("displayName", resource.getName());
             map.put("available", resource.getAvailable());
             map.put("delivering", resource.getAmountInDelivery());

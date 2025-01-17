@@ -5,7 +5,6 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.turtle.ITurtleAccess;
-import dan200.computercraft.api.turtle.TurtleSide;
 import dan200.computercraft.core.apis.TableHelper;
 import dan200.computercraft.shared.turtle.core.TurtlePlayer;
 import de.srendi.advancedperipherals.common.addons.computercraft.operations.SingleOperationContext;
@@ -27,24 +26,25 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SignItem;
 import net.minecraft.world.item.context.DirectionalPlaceContext;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import java.util.Collections;
 import java.util.Map;
-import java.util.stream.Stream;
 
-import static de.srendi.advancedperipherals.common.addons.computercraft.operations.SingleOperation.DIG;
-import static de.srendi.advancedperipherals.common.addons.computercraft.operations.SingleOperation.USE_ON_BLOCK;
 import static de.srendi.advancedperipherals.common.addons.computercraft.operations.SingleOperation.ACCURE_PLACE;
+import static de.srendi.advancedperipherals.common.addons.computercraft.operations.SingleOperation.DIG;
+import static de.srendi.advancedperipherals.common.addons.computercraft.operations.SingleOperation.UPDATE_BLOCK;
+import static de.srendi.advancedperipherals.common.addons.computercraft.operations.SingleOperation.USE_ON_BLOCK;
 
 public class AutomataBlockHandPlugin extends AutomataCorePlugin {
 
@@ -69,12 +69,12 @@ public class AutomataBlockHandPlugin extends AutomataCorePlugin {
             int previousDamageValue = selectedTool.getDamageValue();
             Pair<Boolean, String> result = owner.withPlayer(APFakePlayer.wrapActionWithShiftKey(sneak, APFakePlayer.wrapActionWithRot(yaw, pitch, APFakePlayer::digBlock)));
             if (!result.getLeft()) {
-                return MethodResult.of(null, result.getRight());
+                return MethodResult.of(false, result.getRight());
             }
-            if (automataCore.hasAttribute(AutomataCorePeripheral.ATTR_STORING_TOOL_DURABILITY)) {
+            if (automataCore.canActiveOverpower() && automataCore.afterOverpowerAction()) {
                 selectedTool.setDamageValue(previousDamageValue);
             }
-            return MethodResult.of(true);
+            return MethodResult.of(true, result.getRight());
         });
     }
 
@@ -89,7 +89,7 @@ public class AutomataBlockHandPlugin extends AutomataCorePlugin {
             ItemStack selectedTool = owner.getToolInMainHand();
             int previousDamageValue = selectedTool.getDamageValue();
             InteractionResult result = owner.withPlayer(APFakePlayer.wrapActionWithShiftKey(sneak, APFakePlayer.wrapActionWithRot(yaw, pitch, APFakePlayer::useOnBlock)));
-            if (automataCore.hasAttribute(AutomataCorePeripheral.ATTR_STORING_TOOL_DURABILITY)) {
+            if (result.consumesAction() && automataCore.canActiveOverpower() && automataCore.afterOverpowerAction()) {
                 selectedTool.setDamageValue(previousDamageValue);
             }
             return MethodResult.of(result.consumesAction(), result.toString());
@@ -97,8 +97,62 @@ public class AutomataBlockHandPlugin extends AutomataCorePlugin {
     }
 
     /**
+     * updateBlock method let turtle update specific block's status.
+     * It require a compass to be equipped to perform actions.
+     *
+     * @param options A table contains where to find the block and how to update the block
+     *   yaw: relative yaw
+     *   pitch: relative pitch
+     *
+     *   text: the text going to write if the target is a sign.
+     */
+    @LuaFunction(mainThread = true)
+    public final MethodResult updateBlock(@NotNull IArguments arguments) throws LuaException {
+        if (!automataCore.getPeripheralOwner().hasConnectedPeripheral(CompassPeripheral.class)) {
+            return MethodResult.of(false, "COMPASS_NOT_EQUIPPED");
+        }
+        Map<?, ?> opts = arguments.count() > 0 ? arguments.getTable(0) : Collections.emptyMap();
+        float yaw = opts != null ? (float) TableHelper.optNumberField(opts, "yaw", 0) : 0;
+        float pitch = opts != null ? (float) TableHelper.optNumberField(opts, "pitch", 0) : 0;
+        return automataCore.withOperation(UPDATE_BLOCK, context -> {
+            TurtlePeripheralOwner owner = automataCore.getPeripheralOwner();
+            ItemStack selectedTool = owner.getToolInMainHand();
+            int previousDamageValue = selectedTool.getDamageValue();
+            InteractionResult result = owner.withPlayer(APFakePlayer.wrapActionWithRot(yaw, pitch, (player) -> this.updateBlock(player, opts)));
+            if (result.consumesAction() && automataCore.canActiveOverpower() && automataCore.afterOverpowerAction()) {
+                selectedTool.setDamageValue(previousDamageValue);
+            }
+            return MethodResult.of(result.consumesAction(), result.toString());
+        });
+    }
+
+    private InteractionResult updateBlock(APFakePlayer player, Map<?, ?> options) {
+        Level world = player.getLevel();
+        HitResult hit = player.findHit(true, false);
+        if (!(hit instanceof BlockHitResult blockHit)) {
+            return InteractionResult.PASS;
+        }
+        BlockPos pos = blockHit.getBlockPos();
+        BlockEntity block = world.getBlockEntity(pos);
+        if (block instanceof SignBlockEntity sign) {
+            String text;
+            try {
+                text = TableHelper.optStringField(options, "text", null);
+            } catch (LuaException e) {
+                // Why not allow empty catch block? TAT
+                text = null;
+            }
+            if (text != null) {
+                setSignText(world, sign, StringUtil.convertAndToSectionMark(text));
+                return InteractionResult.CONSUME;
+            }
+        }
+        return InteractionResult.PASS;
+    }
+
+    /**
      * placeBlock method will let turtle place a block with more details when compass has equipped.
-     * It should not able to place fluids / use any item, because compass do not recognize them.
+     * It should not able to place fluids / use any item, because compass does not recognize them.
      *
      * @param options A table contains how to place the block:
      *   x: the x offset relative to the turtle. Default 0
@@ -110,10 +164,9 @@ public class AutomataBlockHandPlugin extends AutomataCorePlugin {
      *   text: the text going to write on the sign. Default is null
      */
     @LuaFunction(mainThread = true)
-    public MethodResult placeBlock(@NotNull Map<?, ?> options) throws LuaException {
+    public final MethodResult placeBlock(@NotNull Map<?, ?> options) throws LuaException {
         ITurtleAccess turtle = automataCore.getPeripheralOwner().getTurtle();
-        CompassPeripheral compassPeripheral = Stream.of(TurtleSide.values()).map(side -> turtle.getPeripheral(side) instanceof CompassPeripheral compass ? compass : null).filter(peripheral -> peripheral != null).findFirst().orElse(null);
-        if (compassPeripheral == null || !compassPeripheral.isEnabled()) {
+        if (!automataCore.getPeripheralOwner().hasConnectedPeripheral(CompassPeripheral.class)) {
             return MethodResult.of(false, "COMPASS_NOT_EQUIPPED");
         }
         int x = TableHelper.optIntField(options, "x", 0);
@@ -176,12 +229,12 @@ public class AutomataBlockHandPlugin extends AutomataCorePlugin {
         if (!(item instanceof BlockItem)) {
             return "NOT_BLOCK";
         }
-        BlockItem block = (BlockItem) item;
-        InteractionResult res = block.place(context);
+        BlockItem blockItem = (BlockItem) item;
+        InteractionResult res = blockItem.place(context);
         if (!res.consumesAction()) {
             return "CANNOT_PLACE";
         }
-        if (block instanceof SignItem) {
+        if (blockItem instanceof SignItem) {
             BlockEntity blockEntity = world.getBlockEntity(position);
             if (blockEntity instanceof SignBlockEntity sign) {
                 String text = StringUtil.convertAndToSectionMark(TableHelper.optStringField(options, "text", null));

@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+For now, just a prototype changelog so I don't need to remember/search everything I did
+### Added
+- NBT Hashes for filters and item/fluid properties. Lightweight version of the fingerprints, cc also uses nbt hashes for everything nbt related
+
 ## [1.19.2-0.7.37r] - 2024-10-06
 
 ### Added

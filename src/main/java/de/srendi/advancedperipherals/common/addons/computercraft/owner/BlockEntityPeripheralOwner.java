@@ -1,5 +1,6 @@
 package de.srendi.advancedperipherals.common.addons.computercraft.owner;
 
+import dan200.computercraft.api.peripheral.IPeripheral;
 import de.srendi.advancedperipherals.common.blocks.base.BaseBlock;
 import de.srendi.advancedperipherals.common.blocks.blockentities.InventoryManagerEntity;
 import de.srendi.advancedperipherals.common.util.DataStorageUtil;
@@ -14,13 +15,12 @@ import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.JigsawBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
-import java.util.function.Function;
 
 public class BlockEntityPeripheralOwner<T extends BlockEntity & IPeripheralTileEntity> extends BasePeripheralOwner {
 
@@ -61,7 +61,7 @@ public class BlockEntityPeripheralOwner<T extends BlockEntity & IPeripheralTileE
     @NotNull
     @Override
     public Direction getFacing() {
-        return tileEntity.getBlockState().getValue(JigsawBlock.ORIENTATION).front();
+        return getOrientation().front();
     }
 
     @NotNull
@@ -90,8 +90,8 @@ public class BlockEntityPeripheralOwner<T extends BlockEntity & IPeripheralTileE
     }
 
     @Override
-    public <T1> T1 withPlayer(Function<APFakePlayer, T1> function) {
-        throw new RuntimeException("Not implemented yet");
+    public <T1> T1 withPlayer(APFakePlayer.Action<T1> function) {
+        throw new NotImplementedException();
     }
 
     @Override
@@ -102,7 +102,7 @@ public class BlockEntityPeripheralOwner<T extends BlockEntity & IPeripheralTileE
     @Override
     public ItemStack storeItem(ItemStack stored) {
         // TODO: tricks with capability needed
-        throw new RuntimeException("Not implemented yet");
+        throw new NotImplementedException();
     }
 
     @Override
@@ -123,5 +123,10 @@ public class BlockEntityPeripheralOwner<T extends BlockEntity & IPeripheralTileE
     public BlockEntityPeripheralOwner<T> attachFuel() {
         attachAbility(PeripheralOwnerAbility.FUEL, new TileEntityFuelAbility<>(this));
         return this;
+    }
+
+    @Override
+    public <U extends IPeripheral> U getConnectedPeripheral(Class<U> type) {
+        throw new NotImplementedException();
     }
 }

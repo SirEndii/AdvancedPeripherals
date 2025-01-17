@@ -17,16 +17,16 @@ import de.srendi.advancedperipherals.common.addons.computercraft.owner.TurtlePer
 import de.srendi.advancedperipherals.common.blocks.base.PeripheralBlockEntity;
 import de.srendi.advancedperipherals.common.configuration.APConfig;
 import de.srendi.advancedperipherals.common.events.Events;
+import de.srendi.advancedperipherals.common.network.APNetworking;
+import de.srendi.advancedperipherals.common.network.toclient.ToastToClientPacket;
 import de.srendi.advancedperipherals.common.util.CoordUtil;
 import de.srendi.advancedperipherals.common.util.StringUtil;
 import de.srendi.advancedperipherals.lib.peripherals.BasePeripheral;
 import de.srendi.advancedperipherals.lib.peripherals.IPeripheralFunction;
-import de.srendi.advancedperipherals.network.APNetworking;
-import de.srendi.advancedperipherals.network.toclient.ToastToClientPacket;
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentContents;
-import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
@@ -35,7 +35,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.server.ServerLifecycleHooks;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,12 +43,12 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-import static de.srendi.advancedperipherals.common.commands.APCommands.ROOT_SAFE_EXEC_LITERAL;
 import static de.srendi.advancedperipherals.common.addons.computercraft.operations.SimpleFreeOperation.CHAT_MESSAGE;
+import static de.srendi.advancedperipherals.common.commands.APCommands.ROOT_SAFE_EXEC_LITERAL;
 
 public class ChatBoxPeripheral extends BasePeripheral<IPeripheralOwner> {
 
-    public static final String PERIPHERAL_TYPE = "chatBox";
+    public static final String PERIPHERAL_TYPE = "chat_box";
 
     private long lastConsumedMessage;
 
@@ -251,7 +250,7 @@ public class ChatBoxPeripheral extends BasePeripheral<IPeripheralOwner> {
                 if (!APConfig.PERIPHERALS_CONFIG.chatBoxMultiDimensional.get() && player.getLevel().dimension() != dimension) {
                     continue;
                 }
-                if (CoordUtil.isInRange(getPos(), getLevel(), player, range, maxRange)) {
+                if (CoordUtil.isInRange(getWorldPos(), getLevel(), player, range, maxRange)) {
                     player.sendSystemMessage(preparedMessage);
                 }
             }
@@ -294,7 +293,7 @@ public class ChatBoxPeripheral extends BasePeripheral<IPeripheralOwner> {
                 if (!APConfig.PERIPHERALS_CONFIG.chatBoxMultiDimensional.get() && player.getLevel().dimension() != dimension) {
                     continue;
                 }
-                if (CoordUtil.isInRange(getPos(), getLevel(), player, range, maxRange)) {
+                if (CoordUtil.isInRange(getWorldPos(), getLevel(), player, range, maxRange)) {
                     player.sendSystemMessage(preparedMessage);
                 }
             }
@@ -341,7 +340,7 @@ public class ChatBoxPeripheral extends BasePeripheral<IPeripheralOwner> {
                 return MethodResult.of(false, "NOT_SAME_DIMENSION");
             }
 
-            if (CoordUtil.isInRange(getPos(), getLevel(), player, range, maxRange)) {
+            if (CoordUtil.isInRange(getWorldPos(), getLevel(), player, range, maxRange)) {
                 player.sendSystemMessage(preparedMessage);
             }
             return MethodResult.of(true);
@@ -399,7 +398,7 @@ public class ChatBoxPeripheral extends BasePeripheral<IPeripheralOwner> {
                 return MethodResult.of(false, "NOT_SAME_DIMENSION");
             }
 
-            if (CoordUtil.isInRange(getPos(), getLevel(), player, range, maxRange)) {
+            if (CoordUtil.isInRange(getWorldPos(), getLevel(), player, range, maxRange)) {
                 ToastToClientPacket packet = new ToastToClientPacket(titleComponent, preparedMessage);
                 APNetworking.sendTo(packet, player);
             }
@@ -438,7 +437,7 @@ public class ChatBoxPeripheral extends BasePeripheral<IPeripheralOwner> {
                 return MethodResult.of(false, "NOT_SAME_DIMENSION");
             }
 
-            if (CoordUtil.isInRange(getPos(), getLevel(), player, range, maxRange)) {
+            if (CoordUtil.isInRange(getWorldPos(), getLevel(), player, range, maxRange)) {
                 player.sendSystemMessage(preparedMessage, false);
             }
             return MethodResult.of(true);
@@ -477,7 +476,7 @@ public class ChatBoxPeripheral extends BasePeripheral<IPeripheralOwner> {
                 return MethodResult.of(false, "NOT_SAME_DIMENSION");
             }
 
-            if (CoordUtil.isInRange(getPos(), getLevel(), player, range, maxRange)) {
+            if (CoordUtil.isInRange(getWorldPos(), getLevel(), player, range, maxRange)) {
                 ToastToClientPacket packet = new ToastToClientPacket(Component.literal(title), preparedMessage);
                 APNetworking.sendTo(packet, player);
             }

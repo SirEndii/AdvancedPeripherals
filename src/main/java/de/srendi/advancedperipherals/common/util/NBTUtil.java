@@ -4,8 +4,20 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import de.srendi.advancedperipherals.AdvancedPeripherals;
 import de.srendi.advancedperipherals.common.configuration.APConfig;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.*;
+import net.minecraft.core.Registry;
+import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.DoubleTag;
+import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.TagParser;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraftforge.server.ServerLifecycleHooks;
 import org.apache.logging.log4j.Level;
 
 import java.util.Map;
@@ -63,6 +75,18 @@ public class NBTUtil {
 
     public static BlockPos blockPosFromNBT(CompoundTag nbt) {
         return new BlockPos(nbt.getInt("x"), nbt.getInt("y"), nbt.getInt("z"));
+    }
+
+    public static Pair<net.minecraft.world.level.Level, BlockPos> levelAndBlockPosFromNBT(CompoundTag nbt) {
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        ServerLevel level = server.getLevel(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(nbt.getString("dim"))));
+        return new Pair(level, blockPosFromNBT(nbt));
+    }
+
+    public static CompoundTag toNBT(net.minecraft.world.level.Level level, BlockPos pos) {
+        CompoundTag data = toNBT(pos);
+        data.putString("dim", level.dimension().location().toString());
+        return data;
     }
 
     public static CompoundTag toNBT(ChunkPos pos) {

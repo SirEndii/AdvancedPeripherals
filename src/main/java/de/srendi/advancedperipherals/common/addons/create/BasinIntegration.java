@@ -6,10 +6,10 @@ import de.srendi.advancedperipherals.common.util.LuaConverter;
 import de.srendi.advancedperipherals.lib.peripherals.BlockEntityIntegrationPeripheral;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -68,7 +68,7 @@ public class BasinIntegration extends BlockEntityIntegrationPeripheral<BasinBloc
 
     @LuaFunction(mainThread = true)
     public final Map<String, Object> getFilter() {
-        return LuaConverter.stackToObject(blockEntity.getFilter().getFilter());
+        return LuaConverter.itemStackToObject(blockEntity.getFilter().getFilter());
     }
 
     @LuaFunction(mainThread = true)
@@ -78,7 +78,7 @@ public class BasinIntegration extends BlockEntityIntegrationPeripheral<BasinBloc
         IItemHandler handler = handlerOptional.get();
         List<Object> items = new ArrayList<>();
         for (int slot = 0; slot < handler.getSlots(); slot++) {
-            items.add(LuaConverter.stackToObject(handler.getStackInSlot(slot)));
+            items.add(LuaConverter.itemStackToObject(handler.getStackInSlot(slot)));
         }
         return items;
     }

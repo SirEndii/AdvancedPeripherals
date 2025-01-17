@@ -15,8 +15,8 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.registries.ForgeRegistries;
-
 import org.jetbrains.annotations.NotNull;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -84,7 +84,7 @@ public class AutomataItemSuckPlugin extends AutomataCorePlugin {
         int index = 1;
         for (ItemEntity item : items) {
             ItemStack stack = item.getItem();
-            Map<String, Object> itemData = LuaConverter.stackToObject(stack);
+            Map<String, Object> itemData = LuaConverter.itemStackToObject(stack);
             itemData.put("entityID", item.getId());
             data.put(index, itemData);
             index++;

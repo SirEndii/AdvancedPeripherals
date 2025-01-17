@@ -4,7 +4,6 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.LiteralCommandNode;
-
 import dan200.computercraft.core.computer.ComputerSide;
 import dan200.computercraft.core.computer.Environment;
 import dan200.computercraft.shared.command.UserLevel;
@@ -12,11 +11,9 @@ import dan200.computercraft.shared.command.text.ChatHelpers;
 import dan200.computercraft.shared.command.text.TableBuilder;
 import dan200.computercraft.shared.computer.core.ServerComputer;
 import dan200.computercraft.shared.computer.core.ServerContext;
-
 import de.srendi.advancedperipherals.AdvancedPeripherals;
 import de.srendi.advancedperipherals.common.addons.computercraft.peripheral.ChunkyPeripheral;
 import de.srendi.advancedperipherals.common.util.inventory.ItemUtil;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -46,8 +43,8 @@ public class APCommands {
                 .executes(APCommands::safeExecute))
             .build();
         event.getDispatcher().register(Commands.literal(ROOT_LITERAL)
-            .then(Commands.literal("getHashItem").executes(context -> getHashItem(context.getSource())))
-            .then(Commands.literal(FORCELOAD_LITERAL)
+                .then(Commands.literal("getHashItem")
+                        .executes(context -> getHashItem(context.getSource()))).then(Commands.literal(FORCELOAD_LITERAL)
                 .executes(context -> forceloadHelp(context.getSource()))
                 .then(Commands.literal("help")
                     .executes(context -> forceloadHelp(context.getSource())))

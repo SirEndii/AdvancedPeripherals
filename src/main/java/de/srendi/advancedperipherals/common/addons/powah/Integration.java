@@ -1,8 +1,8 @@
 package de.srendi.advancedperipherals.common.addons.powah;
 
 import de.srendi.advancedperipherals.common.addons.computercraft.integrations.IntegrationPeripheralProvider;
-import owmii.powah.block.energycell.EnergyCellTile;
 import owmii.powah.block.ender.EnderCellTile;
+import owmii.powah.block.energycell.EnergyCellTile;
 import owmii.powah.block.furnator.FurnatorTile;
 import owmii.powah.block.magmator.MagmatorTile;
 import owmii.powah.block.reactor.ReactorPartTile;

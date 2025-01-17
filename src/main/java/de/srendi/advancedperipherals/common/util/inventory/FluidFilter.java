@@ -1,10 +1,13 @@
 package de.srendi.advancedperipherals.common.util.inventory;
 
+import appeng.api.stacks.AEFluidKey;
+import appeng.api.stacks.GenericStack;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.core.apis.TableHelper;
 import de.srendi.advancedperipherals.AdvancedPeripherals;
 import de.srendi.advancedperipherals.common.util.NBTUtil;
 import de.srendi.advancedperipherals.common.util.Pair;
+import de.srendi.advancedperipherals.common.util.RegistryUtil;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -17,11 +20,12 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Map;
 
-public class FluidFilter {
+public class FluidFilter extends GenericFilter<FluidStack> {
 
     private Fluid fluid = Fluids.EMPTY;
     private TagKey<Fluid> tag = null;
     private CompoundTag nbt = null;
+    private String nbtHash = null;
     private int count = 1000;
     private String fingerprint = "";
 
@@ -38,11 +42,18 @@ public class FluidFilter {
                 String name = TableHelper.getStringField(item, "name");
                 if (name.startsWith("#")) {
                     fluidFilter.tag = TagKey.create(Registry.FLUID_REGISTRY, new ResourceLocation(name.substring(1)));
-                } else if ((fluidFilter.fluid = ItemUtil.getRegistryEntry(name, ForgeRegistries.FLUIDS)) == null) {
+                } else if ((fluidFilter.fluid = RegistryUtil.getRegistryEntry(name, ForgeRegistries.FLUIDS)) == null) {
                     return Pair.of(null, "FLUID_NOT_FOUND");
                 }
             } catch (LuaException luaException) {
                 return Pair.of(null, "NO_VALID_FLUID");
+            }
+        }
+        if (item.containsKey("nbtHash")) {
+            try {
+                fluidFilter.nbtHash = TableHelper.getStringField(item, "nbtHash");
+            } catch (LuaException luaException) {
+                return Pair.of(null, "NO_VALID_NBT_HASH");
             }
         }
         if (item.containsKey("nbt")) {
@@ -83,7 +94,7 @@ public class FluidFilter {
     }
 
     public boolean isEmpty() {
-        return fingerprint.isEmpty() && fluid == Fluids.EMPTY && tag == null && nbt == null;
+        return fingerprint.isEmpty() && fluid == Fluids.EMPTY && tag == null && nbt == null && nbtHash == null;
     }
 
     public FluidStack toFluidStack() {
@@ -95,6 +106,14 @@ public class FluidFilter {
     public FluidFilter setCount(int count) {
         this.count = count;
         return this;
+    }
+
+    @Override
+    public boolean testAE(GenericStack genericStack) {
+        if (genericStack.what() instanceof AEFluidKey aeFluidKey) {
+            return test(aeFluidKey.toStack(1));
+        }
+        return false;
     }
 
     public boolean test(FluidStack stack) {
@@ -110,6 +129,9 @@ public class FluidFilter {
             return false;
         }
         if (nbt != null && !stack.getOrCreateTag().equals(nbt)) {
+            return false;
+        }
+        if (nbtHash != null && !dan200.computercraft.shared.util.NBTUtil.getNBTHash(stack.getOrCreateTag()).equals(nbtHash)) {
             return false;
         }
         return true;

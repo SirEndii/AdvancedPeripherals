@@ -2,6 +2,7 @@ package de.srendi.advancedperipherals.common.addons.computercraft.owner;
 
 import com.mojang.authlib.GameProfile;
 import dan200.computercraft.ComputerCraft;
+import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.ITurtleAccess;
 import dan200.computercraft.api.turtle.TurtleSide;
 import dan200.computercraft.shared.TurtlePermissions;
@@ -9,6 +10,7 @@ import dan200.computercraft.shared.util.InventoryUtil;
 import de.srendi.advancedperipherals.common.util.DataStorageUtil;
 import de.srendi.advancedperipherals.common.util.fakeplayer.APFakePlayer;
 import de.srendi.advancedperipherals.common.util.fakeplayer.FakePlayerProviderTurtle;
+import de.srendi.advancedperipherals.lib.peripherals.IBasePeripheral;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.FrontAndTop;
@@ -16,10 +18,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.items.wrapper.InvWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Function;
+import java.util.stream.Stream;
 
 public class TurtlePeripheralOwner extends BasePeripheralOwner {
     public final ITurtleAccess turtle;
@@ -81,7 +84,7 @@ public class TurtlePeripheralOwner extends BasePeripheralOwner {
     }
 
     @Override
-    public <T> T withPlayer(Function<APFakePlayer, T> function) {
+    public <T> T withPlayer(APFakePlayer.Action<T> function) {
         return FakePlayerProviderTurtle.withPlayer(turtle, function);
     }
 
@@ -92,7 +95,7 @@ public class TurtlePeripheralOwner extends BasePeripheralOwner {
 
     @Override
     public ItemStack storeItem(ItemStack stored) {
-        return InventoryUtil.storeItems(stored, turtle.getItemHandler(), turtle.getSelectedSlot());
+        return InventoryUtil.storeItems(stored, new InvWrapper(turtle.getInventory()), turtle.getSelectedSlot());
     }
 
     @Override
@@ -130,5 +133,20 @@ public class TurtlePeripheralOwner extends BasePeripheralOwner {
     public TurtlePeripheralOwner attachFuel(int maxFuelConsumptionLevel) {
         attachAbility(PeripheralOwnerAbility.FUEL, new TurtleFuelAbility(this, maxFuelConsumptionLevel));
         return this;
+    }
+
+    @Override
+    public <T extends IPeripheral> T getConnectedPeripheral(Class<T> type) {
+        IPeripheral foundPeripheral = Stream.of(TurtleSide.values())
+            .map(side -> turtle.getPeripheral(side))
+            .filter(peripheral -> {
+                if (peripheral == null || type.isInstance(peripheral)) {
+                    return false;
+                }
+                return peripheral instanceof IBasePeripheral basePeripheral ? basePeripheral.isEnabled() : true;
+            })
+            .findFirst()
+            .orElse(null);
+        return (T) foundPeripheral;
     }
 }

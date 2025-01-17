@@ -1,10 +1,13 @@
 package de.srendi.advancedperipherals.common.util.inventory;
 
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.GenericStack;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.core.apis.TableHelper;
 import de.srendi.advancedperipherals.AdvancedPeripherals;
 import de.srendi.advancedperipherals.common.util.NBTUtil;
 import de.srendi.advancedperipherals.common.util.Pair;
+import de.srendi.advancedperipherals.common.util.RegistryUtil;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -17,11 +20,12 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Map;
 
-public class ItemFilter {
+public class ItemFilter extends GenericFilter<ItemStack> {
 
     private Item item = Items.AIR;
     private TagKey<Item> tag = null;
     private CompoundTag nbt = null;
+    private String nbtHash = null;
     private int count = 64;
     private String fingerprint = "";
     public int fromSlot = -1;
@@ -40,11 +44,18 @@ public class ItemFilter {
                 String name = TableHelper.getStringField(item, "name");
                 if (name.startsWith("#")) {
                     itemFilter.tag = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(name.substring(1)));
-                } else if ((itemFilter.item = ItemUtil.getRegistryEntry(name, ForgeRegistries.ITEMS)) == null) {
+                } else if ((itemFilter.item = RegistryUtil.getRegistryEntry(name, ForgeRegistries.ITEMS)) == null) {
                     return Pair.of(null, "ITEM_NOT_FOUND");
                 }
             } catch (LuaException luaException) {
                 return Pair.of(null, "NO_VALID_ITEM");
+            }
+        }
+        if (item.containsKey("nbtHash")) {
+            try {
+                itemFilter.nbtHash = TableHelper.getStringField(item, "nbtHash");
+            } catch (LuaException luaException) {
+                return Pair.of(null, "NO_VALID_NBT_HASH");
             }
         }
         if (item.containsKey("nbt")) {
@@ -67,14 +78,14 @@ public class ItemFilter {
         }
         if (item.containsKey("fromSlot")) {
             try {
-                itemFilter.fromSlot = TableHelper.getIntField(item, "fromSlot");
+                itemFilter.fromSlot = TableHelper.getIntField(item, "fromSlot") - 1;
             } catch (LuaException luaException) {
                 return Pair.of(null, "NO_VALID_FROMSLOT");
             }
         }
         if (item.containsKey("toSlot")) {
             try {
-                itemFilter.toSlot = TableHelper.getIntField(item, "toSlot");
+                itemFilter.toSlot = TableHelper.getIntField(item, "toSlot") - 1;
             } catch (LuaException luaException) {
                 return Pair.of(null, "NO_VALID_TOSLOT");
             }
@@ -103,7 +114,7 @@ public class ItemFilter {
     }
 
     public boolean isEmpty() {
-        return fingerprint.isEmpty() && item == Items.AIR && tag == null && nbt == null;
+        return fingerprint.isEmpty() && item == Items.AIR && tag == null && nbt == null && nbtHash == null;
     }
 
     public ItemStack toItemStack() {
@@ -112,12 +123,19 @@ public class ItemFilter {
         return result;
     }
 
+    @Override
+    public boolean testAE(GenericStack genericStack) {
+        if (genericStack.what() instanceof AEItemKey aeItemKey) {
+            return test(aeItemKey.toStack());
+        }
+        return false;
+    }
+
     public boolean test(ItemStack stack) {
         if (!fingerprint.isEmpty()) {
             String testFingerprint = ItemUtil.getFingerprint(stack);
             return fingerprint.equals(testFingerprint);
         }
-
         if (item != Items.AIR && !stack.is(item)) {
             return false;
         }
@@ -125,6 +143,9 @@ public class ItemFilter {
             return false;
         }
         if (nbt != null && !stack.getOrCreateTag().equals(nbt)) {
+            return false;
+        }
+        if (nbtHash != null && !dan200.computercraft.shared.util.NBTUtil.getNBTHash(stack.getOrCreateTag()).equals(nbtHash)) {
             return false;
         }
         return true;
@@ -150,12 +171,17 @@ public class ItemFilter {
         return nbt;
     }
 
+    public String getNbtHash() {
+        return nbtHash;
+    }
+
     @Override
     public String toString() {
         return "ItemFilter{" +
                 "item=" + ItemUtil.getRegistryKey(item) +
                 ", tag=" + tag +
                 ", nbt=" + nbt +
+                ", nbtHash=" + nbtHash +
                 ", count=" + count +
                 ", fingerprint='" + fingerprint + '\'' +
                 ", fromSlot=" + fromSlot +

@@ -1,16 +1,19 @@
 {
   "values": [
-    "advancedperipherals:environment_detector",
-    "advancedperipherals:chat_box",
-    "advancedperipherals:player_detector",
-    "advancedperipherals:me_bridge",
-    "advancedperipherals:rs_bridge",
-    "advancedperipherals:energy_detector",
-    "advancedperipherals:inventory_manager",
-    "advancedperipherals:redstone_integrator",
     "advancedperipherals:block_reader",
-    "advancedperipherals:geo_scanner",
+    "advancedperipherals:chat_box",
     "advancedperipherals:colony_integrator",
-    "advancedperipherals:nbt_storage"
+    "advancedperipherals:distance_detector",
+    "advancedperipherals:energy_detector",
+    "advancedperipherals:environment_detector",
+    "advancedperipherals:fluid_detector",
+    "advancedperipherals:gas_detector",
+    "advancedperipherals:geo_scanner",
+    "advancedperipherals:inventory_manager",
+    "advancedperipherals:me_bridge",
+    "advancedperipherals:nbt_storage",
+    "advancedperipherals:player_detector",
+    "advancedperipherals:redstone_integrator",
+    "advancedperipherals:rs_bridge"
   ]
 }

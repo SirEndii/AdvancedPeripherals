@@ -2,12 +2,15 @@ package de.srendi.advancedperipherals.common.blocks.base;
 
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import dan200.computercraft.core.computer.ComputerSide;
 import dan200.computercraft.shared.Capabilities;
 import de.srendi.advancedperipherals.AdvancedPeripherals;
+import de.srendi.advancedperipherals.common.util.CoordUtil;
 import de.srendi.advancedperipherals.lib.peripherals.BasePeripheral;
 import de.srendi.advancedperipherals.lib.peripherals.IPeripheralTileEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.FrontAndTop;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -34,7 +37,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 
 public abstract class PeripheralBlockEntity<T extends BasePeripheral<?>> extends BaseContainerBlockEntity implements WorldlyContainer, MenuProvider, IPeripheralTileEntity {
-    // TODO: move inventory logic to another tile entity!
+
     private static final String PERIPHERAL_SETTINGS_KEY = "peripheralSettings";
     protected CompoundTag peripheralSettings;
     protected NonNullList<ItemStack> items;
@@ -44,9 +47,9 @@ public abstract class PeripheralBlockEntity<T extends BasePeripheral<?>> extends
     private LazyOptional<? extends IFluidHandler> fluidHandler;
     private LazyOptional<IPeripheral> peripheralCap;
 
-    public PeripheralBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
+    protected PeripheralBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
         super(tileEntityTypeIn, pos, state);
-        if (this instanceof IInventoryBlock<?> inventoryBlock) {
+        if (this instanceof IInventoryBlock inventoryBlock) {
             items = NonNullList.withSize(inventoryBlock.getInvSize(), ItemStack.EMPTY);
         } else {
             items = NonNullList.withSize(0, ItemStack.EMPTY);
@@ -113,6 +116,11 @@ public abstract class PeripheralBlockEntity<T extends BasePeripheral<?>> extends
         return peripheral.getConnectedComputers();
     }
 
+    @Nullable
+    public T getPeripheral() {
+        return peripheral;
+    }
+
     /*@Override
     public ITextComponent getDisplayName() {
         return this instanceof IInventoryBlock ? ((IInventoryBlock) this).getDisplayName() : null;
@@ -132,9 +140,10 @@ public abstract class PeripheralBlockEntity<T extends BasePeripheral<?>> extends
         super.load(compound);
     }
 
+    @NotNull
     @Override
     protected Component getDefaultName() {
-        return this instanceof IInventoryBlock<?> inventoryBlock ? inventoryBlock.getDisplayName() : null;
+        return this instanceof IInventoryMenuBlock<?> inventoryBlock ? inventoryBlock.getDisplayName() : null;
     }
 
     @Nullable
@@ -143,13 +152,14 @@ public abstract class PeripheralBlockEntity<T extends BasePeripheral<?>> extends
         return createMenu(id, inventory);
     }
 
+    @NotNull
     @Override
     protected AbstractContainerMenu createMenu(int id, @NotNull Inventory player) {
-        return this instanceof IInventoryBlock<?> inventoryBlock ? inventoryBlock.createContainer(id, player, worldPosition, level) : null;
+        return this instanceof IInventoryMenuBlock<?> inventoryBlock ? inventoryBlock.createContainer(id, player, worldPosition, level) : null;
     }
 
     @Override
-    public int[] getSlotsForFace(@NotNull Direction side) {
+    public int @NotNull [] getSlotsForFace(@NotNull Direction side) {
         return new int[]{0};
     }
 
@@ -222,7 +232,16 @@ public abstract class PeripheralBlockEntity<T extends BasePeripheral<?>> extends
 
     @Override
     public void markSettingsChanged() {
-        setChanged();
+        this.setChanged();
+    }
+
+    protected void sendUpdate() {
+        this.setChanged();
+        this.getLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 11);
+    }
+
+    public ComputerSide getComputerSide(Direction direction) {
+        FrontAndTop orientation = getBlockState().getValue(BaseBlock.ORIENTATION);
+        return CoordUtil.getComputerSide(orientation, direction);
     }
 }
-
