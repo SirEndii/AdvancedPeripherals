@@ -7,6 +7,9 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+- Downgraded CC:T Version to `1.113.1` so curseforge users can still use AP since CC:T does not get published to curseforge anymore.
+
 ### Breaking Changes
 - Renamed `nbt` to `components` in every item lua object
 - Renamed `amount` to `count` in every ME Bridge lua item object
