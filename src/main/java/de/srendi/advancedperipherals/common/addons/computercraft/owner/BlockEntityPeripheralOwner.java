@@ -1,5 +1,6 @@
 package de.srendi.advancedperipherals.common.addons.computercraft.owner;
 
+import dan200.computercraft.api.peripheral.IPeripheral;
 import de.srendi.advancedperipherals.common.blocks.base.BaseBlock;
 import de.srendi.advancedperipherals.common.blocks.blockentities.InventoryManagerEntity;
 import de.srendi.advancedperipherals.common.util.DataStorageUtil;
@@ -20,7 +21,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
-import java.util.function.Function;
 
 public class BlockEntityPeripheralOwner<T extends BlockEntity & IPeripheralTileEntity> extends BasePeripheralOwner {
 
@@ -90,7 +90,7 @@ public class BlockEntityPeripheralOwner<T extends BlockEntity & IPeripheralTileE
     }
 
     @Override
-    public <T1> T1 withPlayer(Function<APFakePlayer, T1> function) {
+    public <T1> T1 withPlayer(APFakePlayer.Action<T1> function) {
         throw new NotImplementedException();
     }
 
@@ -123,5 +123,10 @@ public class BlockEntityPeripheralOwner<T extends BlockEntity & IPeripheralTileE
     public BlockEntityPeripheralOwner<T> attachFuel() {
         attachAbility(PeripheralOwnerAbility.FUEL, new TileEntityFuelAbility<>(this));
         return this;
+    }
+
+    @Override
+    public <U extends IPeripheral> U getConnectedPeripheral(Class<U> type) {
+        throw new NotImplementedException();
     }
 }
