@@ -16,6 +16,7 @@ public final class TeleportUtil {
         List<Entity> passengers = new ArrayList<>(entity.getPassengers());
         T newEntity;
         if (entity instanceof ServerPlayer player) {
+            // TODO <1.20.1>: player will be reconstruct in 1.20.1
             player.teleportTo(newLevel, newPos.x, newPos.y, newPos.z, player.getYRot(), player.getXRot());
             newEntity = entity;
         } else {
