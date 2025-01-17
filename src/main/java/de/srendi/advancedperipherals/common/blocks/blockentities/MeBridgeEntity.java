@@ -1,17 +1,22 @@
 package de.srendi.advancedperipherals.common.blocks.blockentities;
 
+import appeng.api.config.Actionable;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.api.networking.IManagedGridNode;
+import appeng.api.networking.crafting.ICraftingLink;
+import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.crafting.ICraftingSimulationRequester;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKey;
 import appeng.api.storage.StorageHelper;
 import appeng.api.util.AECableType;
+import com.google.common.collect.ImmutableSet;
 import de.srendi.advancedperipherals.common.addons.appliedenergistics.AppEngApi;
 import de.srendi.advancedperipherals.common.addons.appliedenergistics.CraftJob;
 import de.srendi.advancedperipherals.common.addons.appliedenergistics.MeBridgeEntityListener;
@@ -35,8 +40,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
-public class MeBridgeEntity extends PeripheralBlockEntity<MeBridgePeripheral> implements IActionSource, IActionHost, IInWorldGridNodeHost, ICraftingSimulationRequester, IInventoryBlock {
+public class MeBridgeEntity extends PeripheralBlockEntity<MeBridgePeripheral> implements IActionSource, IInWorldGridNodeHost, ICraftingSimulationRequester, IInventoryBlock, ICraftingRequester {
 
     private final List<CraftJob> jobs = new CopyOnWriteArrayList<>();
     private boolean initialized = false;
@@ -71,10 +77,10 @@ public class MeBridgeEntity extends PeripheralBlockEntity<MeBridgePeripheral> im
             }
 
             // Try to start the job if the job calculation finished
-            jobs.forEach(CraftJob::maybeCraft);
+            jobs.forEach((job) -> job.tick(this));
 
             // Remove the job if the crafting started, we can't do anything with it anymore
-            jobs.removeIf(CraftJob::isCraftingStarted);
+            jobs.removeIf(CraftJob::canBePurged);
         }
     }
 
@@ -166,4 +172,18 @@ public class MeBridgeEntity extends PeripheralBlockEntity<MeBridgePeripheral> im
         return false;
     }
 
+    @Override
+    public ImmutableSet<ICraftingLink> getRequestedJobs() {
+        return jobs.stream().filter(CraftJob::isCraftingStarted).map(CraftJob::getJobLink).collect(Collectors.toCollection(ImmutableSet::of));
+    }
+
+    @Override
+    public long insertCraftedItems(ICraftingLink link, AEKey what, long amount, Actionable mode) {
+        return 0;
+    }
+
+    @Override
+    public void jobStateChange(ICraftingLink link) {
+        jobs.stream().filter(CraftJob::isCraftingStarted).filter((job) -> job.getJobLink().getCraftingID().equals(link.getCraftingID())).forEach(CraftJob::jobStateChange);
+    }
 }
