@@ -13,7 +13,7 @@ public class OverpoweredEndAutomataCorePeripheral extends EndAutomataCorePeriphe
     }
 
     @Override
-    public boolean canOverpowerAction() {
+    public boolean canActiveOverpower() {
         return true;
     }
 }

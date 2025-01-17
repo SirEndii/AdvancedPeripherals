@@ -89,14 +89,14 @@ public abstract class AutomataCorePeripheral extends BasePeripheral<TurtlePeriph
         return this.destroyed;
     }
 
-    public boolean canOverpowerAction() {
+    public boolean canActiveOverpower() {
         return false;
     }
 
     public abstract double getBreakChance();
 
     public boolean afterOverpowerAction() {
-        if (isDestroyed() || !canOverpowerAction()) {
+        if (isDestroyed() || !canActiveOverpower()) {
             return false;
         }
         if (AdvancedPeripherals.RANDOM.nextDouble() <= getBreakChance()) {

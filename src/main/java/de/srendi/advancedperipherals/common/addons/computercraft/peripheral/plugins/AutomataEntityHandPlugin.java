@@ -53,7 +53,7 @@ public class AutomataEntityHandPlugin extends AutomataCorePlugin {
             ItemStack selectedTool = owner.getToolInMainHand();
             int previousDamageValue = selectedTool.getDamageValue();
             InteractionResult result = owner.withPlayer(APFakePlayer.wrapActionWithShiftKey(sneak, APFakePlayer.wrapActionWithRot(yaw, pitch, p -> p.useOnFilteredEntity(suitableEntity))));
-            if (automataCore.canOverpowerAction() && automataCore.afterOverpowerAction()) {
+            if (automataCore.canActiveOverpower() && automataCore.afterOverpowerAction()) {
                 selectedTool.setDamageValue(previousDamageValue);
             }
             return MethodResult.of(result.consumesAction(), result.toString());

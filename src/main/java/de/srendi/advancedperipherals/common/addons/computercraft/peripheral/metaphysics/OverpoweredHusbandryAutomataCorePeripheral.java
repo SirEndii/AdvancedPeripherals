@@ -13,7 +13,7 @@ public class OverpoweredHusbandryAutomataCorePeripheral extends HusbandryAutomat
     }
 
     @Override
-    public boolean canOverpowerAction() {
+    public boolean canActiveOverpower() {
         return true;
     }
 }

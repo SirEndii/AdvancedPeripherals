@@ -71,7 +71,7 @@ public class AutomataBlockHandPlugin extends AutomataCorePlugin {
             if (!result.getLeft()) {
                 return MethodResult.of(false, result.getRight());
             }
-            if (automataCore.canOverpowerAction() && automataCore.afterOverpowerAction()) {
+            if (automataCore.canActiveOverpower() && automataCore.afterOverpowerAction()) {
                 selectedTool.setDamageValue(previousDamageValue);
             }
             return MethodResult.of(true, result.getRight());
@@ -89,7 +89,7 @@ public class AutomataBlockHandPlugin extends AutomataCorePlugin {
             ItemStack selectedTool = owner.getToolInMainHand();
             int previousDamageValue = selectedTool.getDamageValue();
             InteractionResult result = owner.withPlayer(APFakePlayer.wrapActionWithShiftKey(sneak, APFakePlayer.wrapActionWithRot(yaw, pitch, APFakePlayer::useOnBlock)));
-            if (result.consumesAction() && automataCore.canOverpowerAction() && automataCore.afterOverpowerAction()) {
+            if (result.consumesAction() && automataCore.canActiveOverpower() && automataCore.afterOverpowerAction()) {
                 selectedTool.setDamageValue(previousDamageValue);
             }
             return MethodResult.of(result.consumesAction(), result.toString());
@@ -119,7 +119,7 @@ public class AutomataBlockHandPlugin extends AutomataCorePlugin {
             ItemStack selectedTool = owner.getToolInMainHand();
             int previousDamageValue = selectedTool.getDamageValue();
             InteractionResult result = owner.withPlayer(APFakePlayer.wrapActionWithRot(yaw, pitch, (player) -> this.updateBlock(player, opts)));
-            if (result.consumesAction() && automataCore.canOverpowerAction() && automataCore.afterOverpowerAction()) {
+            if (result.consumesAction() && automataCore.canActiveOverpower() && automataCore.afterOverpowerAction()) {
                 selectedTool.setDamageValue(previousDamageValue);
             }
             return MethodResult.of(result.consumesAction(), result.toString());
