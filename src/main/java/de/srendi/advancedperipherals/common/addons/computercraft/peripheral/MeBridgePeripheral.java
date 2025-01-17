@@ -25,7 +25,12 @@ import de.srendi.advancedperipherals.common.blocks.blockentities.MeBridgeEntity;
 import de.srendi.advancedperipherals.common.configuration.APConfig;
 import de.srendi.advancedperipherals.common.util.Pair;
 import de.srendi.advancedperipherals.common.util.ServerWorker;
-import de.srendi.advancedperipherals.common.util.inventory.*;
+import de.srendi.advancedperipherals.common.util.inventory.FluidFilter;
+import de.srendi.advancedperipherals.common.util.inventory.FluidUtil;
+import de.srendi.advancedperipherals.common.util.inventory.GenericFilter;
+import de.srendi.advancedperipherals.common.util.inventory.IStorageSystemPeripheral;
+import de.srendi.advancedperipherals.common.util.inventory.InventoryUtil;
+import de.srendi.advancedperipherals.common.util.inventory.ItemFilter;
 import de.srendi.advancedperipherals.lib.peripherals.BasePeripheral;
 import net.minecraft.core.Direction;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -33,7 +38,11 @@ import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
 
 public class MeBridgePeripheral extends BasePeripheral<BlockEntityPeripheralOwner<MeBridgeEntity>> implements IStorageSystemPeripheral {
 
@@ -200,6 +209,11 @@ public class MeBridgePeripheral extends BasePeripheral<BlockEntityPeripheralOwne
     }
 
     @Override
+    public MethodResult getChemical(IArguments arguments) throws LuaException {
+        return null;
+    }
+
+    @Override
     @LuaFunction(mainThread = true)
     public final MethodResult listItems() {
         if (!isAvailable())
@@ -218,6 +232,11 @@ public class MeBridgePeripheral extends BasePeripheral<BlockEntityPeripheralOwne
     }
 
     @Override
+    public MethodResult listChemicals() {
+        return null;
+    }
+
+    @Override
     @LuaFunction(mainThread = true)
     public final MethodResult listCraftableItems() {
         if (!isAvailable())
@@ -233,6 +252,11 @@ public class MeBridgePeripheral extends BasePeripheral<BlockEntityPeripheralOwne
             return notConnected();
 
         return MethodResult.of(AppEngApi.listCraftableFluids(AppEngApi.getMonitor(node), getCraftingService()));
+    }
+
+    @Override
+    public MethodResult listCraftableChemicals() {
+        return null;
     }
 
     @Override
@@ -598,6 +622,11 @@ public class MeBridgePeripheral extends BasePeripheral<BlockEntityPeripheralOwne
     }
 
     @Override
+    public MethodResult craftChemical(IComputerAccess computer, IArguments arguments) throws LuaException {
+        return null;
+    }
+
+    @Override
     @LuaFunction(mainThread = true)
     public MethodResult getCraftingTasks() {
         if (!isAvailable())
@@ -690,6 +719,16 @@ public class MeBridgePeripheral extends BasePeripheral<BlockEntityPeripheralOwne
     }
 
     @Override
+    public MethodResult isChemicalCraftable(IArguments arguments) throws LuaException {
+        return null;
+    }
+
+    @Override
+    public MethodResult isChemicalCrafting(IArguments arguments) throws LuaException {
+        return null;
+    }
+
+    @Override
     @LuaFunction(mainThread = true)
     public final MethodResult isFluidCraftable(IArguments arguments) throws LuaException {
         if (!isAvailable())
@@ -724,6 +763,16 @@ public class MeBridgePeripheral extends BasePeripheral<BlockEntityPeripheralOwne
             return MethodResult.of(0, "The target tank does not exist. Make sure the bridge is exposed in the computer network. Reach out to our discord or our documentation for help.");
 
         return exportToTank(arguments, fluidHandler);
+    }
+
+    @Override
+    public MethodResult importChemical(IComputerAccess computer, IArguments arguments) throws LuaException {
+        return null;
+    }
+
+    @Override
+    public MethodResult exportchemical(IComputerAccess computer, IArguments arguments) throws LuaException {
+        return null;
     }
 
     @Override

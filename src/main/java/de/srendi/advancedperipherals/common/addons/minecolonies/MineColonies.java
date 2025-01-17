@@ -9,7 +9,11 @@ import com.minecolonies.api.colony.managers.interfaces.IRegisteredStructureManag
 import com.minecolonies.api.colony.permissions.Action;
 import com.minecolonies.api.colony.workorders.IWorkOrder;
 import com.minecolonies.api.entity.citizen.Skill;
-import com.minecolonies.api.research.*;
+import com.minecolonies.api.research.IGlobalResearch;
+import com.minecolonies.api.research.IGlobalResearchTree;
+import com.minecolonies.api.research.ILocalResearch;
+import com.minecolonies.api.research.ILocalResearchTree;
+import com.minecolonies.api.research.IResearchRequirement;
 import com.minecolonies.api.research.costs.IResearchCost;
 import com.minecolonies.api.research.effects.IResearchEffect;
 import com.minecolonies.api.research.util.ResearchState;

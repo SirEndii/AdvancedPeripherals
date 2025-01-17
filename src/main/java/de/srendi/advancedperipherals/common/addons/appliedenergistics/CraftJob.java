@@ -2,7 +2,11 @@ package de.srendi.advancedperipherals.common.addons.appliedenergistics;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.crafting.*;
+import appeng.api.networking.crafting.CalculationStrategy;
+import appeng.api.networking.crafting.ICraftingCPU;
+import appeng.api.networking.crafting.ICraftingPlan;
+import appeng.api.networking.crafting.ICraftingService;
+import appeng.api.networking.crafting.ICraftingSimulationRequester;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
 import dan200.computercraft.api.lua.ILuaCallback;

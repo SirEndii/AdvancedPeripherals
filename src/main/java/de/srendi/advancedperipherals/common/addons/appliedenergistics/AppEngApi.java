@@ -8,7 +8,12 @@ import appeng.api.networking.crafting.CraftingJobStatus;
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.storage.IStorageService;
-import appeng.api.stacks.*;
+import appeng.api.stacks.AEFluidKey;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKey;
+import appeng.api.stacks.AEKeyType;
+import appeng.api.stacks.GenericStack;
+import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.AEKeyFilter;
 import appeng.api.storage.IStorageProvider;
 import appeng.api.storage.MEStorage;
@@ -22,7 +27,6 @@ import appeng.me.cells.BasicCellInventory;
 import appeng.parts.storagebus.StorageBusPart;
 import com.the9grounds.aeadditions.item.storage.StorageCell;
 import com.the9grounds.aeadditions.item.storage.SuperStorageCell;
-import dan200.computercraft.shared.util.NBTUtil;
 import de.srendi.advancedperipherals.AdvancedPeripherals;
 import de.srendi.advancedperipherals.common.addons.APAddons;
 import de.srendi.advancedperipherals.common.util.LuaConverter;
@@ -30,7 +34,6 @@ import de.srendi.advancedperipherals.common.util.Pair;
 import de.srendi.advancedperipherals.common.util.inventory.FluidFilter;
 import de.srendi.advancedperipherals.common.util.inventory.GenericFilter;
 import de.srendi.advancedperipherals.common.util.inventory.ItemFilter;
-import de.srendi.advancedperipherals.common.util.inventory.ItemUtil;
 import io.github.projectet.ae2things.item.DISKDrive;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import me.ramidzkh.mekae2.ae2.MekanismKey;
@@ -39,7 +42,6 @@ import me.ramidzkh.mekae2.item.ChemicalStorageCell;
 import mekanism.api.chemical.merged.MergedChemicalTank;
 import mekanism.common.tile.TileEntityChemicalTank;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -48,10 +50,16 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class AppEngApi {
@@ -332,30 +340,16 @@ public class AppEngApi {
     }
 
     private static Map<String, Object> parseItemStack(Pair<Long, AEItemKey> stack, @Nullable ICraftingService craftingService) {
-        Map<String, Object> map = new HashMap<>();
-        String displayName = stack.getRight().getDisplayName().getString();
-        CompoundTag nbt = stack.getRight().toTag();
-        long amount = stack.getLeft();
-        map.put("fingerprint", ItemUtil.getFingerprint(stack.getRight().toStack()));
-        map.put("name", ItemUtil.getRegistryKey(stack.getRight().getItem()).toString());
-        map.put("amount", amount);
-        map.put("displayName", displayName);
-        map.put("nbt", NBTUtil.toLua(nbt));
-        map.put("tags", LuaConverter.tagsToList(() -> stack.getRight().getItem().builtInRegistryHolder().tags()));
+        Map<String, Object> map = LuaConverter.itemStackToObject(stack.getRight().toStack());
         map.put("isCraftable", craftingService != null && craftingService.isCraftable(stack.getRight()));
-
+        map.put("count", stack.getLeft());
         return map;
     }
 
     private static Map<String, Object> parseFluidStack(Pair<Long, AEFluidKey> stack, @Nullable ICraftingService craftingService) {
-        Map<String, Object> map = new HashMap<>();
-        long amount = stack.getLeft();
-        map.put("name", ForgeRegistries.FLUIDS.getKey(stack.getRight().getFluid()).toString());
-        map.put("amount", amount);
-        map.put("displayName", stack.getRight().getDisplayName().getString());
-        map.put("tags", LuaConverter.tagsToList(() -> stack.getRight().getFluid().builtInRegistryHolder().tags()));
+        Map<String, Object> map = LuaConverter.fluidStackToObject(stack.getRight().toStack(1));
+        map.put("count", stack.getLeft());
         map.put("isCraftable", craftingService != null && craftingService.isCraftable(stack.getRight()));
-
         return map;
     }
 

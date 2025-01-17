@@ -22,7 +22,13 @@ import de.srendi.advancedperipherals.common.addons.refinedstorage.RsItemHandler;
 import de.srendi.advancedperipherals.common.blocks.blockentities.RsBridgeEntity;
 import de.srendi.advancedperipherals.common.configuration.APConfig;
 import de.srendi.advancedperipherals.common.util.Pair;
-import de.srendi.advancedperipherals.common.util.inventory.*;
+import de.srendi.advancedperipherals.common.util.inventory.FluidFilter;
+import de.srendi.advancedperipherals.common.util.inventory.FluidUtil;
+import de.srendi.advancedperipherals.common.util.inventory.GenericFilter;
+import de.srendi.advancedperipherals.common.util.inventory.IStorageSystemPeripheral;
+import de.srendi.advancedperipherals.common.util.inventory.InventoryUtil;
+import de.srendi.advancedperipherals.common.util.inventory.ItemFilter;
+import de.srendi.advancedperipherals.common.util.inventory.ItemUtil;
 import de.srendi.advancedperipherals.lib.peripherals.BasePeripheral;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -110,6 +116,11 @@ public class RsBridgePeripheral extends BasePeripheral<BlockEntityPeripheralOwne
         List<Object> fluids = new ArrayList<>();
         RefinedStorage.getCraftableFluids(getNetwork()).forEach(fluid -> fluids.add(RefinedStorage.parseFluidStack(fluid, getNetwork())));
         return MethodResult.of(fluids);
+    }
+
+    @Override
+    public MethodResult listCraftableChemicals() {
+        return null;
     }
 
     @Override
@@ -299,6 +310,11 @@ public class RsBridgePeripheral extends BasePeripheral<BlockEntityPeripheralOwne
             return notConnected();
 
         return MethodResult.of(RefinedStorage.listFluids(getNetwork()));
+    }
+
+    @Override
+    public MethodResult listChemicals() {
+        return null;
     }
 
     @Override
@@ -496,6 +512,16 @@ public class RsBridgePeripheral extends BasePeripheral<BlockEntityPeripheralOwne
     }
 
     @Override
+    public MethodResult importChemical(IComputerAccess computer, IArguments arguments) throws LuaException {
+        return null;
+    }
+
+    @Override
+    public MethodResult exportchemical(IComputerAccess computer, IArguments arguments) throws LuaException {
+        return null;
+    }
+
+    @Override
     @LuaFunction(mainThread = true)
     public final MethodResult importFluid(IComputerAccess computer, IArguments arguments) throws LuaException {
         if (!isAvailable())
@@ -543,6 +569,11 @@ public class RsBridgePeripheral extends BasePeripheral<BlockEntityPeripheralOwne
     }
 
     @Override
+    public MethodResult getChemical(IArguments arguments) throws LuaException {
+        return null;
+    }
+
+    @Override
     @LuaFunction(mainThread = true)
     public final MethodResult craftItem(IComputerAccess computerAccess, IArguments arguments) throws LuaException {
         if (!isAvailable())
@@ -585,6 +616,11 @@ public class RsBridgePeripheral extends BasePeripheral<BlockEntityPeripheralOwne
             getNetwork().getCraftingManager().start(result.getTask());
         AdvancedPeripherals.debug("Crafting Result of '" + FluidUtil.getRegistryKey(stack).toString() + "':" + type);
         return MethodResult.of(type == CalculationResultType.OK);
+    }
+
+    @Override
+    public MethodResult craftChemical(IComputerAccess computer, IArguments arguments) throws LuaException {
+        return null;
     }
 
     @Override
@@ -687,6 +723,16 @@ public class RsBridgePeripheral extends BasePeripheral<BlockEntityPeripheralOwne
                 return MethodResult.of(true);
         }
         return MethodResult.of(false);
+    }
+
+    @Override
+    public MethodResult isChemicalCraftable(IArguments arguments) throws LuaException {
+        return null;
+    }
+
+    @Override
+    public MethodResult isChemicalCrafting(IArguments arguments) throws LuaException {
+        return null;
     }
 
     @Override

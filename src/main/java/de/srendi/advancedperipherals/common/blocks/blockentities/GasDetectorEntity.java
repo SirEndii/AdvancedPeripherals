@@ -81,7 +81,7 @@ public class GasDetectorEntity extends PeripheralBlockEntity<GasDetectorPeripher
     }
 
     @Override
-    public void load(CompoundTag nbt) {
+    public void load(@NotNull CompoundTag nbt) {
         storageProxy.setMaxTransferRate(nbt.getInt("rateLimit"));
         super.load(nbt);
     }

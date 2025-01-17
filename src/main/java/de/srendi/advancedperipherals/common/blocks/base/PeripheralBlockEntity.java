@@ -49,7 +49,7 @@ public abstract class PeripheralBlockEntity<T extends BasePeripheral<?>> extends
 
     protected PeripheralBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
         super(tileEntityTypeIn, pos, state);
-        if (this instanceof IInventoryBlock<?> inventoryBlock) {
+        if (this instanceof IInventoryBlock inventoryBlock) {
             items = NonNullList.withSize(inventoryBlock.getInvSize(), ItemStack.EMPTY);
         } else {
             items = NonNullList.withSize(0, ItemStack.EMPTY);
@@ -140,9 +140,10 @@ public abstract class PeripheralBlockEntity<T extends BasePeripheral<?>> extends
         super.load(compound);
     }
 
+    @NotNull
     @Override
     protected Component getDefaultName() {
-        return this instanceof IInventoryBlock<?> inventoryBlock ? inventoryBlock.getDisplayName() : null;
+        return this instanceof IInventoryMenuBlock<?> inventoryBlock ? inventoryBlock.getDisplayName() : null;
     }
 
     @Nullable
@@ -151,13 +152,14 @@ public abstract class PeripheralBlockEntity<T extends BasePeripheral<?>> extends
         return createMenu(id, inventory);
     }
 
+    @NotNull
     @Override
     protected AbstractContainerMenu createMenu(int id, @NotNull Inventory player) {
-        return this instanceof IInventoryBlock<?> inventoryBlock ? inventoryBlock.createContainer(id, player, worldPosition, level) : null;
+        return this instanceof IInventoryMenuBlock<?> inventoryBlock ? inventoryBlock.createContainer(id, player, worldPosition, level) : null;
     }
 
     @Override
-    public int[] getSlotsForFace(@NotNull Direction side) {
+    public int @NotNull [] getSlotsForFace(@NotNull Direction side) {
         return new int[]{0};
     }
 

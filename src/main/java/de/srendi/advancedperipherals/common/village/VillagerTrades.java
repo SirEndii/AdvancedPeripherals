@@ -33,6 +33,9 @@ public class VillagerTrades {
     @SubscribeEvent
     public static void registerVillagerTrades(VillagerTradesEvent event) {
         if (event.getType() == APVillagers.COMPUTER_SCIENTIST.get()) {
+            if (!APConfig.WORLD_CONFIG.enableComputerScientistTrades.get()) {
+                return;
+            }
 
             TradeBuilder.createTrade(event, APBlocks.PERIPHERAL_CASING.get(), VillagerTrade.Type.ITEM_FOR_EMERALD, 1, 1)
                     .setXp(1)

@@ -25,6 +25,7 @@ public class FluidFilter extends GenericFilter<FluidStack> {
     private Fluid fluid = Fluids.EMPTY;
     private TagKey<Fluid> tag = null;
     private CompoundTag nbt = null;
+    private String nbtHash = null;
     private int count = 1000;
     private String fingerprint = "";
 
@@ -46,6 +47,13 @@ public class FluidFilter extends GenericFilter<FluidStack> {
                 }
             } catch (LuaException luaException) {
                 return Pair.of(null, "NO_VALID_FLUID");
+            }
+        }
+        if (item.containsKey("nbtHash")) {
+            try {
+                fluidFilter.nbtHash = TableHelper.getStringField(item, "nbtHash");
+            } catch (LuaException luaException) {
+                return Pair.of(null, "NO_VALID_NBT_HASH");
             }
         }
         if (item.containsKey("nbt")) {
@@ -86,7 +94,7 @@ public class FluidFilter extends GenericFilter<FluidStack> {
     }
 
     public boolean isEmpty() {
-        return fingerprint.isEmpty() && fluid == Fluids.EMPTY && tag == null && nbt == null;
+        return fingerprint.isEmpty() && fluid == Fluids.EMPTY && tag == null && nbt == null && nbtHash == null;
     }
 
     public FluidStack toFluidStack() {
@@ -121,6 +129,9 @@ public class FluidFilter extends GenericFilter<FluidStack> {
             return false;
         }
         if (nbt != null && !stack.getOrCreateTag().equals(nbt)) {
+            return false;
+        }
+        if (nbtHash != null && !dan200.computercraft.shared.util.NBTUtil.getNBTHash(stack.getOrCreateTag()).equals(nbtHash)) {
             return false;
         }
         return true;

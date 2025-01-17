@@ -74,7 +74,7 @@ public class WeakAutomataCore extends BaseItem implements IFeedableAutomataCore 
     @NotNull
     public InteractionResult interactLivingEntity(@NotNull ItemStack stack, @NotNull Player player, @NotNull LivingEntity entity, @NotNull InteractionHand hand) {
         if (!(player instanceof FakePlayer)) {
-            player.displayClientMessage(Component.translatable("text.advancedperipherals.automata_core_feed_by_player"), true);
+            player.displayClientMessage(Component.translatable("text.advancedperipherals.automata_core.feed_by_player"), true);
             return InteractionResult.FAIL;
         }
         String entityType = EntityType.getKey(entity.getType()).toString();

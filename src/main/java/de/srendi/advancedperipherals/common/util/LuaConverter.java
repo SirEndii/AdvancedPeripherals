@@ -25,16 +25,15 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.IForgeShearable;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
-import org.joml.primitives.AABBic;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Quaterniondc;
 import org.joml.Vector3d;
 import org.joml.Vector3dc;
+import org.joml.primitives.AABBic;
 import org.valkyrienskies.core.api.ships.ServerShip;
 import org.valkyrienskies.core.api.ships.properties.ShipInertiaData;
 import org.valkyrienskies.core.api.ships.properties.ShipTransform;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,11 +44,15 @@ import java.util.stream.Stream;
 
 public class LuaConverter {
 
-    public static Map<String, Object> entityToLua(Entity entity, boolean detailed) {
+    public static Map<String, Object> entityToLua(Entity entity) {
         Map<String, Object> data = new HashMap<>();
         data.put("id", entity.getId());
         data.put("uuid", entity.getStringUUID());
+        if (entity.hasCustomName())
+            data.put("customName", entity.getCustomName().getString());
         EntityType<?> type = entity.getType();
+        data.put("displayName", type.getDescription().getString());
+        data.put("name", type.builtInRegistryHolder().key().location().toString());
         data.put("type", type.getDescriptionId());
         data.put("category", type.getCategory());
         data.put("canBurn", entity.fireImmune());
@@ -62,7 +65,7 @@ public class LuaConverter {
     }
 
     public static Map<String, Object> livingEntityToLua(LivingEntity entity, boolean detailed) {
-        Map<String, Object> data = entityToLua(entity, detailed);
+        Map<String, Object> data = entityToLua(entity);
         data.put("baby", entity.isBaby());
         data.put("health", entity.getHealth());
         data.put("maxHealth", entity.getMaxHealth());
@@ -128,7 +131,7 @@ public class LuaConverter {
         if (entity instanceof Animal animal) return animalToLua(animal, itemInHand, detailed);
         if (entity instanceof Mob mob) return mobToLua(mob, detailed);
         if (entity instanceof LivingEntity livingEntity) return livingEntityToLua(livingEntity, detailed);
-        return entityToLua(entity, detailed);
+        return entityToLua(entity);
     }
 
     public static Map<String, Object> completeEntityWithPositionToLua(Entity entity, BlockPos pos) {
@@ -202,6 +205,7 @@ public class LuaConverter {
         map.put("displayName", stack.getDisplayName().getString());
         map.put("maxStackSize", stack.getMaxStackSize());
         map.put("nbt", NBTUtil.toLua(nbt));
+        map.put("nbtHash", NBTUtil.getNBTHash(nbt));
         map.put("fingerprint", ItemUtil.getFingerprint(stack));
         return map;
     }
@@ -216,6 +220,7 @@ public class LuaConverter {
         map.put("count", stack.getAmount());
         map.put("displayName", stack.getDisplayName().getString());
         map.put("nbt", NBTUtil.toLua(nbt));
+        map.put("nbtHash", NBTUtil.getNBTHash(nbt));
         map.put("fingerprint", FluidUtil.getFingerprint(stack));
         return map;
     }

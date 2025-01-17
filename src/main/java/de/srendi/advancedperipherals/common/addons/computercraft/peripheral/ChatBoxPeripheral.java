@@ -24,9 +24,9 @@ import de.srendi.advancedperipherals.common.util.StringUtil;
 import de.srendi.advancedperipherals.lib.peripherals.BasePeripheral;
 import de.srendi.advancedperipherals.lib.peripherals.IPeripheralFunction;
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentContents;
-import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
@@ -35,7 +35,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.server.ServerLifecycleHooks;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,8 +43,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-import static de.srendi.advancedperipherals.common.commands.APCommands.ROOT_SAFE_EXEC_LITERAL;
 import static de.srendi.advancedperipherals.common.addons.computercraft.operations.SimpleFreeOperation.CHAT_MESSAGE;
+import static de.srendi.advancedperipherals.common.commands.APCommands.ROOT_SAFE_EXEC_LITERAL;
 
 public class ChatBoxPeripheral extends BasePeripheral<IPeripheralOwner> {
 

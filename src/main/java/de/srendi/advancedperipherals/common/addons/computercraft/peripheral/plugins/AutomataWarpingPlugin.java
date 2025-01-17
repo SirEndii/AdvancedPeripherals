@@ -11,11 +11,11 @@ import de.srendi.advancedperipherals.common.addons.computercraft.owner.FuelAbili
 import de.srendi.advancedperipherals.common.addons.computercraft.owner.PeripheralOwnerAbility;
 import de.srendi.advancedperipherals.common.addons.computercraft.owner.TurtlePeripheralOwner;
 import de.srendi.advancedperipherals.common.configuration.APConfig;
+import de.srendi.advancedperipherals.common.entity.TurtleEnderPearl;
 import de.srendi.advancedperipherals.common.util.LuaConverter;
 import de.srendi.advancedperipherals.common.util.NBTUtil;
 import de.srendi.advancedperipherals.common.util.Pair;
 import de.srendi.advancedperipherals.common.util.ServerWorker;
-import de.srendi.advancedperipherals.common.entity.TurtleEnderPearl;
 import de.srendi.advancedperipherals.lib.peripherals.AutomataCorePeripheral;
 import de.srendi.advancedperipherals.lib.peripherals.IPeripheralOperation;
 import net.minecraft.core.BlockPos;
@@ -29,9 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import static de.srendi.advancedperipherals.common.addons.computercraft.operations.SingleOperation.WARP;
-import static de.srendi.advancedperipherals.common.addons.computercraft.operations.SingleOperation.PREPARE_PORTAL;
-import static de.srendi.advancedperipherals.common.addons.computercraft.operations.SingleOperation.ACTIVE_PORTAL;
+import static de.srendi.advancedperipherals.common.addons.computercraft.operations.SingleOperation.*;
 
 public class AutomataWarpingPlugin extends AutomataCorePlugin {
 
