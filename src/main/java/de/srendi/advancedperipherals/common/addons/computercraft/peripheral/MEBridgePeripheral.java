@@ -35,13 +35,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class MeBridgePeripheral extends BasePeripheral<BlockEntityPeripheralOwner<MeBridgeEntity>> {
+public class MEBridgePeripheral extends BasePeripheral<BlockEntityPeripheralOwner<MeBridgeEntity>> {
 
     public static final String PERIPHERAL_TYPE = "meBridge";
     private final MeBridgeEntity tile;
     private IGridNode node;
 
-    public MeBridgePeripheral(MeBridgeEntity tileEntity) {
+    public MEBridgePeripheral(MeBridgeEntity tileEntity) {
         super(PERIPHERAL_TYPE, new BlockEntityPeripheralOwner<>(tileEntity));
         this.tile = tileEntity;
         this.node = tileEntity.getActionableNode();

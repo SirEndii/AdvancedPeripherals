@@ -13,7 +13,7 @@ import appeng.api.util.AECableType;
 import appeng.me.helpers.IGridConnectedBlockEntity;
 import de.srendi.advancedperipherals.common.addons.appliedenergistics.CraftJob;
 import de.srendi.advancedperipherals.common.addons.appliedenergistics.MeBridgeEntityListener;
-import de.srendi.advancedperipherals.common.addons.computercraft.peripheral.MeBridgePeripheral;
+import de.srendi.advancedperipherals.common.addons.computercraft.peripheral.MEBridgePeripheral;
 import de.srendi.advancedperipherals.common.blocks.base.PeripheralBlockEntity;
 import de.srendi.advancedperipherals.common.configuration.APConfig;
 import de.srendi.advancedperipherals.common.setup.BlockEntityTypes;
@@ -34,7 +34,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class MeBridgeEntity extends PeripheralBlockEntity<MeBridgePeripheral> implements IActionSource, IActionHost, IInWorldGridNodeHost, IGridConnectedBlockEntity, ICraftingSimulationRequester {
+public class MeBridgeEntity extends PeripheralBlockEntity<MEBridgePeripheral> implements IActionSource, IActionHost, IInWorldGridNodeHost, IGridConnectedBlockEntity, ICraftingSimulationRequester {
 
     private final List<CraftJob> jobs = new CopyOnWriteArrayList<>();
     private boolean initialized = false;
@@ -47,8 +47,8 @@ public class MeBridgeEntity extends PeripheralBlockEntity<MeBridgePeripheral> im
 
     @NotNull
     @Override
-    protected MeBridgePeripheral createPeripheral() {
-        return new MeBridgePeripheral(this);
+    protected MEBridgePeripheral createPeripheral() {
+        return new MEBridgePeripheral(this);
     }
 
     @Override

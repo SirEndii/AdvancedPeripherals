@@ -117,6 +117,9 @@ public class ItemFilter {
     }
 
     public boolean test(ItemStack stack) {
+        if (isEmpty())
+            return true;
+
         if (!fingerprint.isEmpty()) {
             String testFingerprint = ItemUtil.getFingerprint(stack);
             return fingerprint.equals(testFingerprint);
