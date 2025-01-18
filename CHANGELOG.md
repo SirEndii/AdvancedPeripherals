@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.21.1-0.7.46a] - 2025-01-18
 
 ### Changed
 - Downgraded CC:T Version to `1.113.1` so curseforge users can still use AP since CC:T does not get published to curseforge anymore.
