@@ -81,8 +81,8 @@ public class MineColonies {
         map.put("work", citizen.getWorkBuilding() == null ? null : jobToObject(citizen.getWorkBuilding(), citizen.getJob()));
         map.put("home", citizen.getHomeBuilding() == null ? null : homeToObject(citizen.getHomeBuilding()));
         map.put("betterFood", citizen.needsBetterFood());
-        map.put("isAsleep", citizen.getStatus().equals(VisibleCitizenStatus.SLEEP));
-        map.put("isIdle", citizen.getStatus().equals(VisibleCitizenStatus.HOUSE));
+        map.put("isAsleep", citizen.getStatus() != null && citizen.getStatus().equals(VisibleCitizenStatus.SLEEP));
+        map.put("isIdle", citizen.getStatus() != null && citizen.getStatus().equals(VisibleCitizenStatus.HOUSE));
         citizen.getEntity().ifPresent(entity -> {
             map.put("health", entity.getHealth());
             map.put("maxHealth", entity.getMaxHealth());
