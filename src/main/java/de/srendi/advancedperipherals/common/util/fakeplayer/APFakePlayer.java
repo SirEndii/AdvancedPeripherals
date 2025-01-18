@@ -167,10 +167,10 @@ public class APFakePlayer extends FakePlayer {
     public Pair<Boolean, String> digBlock() {
         Level world = getLevel();
         HitResult hit = findHit(true, false);
-        if (hit.getType() == HitResult.Type.MISS) {
+        if (!(hit instanceof BlockHitResult blockHit) || hit.getType() == HitResult.Type.MISS) {
             return Pair.of(false, "Nothing to break");
         }
-        BlockPos pos = new BlockPos(hit.getLocation());
+        BlockPos pos = blockHit.getBlockPos();
         BlockState state = world.getBlockState(pos);
         Block block = state.getBlock();
 
