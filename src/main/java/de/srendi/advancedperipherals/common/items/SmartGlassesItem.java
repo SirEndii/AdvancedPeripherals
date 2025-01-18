@@ -138,7 +138,6 @@ public class SmartGlassesItem extends ArmorItem implements IComputerItem, IMedia
 
     @Override
     public void inventoryTick(@NotNull ItemStack stack, @NotNull Level world, @NotNull Entity entity, int slotNum, boolean selected) {
-
         LazyOptional<IItemHandler> optItemHandler = stack.getCapability(ForgeCapabilities.ITEM_HANDLER);
         SmartGlassesItemHandler itemHandler = (SmartGlassesItemHandler) optItemHandler.orElse(null);
         for (int slot = 0; slot < itemHandler.getSlots(); slot++) {
