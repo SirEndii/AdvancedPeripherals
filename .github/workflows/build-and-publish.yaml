@@ -65,11 +65,6 @@ jobs:
         env:
           GITHUB_KEY: ${{ github.token }}
         run: ./gradlew githubRelease
-      - name: Publish Maven
-        env:
-          PUBLIC_REP_NAME: ${{ secrets.PUBLIC_REP_NAME }}
-          PUBLIC_REP_KEY: ${{ secrets.PUBLIC_REP_KEY }}
-        run: ./gradlew publishAllPublicationsToPublicRepository
       - name: Publish Modrinth
         env:
           MODRINTH_KEY: ${{ secrets.MODRINTH_KEY }}
