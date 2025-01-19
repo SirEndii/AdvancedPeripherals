@@ -14,6 +14,10 @@ import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * @param <T> The storage handle type
+ * @param <S> The storage proxy type, must implements/extends both {@code <T>} and {@link IStorageProxy}
+ */
 public abstract class BaseDetectorEntity<T, S extends IStorageProxy, P extends BasePeripheral<?>> extends PeripheralBlockEntity<P> {
 
     private static final String RATE_LIMIT_TAG = "RateLimit";
@@ -41,18 +45,30 @@ public abstract class BaseDetectorEntity<T, S extends IStorageProxy, P extends B
         return this.proxy;
     }
 
+    /**
+     * @return the transfered amount of stuff in the last tick
+     */
     public long getTransferRate() {
         return this.transferRate;
     }
 
+    /**
+     * @return the possible maximum transfered amount
+     */
     public long getMaxTransferRate() {
         return this.proxy.getMaxTransferRate();
     }
 
+    /**
+     * @return the max amount of stuff can be transfered in a tick
+     */
     public long getTransferRateLimit() {
         return this.proxy.getTransferRate();
     }
 
+    /**
+     * @param rate the max amount of stuff can be transfered in a tick
+     */
     public void setTransferRateLimit(long rate) {
         if (this.proxy.getTransferRate() != rate) {
             this.proxy.setTransferRate(rate);
@@ -60,11 +76,17 @@ public abstract class BaseDetectorEntity<T, S extends IStorageProxy, P extends B
         }
     }
 
+    /**
+     * @return the ID of last transfered stuff
+     */
     @Nullable
     public String getLastTransferedId() {
         return this.proxy.getLastTransferedId();
     }
 
+    /**
+     * @return the ID of ready transfered stuff
+     */
     @Nullable
     public String getReadyTransferId() {
         return this.proxy.getReadyTransferId();
