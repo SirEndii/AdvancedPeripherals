@@ -311,7 +311,7 @@ public class APFakePlayer extends FakePlayer {
                 if (level().isEmptyBlock(blockPos) || blockPos.equals(blockPosition())) {
                     return null;
                 }
-                BlockHitResult shaped =  traceContext.getBlockShape(level().getBlockState(blockPos), level(), blockPos)
+                BlockHitResult shaped = traceContext.getBlockShape(level().getBlockState(blockPos), level(), blockPos)
                         .clip(rayTraceContext.getFrom(), rayTraceContext.getTo(), blockPos);
                 if (shaped != null && shaped.getType() != HitResult.Type.MISS) {
                     return shaped;
