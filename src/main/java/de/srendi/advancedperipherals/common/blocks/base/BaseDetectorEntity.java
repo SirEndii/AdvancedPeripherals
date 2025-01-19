@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * @param <T> The storage handle type
  * @param <S> The storage proxy type, must implements/extends both {@code <T>} and {@link IStorageProxy}
+ * @param <P> The peripheral type, must extends {@link BasePeripheral}
  */
 public abstract class BaseDetectorEntity<T, S extends IStorageProxy, P extends BasePeripheral<?>> extends PeripheralBlockEntity<P> {
 
