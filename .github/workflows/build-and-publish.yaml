@@ -61,6 +61,11 @@ jobs:
           git add CHANGELOG.md && \
           git commit -m 'action: patchChangelog' && \
           git push
+      - name: Publish Maven
+        env:
+          PUBLIC_REP_NAME: ${{ secrets.PUBLIC_REP_NAME }}
+          PUBLIC_REP_KEY: ${{ secrets.PUBLIC_REP_KEY }}
+        run: ./gradlew publishAllPublicationsToPublicRepository
       - name: Github Release
         env:
           GITHUB_KEY: ${{ github.token }}
